@@ -1,4 +1,4 @@
 source "https://rubygems.org"
 gemspec	
-gem "jekyll", "~> 4.3.1"
+gem "github-pages", "~> 232", group: :jekyll_plugins
 gem "kramdown-parser-gfm"
