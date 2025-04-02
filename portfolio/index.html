@@ -1,0 +1,12 @@
+---
+layout: page
+title: Portfolio
+seotitle: Dan Vu Portfolio
+description: Portfolio by Dan Vu
+---
+
+{% for post in paginator.posts %}
+	{% include post-entry.html %}
+{% endfor %}
+
+{% include paginator.html %}
