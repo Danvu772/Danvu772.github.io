@@ -1,9 +1,9 @@
 ---
 type: post
-seotitle: "[URGENT]how to intsall arch!! plese help me" 
-title: "[URGENT]how to intsall arch!! plese help me"
+seotitle: "Creating a Discord web scraper" 
+title: "Creating a Discord web scraper"
 author: Dan Vu
-description: asking smart questions
+description: My description of a Discord web scraper I created to get data on my friends' group chat 
 url: /discord-scrape/
 updated: 2025-05-21T12:56:36
 headerimage: 
