@@ -4,12 +4,12 @@ seotitle: "[URGENT]how to intsall arch!! plese help me"
 title: "[URGENT]how to intsall arch!! plese help me"
 author: Dan Vu
 description: asking smart questions
-url: /smart-questions/
+url: /discord-scrape/
 updated: 2025-05-21T12:56:36
 headerimage: 
 sitemap:
   lastmod: 2025-05-21T14:59:36
-url: /smart-questions/
+url: /discord-scrape/
 feature-img: 
 tags:
   - software
