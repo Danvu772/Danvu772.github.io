@@ -1,0 +1,12 @@
+---
+layout: page
+title: "Portfolio"
+permalink: /portfolio/
+subtitle: 
+---
+
+{% for post in site.posts reversed %}
+  {% if post.tags contains "portfolio" %}
+    {% include post-entry.html %}
+  {% endif %}
+{% endfor %}
