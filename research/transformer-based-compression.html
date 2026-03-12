@@ -206,7 +206,7 @@ window.Quarto = {
   <li><a href="#the-model-mingpt" id="toc-the-model-mingpt" class="nav-link" data-scroll-target="#the-model-mingpt"><span class="header-section-number">5</span> The Model: minGPT</a></li>
   <li><a href="#inference-windowed-probability-arrays" id="toc-inference-windowed-probability-arrays" class="nav-link" data-scroll-target="#inference-windowed-probability-arrays"><span class="header-section-number">6</span> Inference: Windowed Probability Arrays</a></li>
   <li><a href="#results-p0.7-pilot" id="toc-results-p0.7-pilot" class="nav-link" data-scroll-target="#results-p0.7-pilot"><span class="header-section-number">7</span> Results: p=0.7 Pilot</a></li>
-  <li><a href="#results-full-p-sweep" id="toc-results-full-p-sweep" class="nav-link" data-scroll-target="#results-full-p-sweep"><span class="header-section-number">8</span> Results: Full p Sweep</a></li>
+  <li><a href="#results-fixed-p-sweep" id="toc-results-fixed-p-sweep" class="nav-link" data-scroll-target="#results-fixed-p-sweep"><span class="header-section-number">8</span> Results: Fixed p sweep</a></li>
   <li><a href="#next-steps" id="toc-next-steps" class="nav-link" data-scroll-target="#next-steps"><span class="header-section-number">9</span> Next steps</a></li>
   </ul>
 <div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="transformer-based-compression.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
@@ -358,7 +358,7 @@ window.Quarto = {
 </div>
 <p>The Laplace estimator converges reliably but the variance at <span class="math inline">\(N=10\)</span> is large. The mean is already pretty close by <span class="math inline">\(N=100\)</span> but the confidence interval still spans roughly 0.1 bits.</p>
 <p>We also compare against the Csiszar-Korner block estimator as a secondary baseline. The CK estimator processes the sequence in non-overlapping blocks and estimates <span class="math inline">\(p\)</span> within each block. With block size 10, it plateaus significantly above entropy even at large <span class="math inline">\(N\)</span>, the block boundaries introduce a hard floor on performance.</p>
-<div id="cell-12" class="cell">
+<div id="f62c3ba6" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Laplace vs Csiszar-Korner convergence comparison (p=0.7)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div>
@@ -473,9 +473,9 @@ window.Quarto = {
 </div>
 <p>The transformer advantage is strongest at <span class="math inline">\(N=10\)</span> (~0.085 bits) and decreases monotonically as <span class="math inline">\(N\)</span> grows, converging toward zero as Laplace catches up. This is exactly the expected pattern, the transformer’s learned prior matters most when there is almost no data to estimate from.</p>
 </section>
-<section id="results-full-p-sweep" class="level2" data-number="8">
-<h2 data-number="8" class="anchored" data-anchor-id="results-full-p-sweep"><span class="header-section-number">8</span> Results: Full p Sweep</h2>
-<p>Running the same experiment across <span class="math inline">\(p \in \{0.1, 0.3, 0.5, 0.7, 0.9\}\)</span>. The <span class="math inline">\(p=0.7\)</span> result ” “above used sequences with random <span class="math inline">\(p\)</span> during training, this run uses fixed <span class="math inline">\(p\)</span> per trial.</p>
+<section id="results-fixed-p-sweep" class="level2" data-number="8">
+<h2 data-number="8" class="anchored" data-anchor-id="results-fixed-p-sweep"><span class="header-section-number">8</span> Results: Fixed p sweep</h2>
+<p>Running the same experiment across <span class="math inline">\(p \in \{0.1, 0.3, 0.5, 0.7, 0.9\}\)</span>. The <span class="math inline">\(p=0.7\)</span> result above used sequences with random <span class="math inline">\(p\)</span> during training, this run uses fixed <span class="math inline">\(p\)</span> per trial.</p>
 <div id="cell-24" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Laplace vs Transformer BPS convergence (all p values)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
