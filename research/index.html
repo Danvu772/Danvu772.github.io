@@ -83,7 +83,7 @@ ul.task-list li input[type="checkbox"] {
     const options = {
       valueNames: ['listing-title','listing-date','listing-categories','listing-description',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
       
-      searchColumns: ["listing-title","listing-author","listing-image","listing-description"],
+      searchColumns: ["listing-title","listing-author","listing-date","listing-image","listing-description"],
     };
 
     window['quarto-listings'] = window['quarto-listings'] || {};
@@ -213,15 +213,31 @@ window.Quarto = {
 
 <div class="quarto-listing quarto-listing-container-grid" id="listing-listing">
 <div class="list grid quarto-listing-cols-2">
-<div class="g-col-1" data-index="0" data-listing-file-modified-sort="1773303523115" data-listing-reading-time-sort="6" data-listing-word-count-sort="1048">
+<div class="g-col-1" data-index="0" data-categories="cmVzZWFyY2glMkNpbmZvcm1hdGlvbi10aGVvcnklMkN0cmFuc2Zvcm1lcnMlMkNjb21wcmVzc2lvbg==" data-listing-date-sort="1740823200000" data-listing-file-modified-sort="1773304680148" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5" data-listing-word-count-sort="991">
 <a href="../research/transformer-based-compression.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <div class="card-body post-contents">
 <h5 class="no-anchor card-title listing-title">
-Motivation
+Transformer-Based Universal Source Coding
 </h5>
+<div class="listing-categories">
+
+<div class="listing-category" onclick="window.quartoListingCategory('cmVzZWFyY2g='); return false;">research</div>
+
+<div class="listing-category" onclick="window.quartoListingCategory('aW5mb3JtYXRpb24tdGhlb3J5'); return false;">information-theory</div>
+
+<div class="listing-category" onclick="window.quartoListingCategory('dHJhbnNmb3JtZXJz'); return false;">transformers</div>
+
+<div class="listing-category" onclick="window.quartoListingCategory('Y29tcHJlc3Npb24='); return false;">compression</div>
+
+</div>
 <div class="card-text listing-description delink">
-,- title: “Transformer-Based Universal Source Coding” author: “Dan Vu” date: “2025-03-01” description: “Building a toolkit to benchmark minGPT against Laplace estimation for…
+<p>Building a toolkit to benchmark minGPT against Laplace estimation for universal source coding on binary IID sequences.</p>
+</div>
+<div class="card-attribution card-text-small end">
+<div class="listing-date">
+Mar 1, 2025
+</div>
 </div>
 </div>
 </div></a>

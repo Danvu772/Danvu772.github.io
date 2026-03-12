@@ -134,15 +134,20 @@ ul.task-list li input[type="checkbox"] {
 <div class="landing">
 
   <div class="landing-hero">
-    <div class="landing-tag">// EE + CS · UH Mānoa</div>
-    <h1 class="landing-name">Dan Vu</h1>
-    <p class="landing-bio">
-      Researcher in DSP, ML, embedded signals. I help computers see the world.
-    </p>
-    <div class="landing-links">
-      <a href="./research/index.html" class="btn-primary">research →</a>
-      <a href="./blog/index.html" class="btn-secondary">blog</a>
-      <a href="https://github.com/danvu772" class="btn-secondary">github</a>
+    <div class="landing-hero-text">
+      <div class="landing-tag">// EE + CS · UH Mānoa</div>
+      <h1 class="landing-name">Dan Vu</h1>
+      <p class="landing-bio">
+        Researcher in DSP, ML, embedded signals. I help computers see the world.
+      </p>
+      <div class="landing-links">
+        <a href="./research/index.html" class="btn-primary">research →</a>
+        <a href="./blog/index.html" class="btn-secondary">blog</a>
+        <a href="https://github.com/danvu772" class="btn-secondary">github</a>
+      </div>
+    </div>
+    <div class="landing-hero-photo">
+      <img src="assets/dan-headshot.jpg" alt="Dan Vu">
     </div>
   </div>
 
@@ -161,7 +166,6 @@ ul.task-list li input[type="checkbox"] {
 
 </div>
 <style>
-/* ── RESET QUARTO COLUMN CONSTRAINTS ON THIS PAGE ── */
 .page-full .page-columns,
 .page-full #quarto-content,
 .page-full .quarto-title-block {
@@ -169,16 +173,53 @@ ul.task-list li input[type="checkbox"] {
   padding: 0 !important;
 }
 
-/* ── LANDING WRAPPER ── */
 .landing {
   max-width: 860px;
   margin: 0 auto;
   padding: 64px 32px 80px;
 }
 
-/* ── HERO ── */
 .landing-hero {
+  display: flex;
+  align-items: center;    /* was flex-start */
+  justify-content: space-between;
+  gap: 48px;
   margin-bottom: 56px;
+}
+
+.landing-hero-photo img {
+  width: 148px;
+  height: 148px;
+  object-fit: cover;
+  object-position: center top;
+  border-radius: 50%;     /* was 4px */
+  border: 2px solid var(--vp-border, #1a1f2e);
+  filter: grayscale(20%);
+  display: block;
+}
+
+.landing-hero-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.landing-hero-photo {
+  flex-shrink: 0;
+  width: 148px;
+  margin-top: 8px;
+}
+@media (max-width: 560px) {
+  .landing-hero {
+    flex-direction: column-reverse;
+    gap: 24px;
+  }
+  .landing-hero-photo {
+    width: 96px;
+  }
+  .landing-hero-photo img {
+    width: 96px;
+    height: 96px;
+  }
 }
 
 .landing-tag {
@@ -242,7 +283,6 @@ ul.task-list li input[type="checkbox"] {
   color: var(--vp-accent, #06b6d4) !important;
 }
 
-/* ── SECTION LABEL ── */
 .section-label {
   color: var(--vp-text-muted, #4a5260);
   font-size: 0.74em;
@@ -251,7 +291,6 @@ ul.task-list li input[type="checkbox"] {
   margin-bottom: 16px;
 }
 
-/* ── PROJECT GRID ── */
 .project-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
