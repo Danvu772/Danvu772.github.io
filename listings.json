@@ -1,0 +1,18 @@
+[
+  {
+    "listing": "/research/index.html",
+    "items": [
+      "/research/transformer-based-compression.html"
+    ]
+  },
+  {
+    "listing": "/coursework/index.html",
+    "items": []
+  },
+  {
+    "listing": "/blog/index.html",
+    "items": [
+      "/blog/hello-world.html"
+    ]
+  }
+]
