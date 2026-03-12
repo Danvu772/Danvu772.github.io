@@ -1,0 +1,220 @@
+---
+title: ""
+page-layout: full
+toc: false
+---
+
+```{=html}
+<div class="landing">
+
+  <div class="landing-hero">
+    <div class="landing-tag">// EE + CS · UH Mānoa</div>
+    <h1 class="landing-name">Dan Nguyen</h1>
+    <p class="landing-bio">
+      Undergraduate researcher in capacitive sensing, DSP, and ML on embedded signals.
+      Building things that measure the physical world.
+    </p>
+    <div class="landing-links">
+      <a href="research/index.qmd" class="btn-primary">research →</a>
+      <a href="blog/index.qmd" class="btn-secondary">blog</a>
+      <a href="https://github.com/yourusername" class="btn-secondary">github</a>
+    </div>
+  </div>
+
+  <div class="landing-section">
+    <div class="section-label">// recent work</div>
+  </div>
+
+</div>
+```
+
+::: {.column-body}
+
+```{python}
+#| echo: false
+# Featured projects — rendered as cards via HTML
+projects = [
+    {
+        "title": "LabSense",
+        "tag": "research · embedded",
+        "desc": "BLE REST API for capacitive sensor arrays. FastAPI + bleak + aiosqlite, full async architecture. Built for Dr. Ray's lab.",
+        "link": "research/labsense.ipynb",
+        "status": "active"
+    },
+    {
+        "title": "SVM Credit Default",
+        "tag": "ml · coursework",
+        "desc": "RBF kernel SVM for credit card default prediction. Deep dive on primal/dual formulation, kernel tricks, class weighting.",
+        "link": "coursework/ee445-svm.ipynb",
+        "status": "complete"
+    },
+    {
+        "title": "Thermal Characterization Testbench",
+        "tag": "research · instrumentation",
+        "desc": "Full orchestration pipeline using Keithley SMU and 3D printer bed for automated thermal measurements.",
+        "link": "research/thermal-testbench.ipynb",
+        "status": "complete"
+    },
+]
+
+html = '<div class="project-grid">'
+for p in projects:
+    status_class = "status-active" if p["status"] == "active" else "status-done"
+    html += f'''
+    <a href="{p["link"]}" class="project-card">
+      <div class="project-header">
+        <span class="project-title">{p["title"]}</span>
+        <span class="project-status {status_class}">{p["status"]}</span>
+      </div>
+      <div class="project-tag">{p["tag"]}</div>
+      <div class="project-desc">{p["desc"]}</div>
+    </a>'''
+html += '</div>'
+
+from IPython.display import HTML
+display(HTML(html))
+```
+
+:::
+
+```{=html}
+<style>
+.landing { max-width: 820px; margin: 0 auto; padding: 60px 0 40px; }
+
+.landing-hero { margin-bottom: 60px; }
+
+.landing-tag {
+  color: var(--vp-accent, #06b6d4);
+  font-size: 0.78em;
+  letter-spacing: 0.12em;
+  margin-bottom: 12px;
+}
+
+.landing-name {
+  font-size: 2.8em !important;
+  font-weight: 700 !important;
+  color: var(--vp-text-bright, #e2e8f0) !important;
+  letter-spacing: -0.04em !important;
+  line-height: 1.1 !important;
+  margin-bottom: 16px !important;
+  border: none !important;
+}
+
+.landing-bio {
+  color: var(--vp-text, #7a8694);
+  font-size: 0.95em;
+  max-width: 480px;
+  line-height: 1.75;
+  margin-bottom: 28px;
+}
+
+.landing-links { display: flex; gap: 12px; flex-wrap: wrap; }
+
+.btn-primary {
+  background: var(--vp-accent, #06b6d4);
+  color: #050508 !important;
+  padding: 8px 18px;
+  border-radius: 3px;
+  font-size: 0.82em;
+  font-weight: 600;
+  border-bottom: none !important;
+  letter-spacing: 0.04em;
+  transition: opacity 0.15s;
+}
+.btn-primary:hover { opacity: 0.85; color: #050508 !important; }
+
+.btn-secondary {
+  background: transparent;
+  color: var(--vp-text-muted, #4a5260) !important;
+  padding: 8px 18px;
+  border-radius: 3px;
+  font-size: 0.82em;
+  border: 1px solid var(--vp-border, #1a1f2e) !important;
+  border-bottom: 1px solid var(--vp-border, #1a1f2e) !important;
+  transition: border-color 0.15s, color 0.15s;
+}
+.btn-secondary:hover {
+  border-color: var(--vp-accent, #06b6d4) !important;
+  color: var(--vp-accent, #06b6d4) !important;
+}
+
+.landing-section { margin-bottom: 20px; }
+
+.section-label {
+  color: var(--vp-text-muted, #4a5260);
+  font-size: 0.75em;
+  letter-spacing: 0.1em;
+  margin-bottom: 16px;
+  text-transform: uppercase;
+}
+
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+  margin-bottom: 48px;
+}
+
+.project-card {
+  display: block;
+  background: var(--vp-bg-surface, #0a0d12);
+  border: 1px solid var(--vp-border, #1a1f2e);
+  border-radius: 3px;
+  padding: 16px 18px;
+  text-decoration: none;
+  border-bottom: none !important;
+  transition: border-color 0.15s, transform 0.15s;
+}
+
+.project-card:hover {
+  border-color: var(--vp-accent, #06b6d4) !important;
+  transform: translateY(-2px);
+}
+
+.project-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.project-title {
+  color: var(--vp-text-bright, #e2e8f0);
+  font-weight: 600;
+  font-size: 0.9em;
+}
+
+.project-status {
+  font-size: 0.68em;
+  padding: 2px 7px;
+  border-radius: 2px;
+  letter-spacing: 0.06em;
+}
+
+.status-active {
+  background: rgba(6,182,212,0.1);
+  color: var(--vp-accent, #06b6d4);
+  border: 1px solid rgba(6,182,212,0.2);
+}
+
+.status-done {
+  background: rgba(74,222,128,0.08);
+  color: #4ade80;
+  border: 1px solid rgba(74,222,128,0.15);
+}
+
+.project-tag {
+  color: var(--vp-text-muted, #4a5260);
+  font-size: 0.72em;
+  letter-spacing: 0.06em;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.project-desc {
+  color: var(--vp-text, #7a8694);
+  font-size: 0.80em;
+  line-height: 1.65;
+}
+</style>
+```

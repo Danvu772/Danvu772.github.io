@@ -1,0 +1,122 @@
+/*-- pdf-overrides.scss --*/
+/*-- Print layer: keeps Void Protocol identity, adapts for paper --*/
+
+/*
+  Usage in notebook YAML frontmatter:
+  ---
+  format:
+    pdf:
+      include-in-header: path/to/pdf-overrides.scss
+      geometry: "margin=1in, top=0.9in, bottom=0.9in"
+      documentclass: article
+      fontsize: 11pt
+      pdf-engine: typst
+  ---
+*/
+
+/* ============================================
+   TYPST PDF VARIABLES
+   (used when pdf-engine: typst)
+   ============================================ */
+
+#set page(
+  margin: (top: 1in, bottom: 1in, left: 1in, right: 1in),
+  numbering: "1 / 1",
+  number-align: right,
+)
+
+#set text(
+  font: "JetBrains Mono",
+  size: 11pt,
+  fill: rgb("#1a1f2e"),
+)
+
+#set heading(numbering: "1.1")
+
+/* ============================================
+   HTML→PDF (webpdf / chromium engine)
+   ============================================ */
+
+@media print {
+  :root {
+    /* Override dark bg to white for print */
+    --vp-bg:          #ffffff;
+    --vp-bg-surface:  #f8fafc;
+    --vp-bg-elevated: #f1f5f9;
+    --vp-text:        #334155;
+    --vp-text-bright: #0f172a;
+    --vp-text-muted:  #64748b;
+    --vp-border:      #e2e8f0;
+    --vp-border-soft: #f1f5f9;
+
+    /* Keep cyan accent — brand identity on paper */
+    --vp-accent:      #0891b2;
+    --vp-accent-dim:  rgba(8, 145, 178, 0.08);
+    --vp-accent-glow: rgba(8, 145, 178, 0.05);
+
+    /* Syntax — readable on white */
+    --vp-syn-keyword: #be185d;
+    --vp-syn-func:    #7c3aed;
+    --vp-syn-string:  #065f46;
+    --vp-syn-number:  #0e7490;
+    --vp-green:       #16a34a;
+    --vp-red:         #dc2626;
+  }
+
+  body {
+    background: #ffffff;
+    color: #334155;
+    font-size: 11pt;
+    line-height: 1.65;
+  }
+
+  /* Hide nav, sidebar, TOC, footer for submission */
+  .navbar,
+  .sidebar,
+  #TOC,
+  .nav-footer,
+  .code-copy-button {
+    display: none !important;
+  }
+
+  /* Page breaks */
+  h1, h2 { page-break-after: avoid; }
+  pre, table, figure { page-break-inside: avoid; }
+
+  /* Title block — clean submission header */
+  #title-block-header {
+    border-bottom: 2px solid #0891b2;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.8rem;
+  }
+
+  #title-block-header .title {
+    font-size: 1.4em;
+    color: #0f172a;
+  }
+
+  /* Keep math accent on print */
+  .math, mjx-container {
+    color: #0891b2 !important;
+  }
+
+  .math.display {
+    background: rgba(8,145,178,0.05);
+    border-left: 2px solid #0891b2;
+  }
+
+  /* Code blocks */
+  pre {
+    background: #f8fafc !important;
+    border: 1px solid #e2e8f0;
+    border-left: 2px solid #0891b2;
+    font-size: 9pt;
+  }
+
+  /* Output */
+  .cell-output, .cell-output-stdout {
+    background: #f8fafc !important;
+    border-left: 2px solid #16a34a;
+    color: #1a3a1e;
+  }
+}

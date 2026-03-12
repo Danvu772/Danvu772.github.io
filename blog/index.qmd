@@ -1,0 +1,12 @@
+---
+title: "blog"
+listing:
+  contents: "*.ipynb"
+  type: table
+  sort: "date desc"
+  fields: [title, date, categories, description]
+  categories: true
+  sort-ui: false
+  filter-ui: false
+toc: false
+---

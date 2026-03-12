@@ -1,0 +1,10 @@
+---
+title: "coursework"
+listing:
+  contents: "*.ipynb"
+  type: table
+  sort: "date desc"
+  fields: [title, date, categories, description]
+  categories: true
+toc: false
+---

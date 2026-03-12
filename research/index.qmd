@@ -1,0 +1,11 @@
+---
+title: "research"
+listing:
+  contents: "*.ipynb"
+  type: grid
+  sort: "date desc"
+  fields: [title, date, description, categories]
+  categories: true
+  grid-columns: 2
+toc: false
+---

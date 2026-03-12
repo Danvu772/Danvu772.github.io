@@ -1,0 +1,62 @@
+project:
+  type: website
+  output-dir: _site
+
+website:
+  title: "Dan Vu"
+  description: "EE + CS · UH Mānoa · Research, DSP, ML, embedded systems, test automation"
+  favicon: assets/favicon.ico
+
+  navbar:
+    background: "#050508"
+    foreground: "#e2e8f0"
+    border: false
+    left:
+      - href: index.qmd
+        text: "~/"
+      - href: research/index.qmd
+        text: research
+      - href: blog/index.qmd
+        text: blog
+      - href: coursework/index.qmd
+        text: coursework
+    right:
+      - icon: github
+        href: https://github.com/yourusername
+        aria-label: GitHub
+      - text: "cv"
+        href: assets/cv.pdf
+
+  page-footer:
+    background: "#050508"
+    border: false
+    left: "© Dan Nguyen"
+    right:
+      - text: "built with quarto"
+        href: https://quarto.org
+
+  # exclude coursework from search index if you want privacy
+  # search:
+  #   exclude: ["coursework/*"]
+
+format:
+  html:
+    theme: [custom.scss]
+    highlight-style: assets/void-protocol.theme
+    code-copy: true
+    code-overflow: scroll
+    toc: true
+    toc-depth: 3
+    toc-location: right
+    number-sections: false
+    smooth-scroll: true
+    fig-responsive: true
+    html-math-method: mathjax
+    mainfont: "JetBrains Mono"
+    monofont: "JetBrains Mono"
+
+execute:
+  freeze: auto       # re-render only when source changes
+  cache: true
+  warning: false
+  echo: true
