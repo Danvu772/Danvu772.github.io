@@ -256,7 +256,7 @@ window.Quarto = {
 
 <section id="the-question" class="level2" data-number="1">
 <h2 data-number="1" class="anchored" data-anchor-id="the-question"><span class="header-section-number">1</span> The Question</h2>
-<p>Universal source coders don’t know the true distribution of the data they’re compressing. They have to figure it out on the fly. The classic result here is the Laplace estimator – for binary IID sequences it maintains a running count of 0s and 1s and estimates <span class="math inline">\(p\)</span> as:</p>
+<p>Universal source coders don’t know the true distribution of the data they’re compressing. They have to figure it out on the fly. The classic result here is the Laplace estimator. For binary IID sequences it maintains a running count of 0s and 1s and estimates <span class="math inline">\(p\)</span> as:</p>
 <p><span class="math display">\[\hat{p}_1 = \frac{k + 1}{n + 2}\]</span></p>
 <p>where <span class="math inline">\(k\)</span> is ones seen so far out of <span class="math inline">\(n\)</span> total bits. It starts from a uniform prior and converges to the true <span class="math inline">\(p\)</span> as the sequence grows. The redundancy (the extra bits per symbol paid over the entropy lower bound) decays as <span class="math inline">\(O(1/n)\)</span>.</p>
 <p>A natural question: if you train a model on data from a known source beforehand, can you skip that warm-up cost and start closer to entropy from bit one? And if so, how much training do you need before it’s worth it?</p>

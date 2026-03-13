@@ -1,5 +1,11 @@
 [
   {
+    "listing": "/blog/index.html",
+    "items": [
+      "/blog/ride-quality-analysis.html"
+    ]
+  },
+  {
     "listing": "/research/index.html",
     "items": [
       "/research/credit-risk-svm.html",
@@ -9,11 +15,5 @@
   {
     "listing": "/coursework/index.html",
     "items": []
-  },
-  {
-    "listing": "/blog/index.html",
-    "items": [
-      "/blog/hello-world.html"
-    ]
   }
 ]
