@@ -266,12 +266,12 @@ window.Quarto = {
 <section id="setup" class="level2" data-number="2">
 <h2 data-number="2" class="anchored" data-anchor-id="setup"><span class="header-section-number">2</span> Setup</h2>
 <p>Both coders are used as sequential probability models. At each position in a sequence, the model outputs a probability for the next bit. We compute bits per symbol directly from those probabilities:</p>
-<p><span class="math display">\[\text{BPS} = \frac{1}{N} \sum_{i=1}^{N} -\log_2 \hat{p}_{x_i}\]</span></p>
+<p><span class="math display">\[\text{BPS} = \frac{1}{N} \sum_{i=1}^{N} -\log_2 \hat{p}(x_i \mid x_1^{i-1})\]</span></p>
 <p>Laplace estimates <span class="math inline">\(\hat{p}\)</span> from the running count. The transformer takes the preceding bits as context and outputs a probability from its learned weights. Same formula, same comparison baseline.</p>
 <p>Two experimental conditions:</p>
 <ul>
 <li><strong>IID, unknown p</strong>: each test sequence is drawn with a fresh <span class="math inline">\(p \sim \text{Uniform}(0,1)\)</span>. The transformer is trained on sequences from this same distribution, so it has seen many different <span class="math inline">\(p\)</span> values but never knows the current one ahead of time.</li>
-<li><strong>Fixed p</strong>: the transformer is trained exclusively on sequences from a single fixed <span class="math inline">\(p\)</span>. It has the chance to learn the true distribution offline. Laplace doesn’t get this – it always starts fresh regardless of how much data you’ve generated at training time.</li>
+<li><strong>Fixed p</strong>: the transformer is trained exclusively on sequences from a single fixed <span class="math inline">\(p\)</span>. It has the chance to learn the true distribution offline. Laplace doesn’t get this since it always starts fresh regardless of how much data you’ve generated at training time.</li>
 </ul>
 <p>The difference between these two conditions is exactly the question: does offline learning help, and when?</p>
 </section>
@@ -279,7 +279,10 @@ window.Quarto = {
 <h2 data-number="3" class="anchored" data-anchor-id="iid-unknown-p"><span class="header-section-number">3</span> IID – Unknown p</h2>
 <p>First the IID case, where <span class="math inline">\(p\)</span> changes every sequence.</p>
 <div id="iid-bps" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sys<span class="op">;</span> sys.path.insert(<span class="dv">0</span>, <span class="st">'..'</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> assets.matplotlib_theme <span class="im">import</span> apply_void_theme</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># BPS vs sequence length N across p ∈ {0.1, 0.3, 0.5, 0.7, 0.9}: Laplace and Transformer</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -289,7 +292,7 @@ window.Quarto = {
 </div>
 </div>
 <div id="iid-gap" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Gap (Laplace BPS − Transformer BPS) vs N for IID unknown-p, one line per p value.</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -298,15 +301,15 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<p>The transformer tracks Laplace almost exactly across all tested <span class="math inline">\(p\)</span> values. The gap plot is noisy around zero – no consistent advantage in either direction, and what small differences exist are within the variance of the experiment.</p>
-<p>This makes sense. When <span class="math inline">\(p\)</span> is drawn fresh every sequence, there’s no cross-sequence structure to exploit. Both models are starting from zero information about the current <span class="math inline">\(p\)</span>. The transformer has learned the Laplace behavior from training, which is the correct thing to do in this setting – the best you can do without knowing <span class="math inline">\(p\)</span> is sequential Bayesian updating from a uniform prior, and that’s what both models are effectively doing.</p>
-<p>This isn’t a failure. It’s the right answer. There’s nothing to beat Laplace with here.</p>
+<p>The transformer tracks Laplace almost exactly across all tested <span class="math inline">\(p\)</span> values. The gap plot is noisy around zero, demonstrating no consistent advantage in either direction, and what small differences exist are within the variance of the experiment.</p>
+<p>This makes sense. When <span class="math inline">\(p\)</span> is drawn fresh every sequence, there’s no cross-sequence structure to exploit. Both models are starting from zero information about the current <span class="math inline">\(p\)</span>. The transformer has learned the Laplace behavior from training, which is the correct thing to do in this setting the best you can do without knowing <span class="math inline">\(p\)</span> is sequential updating from a uniform prior, and that’s what both models are effectively doing.</p>
+<p>This isn’t a failure. There’s nothing to beat Laplace with here.</p>
 </section>
 <section id="fixed-p-offline-learning-helps" class="level2" data-number="4">
 <h2 data-number="4" class="anchored" data-anchor-id="fixed-p-offline-learning-helps"><span class="header-section-number">4</span> Fixed p – Offline Learning Helps</h2>
 <p>Now the fixed-p case. The transformer is trained on a single <span class="math inline">\(p\)</span> and tested on sequences from that same <span class="math inline">\(p\)</span>.</p>
 <div id="fixed-p3-bps" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># BPS vs N for fixed p=0.3: Transformer (trained offline) starts near entropy from bit one,</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -316,7 +319,7 @@ window.Quarto = {
 </div>
 </div>
 <div id="fixed-p3-gap" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Gap (Laplace − Transformer BPS) vs N for fixed p=0.3.</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -326,7 +329,7 @@ window.Quarto = {
 </div>
 </div>
 <div id="fixed-p7-bps" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># BPS vs N for fixed p=0.7: mirrors the p=0.3 result </span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -336,7 +339,7 @@ window.Quarto = {
 </div>
 </div>
 <div id="fixed-p7-gap" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Gap (Laplace − Transformer BPS) vs N for fixed p=0.7.</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -351,9 +354,8 @@ window.Quarto = {
 </section>
 <section id="what-this-connects-to" class="level2" data-number="5">
 <h2 data-number="5" class="anchored" data-anchor-id="what-this-connects-to"><span class="header-section-number">5</span> What This Connects To</h2>
-<p>The two conditions together give a clean empirical picture of the theoretical setup in Host-Madsen. The bound says learning beats universal coding when you have enough training data – specifically <span class="math inline">\(m \sim \frac{l}{\log l}\)</span> samples for sequences of length <span class="math inline">\(l\)</span>. The fixed-<span class="math inline">\(p\)</span> condition is the idealized limit of that: infinite training on one distribution, so the learned coder skips all estimation overhead entirely. The gap we observe is exactly Laplace’s warm-up cost, avoided by offline learning.</p>
-<p>The IID condition shows the other regime: when the distribution shifts every sequence, offline training on the marginal distribution of <span class="math inline">\(p\)</span> values doesn’t help. The model correctly defaults to universal coding behavior.</p>
-<p>What’s not shown here – and what would directly test the theoretical bound – is a sweep over training set size <span class="math inline">\(m\)</span> at fixed sequence length <span class="math inline">\(l\)</span>. That would let you trace the gain as a function of <span class="math inline">\(m\)</span> and compare against the <span class="math inline">\(\frac{l}{\log l}\)</span> prediction quantitatively. That’s the next step for this project.</p>
+<p>The fixed-<span class="math inline">\(p\)</span> condition is the idealized version of a learned coder: infinite training on one distribution, so the learned coder skips all estimation overhead entirely. The gap we observe is exactly Laplace’s warm-up cost, avoided by offline learning.</p>
+<p>The IID condition shows the other face: when the distribution shifts every sequence, offline training on the marginal distribution of <span class="math inline">\(p\)</span> values doesn’t help. The model correctly defaults to universal coding behavior.</p>
 
 
 </section>
