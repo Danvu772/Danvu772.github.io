@@ -257,13 +257,13 @@ window.Quarto = {
 
 <section id="the-problem" class="level2" data-number="1">
 <h2 data-number="1" class="anchored" data-anchor-id="the-problem"><span class="header-section-number">1</span> The Problem</h2>
-<p>Credit card default prediction is a classification problem with a twist: the two kinds of errors are not equally bad. Missing a client who is about to default (false negative) costs the bank money. Flagging a client who is actually fine (false positive) just means a declined transaction – annoying, but recoverable.</p>
+<p>Credit card default prediction is a classification problem with a twist: the two kinds of errors are not equally bad. Missing a client who is about to default (false negative) costs the bank money. Flagging a client who is actually fine (false positive) just means a declined transaction which is annoying, but recoverable.</p>
 <p>Standard classifiers don’t know this. They minimize overall error, which on an imbalanced dataset mostly means learning to predict the majority class and ignoring the minority. We use kernel SVMs to build a credit risk model and explore how to handle this asymmetry explicitly.</p>
-<p>Dataset: <a href="https://archive.ics.uci.edu/dataset/350/default+of+credit+card+clients">UCI Default of Credit Card Clients</a> – 30,000 clients, 23 features (payment history, bill amounts, demographics), binary target (default next month: yes/no). No missing values, no preprocessing complications.</p>
+<p>Dataset: <a href="https://archive.ics.uci.edu/dataset/350/default+of+credit+card+clients">UCI Default of Credit Card Clients</a>: 30,000 clients, 23 features (payment history, bill amounts, demographics), binary target (default next month: yes/no). No missing values, no preprocessing complications.</p>
 </section>
 <section id="data-split" class="level2" data-number="2">
 <h2 data-number="2" class="anchored" data-anchor-id="data-split"><span class="header-section-number">2</span> Data Split</h2>
-<p>Test set is held out immediately and never touched until the final evaluation – not even for normalization. Within the training set, we carve out a validation set for all hyperparameter decisions. Normalization is fit only on train_train and applied forward to val and test.</p>
+<p>Test set is held out immediately and never touched until the final evaluation. Within the training set, we carve out a validation set for all hyperparameter decisions. Normalization is fit only on train_train and applied forward to val and test.</p>
 <div id="code" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span>
@@ -307,8 +307,8 @@ x_test_scaled 9000</code></pre>
 dual_coef_ shape:          (1, 7412)</code></pre>
 </div>
 </div>
-<p>7,412 support vectors out of 16,800 training points – about 44%. That’s high, which tells us the default decision boundary is not clean. The classes overlap significantly in feature space, so the model needs a lot of points to define the margin.</p>
-<p><code>dual_coef_</code> has shape <code>(1, 7412)</code> – one <span class="math inline">\(\alpha_i y_i\)</span> per support vector. A large magnitude means that support vector is pulling hard on the boundary. Most are clustered near the margin; the high-magnitude ones are the contested, borderline clients.</p>
+<p>7,412 support vectors out of 16,800 training points which is about 44%. That’s high, and it tells us the default decision boundary is not clean. The classes overlap significantly in feature space, so the model needs a lot of points to define the margin.</p>
+<p><code>dual_coef_</code> has shape <code>(1, 7412)</code> which means one <span class="math inline">\(\alpha_i y_i\)</span> per support vector. A large magnitude means that support vector is pulling hard on the boundary. Most are clustered near the margin; the high-magnitude ones are the contested, borderline clients.</p>
 </section>
 <section id="hyperparameter-tuning" class="level2" data-number="4">
 <h2 data-number="4" class="anchored" data-anchor-id="hyperparameter-tuning"><span class="header-section-number">4</span> Hyperparameter Tuning</h2>
@@ -373,14 +373,14 @@ C
 100.0   7053   6977   8105  11890</code></pre>
 </div>
 </div>
-<p>The sweet spot is C=1, gamma=0.1. A few things worth noting from the table:</p>
-<p>At gamma=1, support vector count explodes past 11,000 regardless of C – the kernel is so narrow that almost every point needs to be a support vector to define the boundary. F1 collapses too. That’s the overfitting regime.</p>
+<p>The sweet spot is C=1, gamma=0.1. We got a few things worth noting:</p>
+<p>At gamma=1, support vector count explodes past 11,000 regardless of C. The kernel is so narrow that almost every point needs to be a support vector to define the boundary. F1 collapses too. That’s overfitting.</p>
 <p>At gamma=0.001, the boundary is so smooth that for C=0.1 the model just predicts the majority class and F1 for the default class hits zero. Too much regularization in both directions.</p>
 <p>The C=1, gamma=0.1 combo gives the best F1 while keeping support vector count reasonable at 8,233.</p>
 </section>
 <section id="asymmetric-margins" class="level2" data-number="5">
 <h2 data-number="5" class="anchored" data-anchor-id="asymmetric-margins"><span class="header-section-number">5</span> Asymmetric Margins</h2>
-<p>The baseline model at C=1, gamma=0.1 has recall of 0.36 on the default class – it’s missing 64% of actual defaulters. For a bank, that’s the worst possible failure mode.</p>
+<p>The baseline model at C=1, gamma=0.1 has recall of 0.36 on the default class which means it’s missing 64% of actual defaulters. For a bank, that’s the worst possible failure mode.</p>
 <p>Standard SVM penalizes misclassification equally for both classes. We can fix this by using different penalty parameters <span class="math inline">\(C^+\)</span> and <span class="math inline">\(C^-\)</span> in the primal:</p>
 <p><span class="math display">\[\min_{w,b,\xi} \frac{1}{2}\|w\|^2 + C^+ \sum_{i: y_i=1} \xi_i + C^- \sum_{i: y_i=-1} \xi_i\]</span></p>
 <p>Setting <span class="math inline">\(C^+ &gt; C^-\)</span> makes misclassifying a defaulter more expensive. The boundary shifts away from the positive class to give it more margin, trading some precision for recall on the class that actually matters.</p>
@@ -447,15 +447,15 @@ weighted avg       0.78      0.68      0.71      4200
 </div>
 </div>
 <p>The tradeoff is visible in the numbers. Baseline recall on defaulters: 0.37. Balanced: 0.58. Manual {0:1, 1:5}: 0.71.</p>
-<p>Each step up in recall costs precision – the model flags more non-defaulters as risky. Whether that’s acceptable depends on the business cost ratio. For a bank that loses, say, 10x more on a default than on a declined transaction, the manual weighting is the right call even though accuracy drops to 0.68.</p>
+<p>Each step up in recall costs precision the model flags more non-defaulters as risky. Whether that’s acceptable depends on the business cost ratio. For a bank that loses, say, 10x more on a default than on a declined transaction, the manual weighting is the right call even though accuracy drops to 0.68.</p>
 <p>This is the core reason accuracy is a useless metric here. A model that predicts nobody defaults gets 78% accuracy on this dataset and catches zero defaulters.</p>
 </section>
 <section id="probability-scoring-via-platt-scaling" class="level2" data-number="6">
 <h2 data-number="6" class="anchored" data-anchor-id="probability-scoring-via-platt-scaling"><span class="header-section-number">6</span> Probability Scoring via Platt Scaling</h2>
-<p>Hard class labels are often not what you want in credit risk. A probability of default is more useful – it lets you rank applicants, set thresholds, and integrate with downstream risk systems.</p>
+<p>Hard class labels are often not what you want in credit risk. A probability of default is more useful since it lets you rank applicants, set thresholds, and integrate with downstream risk systems.</p>
 <p>Setting <code>probability=True</code> enables Platt scaling. After the SVM is trained, a logistic regression is fit using 5-fold internal CV to map the decision function <span class="math inline">\(f(x)\)</span> to a probability:</p>
 <p><span class="math display">\[P(y=1 \mid x) = \frac{1}{1 + \exp(A \cdot f(x) + B)}\]</span></p>
-<p>where <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> are fit by MLE. The decision function measures signed distance to the hyperplane – a large positive value means the model is confident the client defaults, large negative means confident they won’t. Platt scaling converts that distance into a calibrated probability.</p>
+<p>where <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> are fit by MLE. The decision function measures signed distance to the hyperplane and a large positive value means the model is confident the client defaults, large negative means confident they won’t. Platt scaling converts that distance into a calibrated probability.</p>
 <p>The internal CV is what makes this reasonable – it prevents the calibration from just memorizing training labels. The result is a score you can actually interpret: <code>predict_proba(x)[1]</code> reflects the empirical default rate among clients with similar features.</p>
 </section>
 <section id="final-evaluation-on-test-set" class="level2" data-number="7">
@@ -482,9 +482,9 @@ weighted avg       0.78      0.68      0.71      9000
 </code></pre>
 </div>
 </div>
-<p>Test results hold – recall on the default class is 0.70, consistent with what we saw on validation. No surprise collapse, which confirms the validation set decisions generalized.</p>
-<p>The model catches 70% of defaulters at the cost of flagging about a third of non-defaulters as risky. Whether you’d deploy this as-is depends on the specific cost structure, but it’s a meaningful starting point and a significant improvement over the naive baseline that missed 63% of defaulters.</p>
-<p>The main levers left to pull: a probability threshold sweep to find the operating point that matches your actual loss ratio, and potentially a richer feature set or kernel choice. But the core machinery – asymmetric loss, Platt-scaled probabilities – is doing the right thing.</p>
+<p>Test results hold; the recall on the default class is 0.70, consistent with what we saw on validation. No surprise collapse, which confirms the validation set decisions generalized.</p>
+<p>The model catches 70% of defaulters at the cost of flagging about a third of non-defaulters as risky. Whether you’d deploy this is a different story (don’t), but it’s a meaningful starting point and a significant improvement over the naive baseline that missed 63% of defaulters.</p>
+<p>We have many improvements to make from here: a probability threshold sweep to find the operating point that matches your actual loss ratio, and potentially a richer feature set or kernel choice. But the core machinery: asymmetric loss, Platt-scaled probabilities, is pointing us in the right direction.</p>
 
 
 </section>

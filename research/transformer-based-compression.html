@@ -203,8 +203,8 @@ window.Quarto = {
   <ul>
   <li><a href="#the-question" id="toc-the-question" class="nav-link active" data-scroll-target="#the-question"><span class="header-section-number">1</span> The Question</a></li>
   <li><a href="#setup" id="toc-setup" class="nav-link" data-scroll-target="#setup"><span class="header-section-number">2</span> Setup</a></li>
-  <li><a href="#iid-unknown-p" id="toc-iid-unknown-p" class="nav-link" data-scroll-target="#iid-unknown-p"><span class="header-section-number">3</span> IID – Unknown p</a></li>
-  <li><a href="#fixed-p-offline-learning-helps" id="toc-fixed-p-offline-learning-helps" class="nav-link" data-scroll-target="#fixed-p-offline-learning-helps"><span class="header-section-number">4</span> Fixed p – Offline Learning Helps</a></li>
+  <li><a href="#iid-unknown-p" id="toc-iid-unknown-p" class="nav-link" data-scroll-target="#iid-unknown-p"><span class="header-section-number">3</span> IID: Unknown p</a></li>
+  <li><a href="#fixed-p-offline-learning-helps" id="toc-fixed-p-offline-learning-helps" class="nav-link" data-scroll-target="#fixed-p-offline-learning-helps"><span class="header-section-number">4</span> Fixed p: Offline Learning Helps</a></li>
   <li><a href="#what-this-connects-to" id="toc-what-this-connects-to" class="nav-link" data-scroll-target="#what-this-connects-to"><span class="header-section-number">5</span> What This Connects To</a></li>
   </ul>
 <div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="transformer-based-compression.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
@@ -258,7 +258,7 @@ window.Quarto = {
 <h2 data-number="1" class="anchored" data-anchor-id="the-question"><span class="header-section-number">1</span> The Question</h2>
 <p>Universal source coders don’t know the true distribution of the data they’re compressing. They have to figure it out on the fly. The classic result here is the Laplace estimator – for binary IID sequences it maintains a running count of 0s and 1s and estimates <span class="math inline">\(p\)</span> as:</p>
 <p><span class="math display">\[\hat{p}_1 = \frac{k + 1}{n + 2}\]</span></p>
-<p>where <span class="math inline">\(k\)</span> is ones seen so far out of <span class="math inline">\(n\)</span> total bits. It starts from a uniform prior and converges to the true <span class="math inline">\(p\)</span> as the sequence grows. The redundancy – the extra bits per symbol paid over the entropy lower bound – decays as <span class="math inline">\(O(1/n)\)</span>.</p>
+<p>where <span class="math inline">\(k\)</span> is ones seen so far out of <span class="math inline">\(n\)</span> total bits. It starts from a uniform prior and converges to the true <span class="math inline">\(p\)</span> as the sequence grows. The redundancy (the extra bits per symbol paid over the entropy lower bound) decays as <span class="math inline">\(O(1/n)\)</span>.</p>
 <p>A natural question: if you train a model on data from a known source beforehand, can you skip that warm-up cost and start closer to entropy from bit one? And if so, how much training do you need before it’s worth it?</p>
 <p>This is the question <a href="https://par.nsf.gov/servlets/purl/10297477">Host-Madsen (2021)</a> addresses theoretically for binary IID sources and Markov chains. The answer is surprisingly optimistic: a learned coder only needs about <span class="math inline">\(m \sim \frac{l}{\log l}\)</span> training samples to beat a universal coder on sequences of length <span class="math inline">\(l\)</span>. You need fewer training samples than the length of the sequences you want to encode.</p>
 <p>This project is an empirical look at that claim. We train a small GPT (minGPT) on binary sequences and benchmark it against the Laplace estimator across two conditions that test when offline learning actually helps.</p>
@@ -276,13 +276,10 @@ window.Quarto = {
 <p>The difference between these two conditions is exactly the question: does offline learning help, and when?</p>
 </section>
 <section id="iid-unknown-p" class="level2" data-number="3">
-<h2 data-number="3" class="anchored" data-anchor-id="iid-unknown-p"><span class="header-section-number">3</span> IID – Unknown p</h2>
+<h2 data-number="3" class="anchored" data-anchor-id="iid-unknown-p"><span class="header-section-number">3</span> IID: Unknown p</h2>
 <p>First the IID case, where <span class="math inline">\(p\)</span> changes every sequence.</p>
 <div id="iid-bps" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sys<span class="op">;</span> sys.path.insert(<span class="dv">0</span>, <span class="st">'..'</span>)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> assets.matplotlib_theme <span class="im">import</span> apply_void_theme</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># BPS vs sequence length N across p ∈ {0.1, 0.3, 0.5, 0.7, 0.9}: Laplace and Transformer</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># BPS vs sequence length N across p ∈ {0.1, 0.3, 0.5, 0.7, 0.9}: Laplace and Transformer</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -306,7 +303,7 @@ window.Quarto = {
 <p>This isn’t a failure. There’s nothing to beat Laplace with here.</p>
 </section>
 <section id="fixed-p-offline-learning-helps" class="level2" data-number="4">
-<h2 data-number="4" class="anchored" data-anchor-id="fixed-p-offline-learning-helps"><span class="header-section-number">4</span> Fixed p – Offline Learning Helps</h2>
+<h2 data-number="4" class="anchored" data-anchor-id="fixed-p-offline-learning-helps"><span class="header-section-number">4</span> Fixed p: Offline Learning Helps</h2>
 <p>Now the fixed-p case. The transformer is trained on a single <span class="math inline">\(p\)</span> and tested on sequences from that same <span class="math inline">\(p\)</span>.</p>
 <div id="fixed-p3-bps" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># BPS vs N for fixed p=0.3: Transformer (trained offline) starts near entropy from bit one,</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -348,9 +345,9 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<p>Here the results are different. For <span class="math inline">\(p=0.3\)</span>, the transformer starts at around 0.883 BPS at <span class="math inline">\(N=10\)</span>, which is essentially at the entropy lower bound of 0.881. Laplace at <span class="math inline">\(N=10\)</span> is at 0.959 – still paying its estimation cost. The gap at <span class="math inline">\(N=10\)</span> is about 0.076 bits/symbol and decays cleanly as <span class="math inline">\(N\)</span> grows, converging near zero by <span class="math inline">\(N=500\)</span> as Laplace accumulates enough counts to catch up.</p>
+<p>Here the results are different. For <span class="math inline">\(p=0.3\)</span>, the transformer starts at around 0.883 BPS at <span class="math inline">\(N=10\)</span>, which is essentially at the entropy lower bound of 0.881. Laplace at <span class="math inline">\(N=10\)</span> is at 0.959 which means it’s still paying its estimation cost. The gap at <span class="math inline">\(N=10\)</span> is about 0.076 bits/symbol and decays cleanly as <span class="math inline">\(N\)</span> grows, converging near zero by <span class="math inline">\(N=500\)</span> as Laplace accumulates enough counts to catch up.</p>
 <p>Same story for <span class="math inline">\(p=0.7\)</span>. The gap is comparable in magnitude and decays the same way.</p>
-<p>The mechanism is straightforward. Laplace’s redundancy at small <span class="math inline">\(N\)</span> is its estimation cost – it’s spending bits learning where <span class="math inline">\(p\)</span> is from the current sequence. The transformer paid that cost during training. At inference time it already knows <span class="math inline">\(p\)</span>, so it starts near entropy immediately. The advantage is real but finite: as <span class="math inline">\(N\)</span> grows, Laplace’s running estimate converges and the gap disappears.</p>
+<p>The mechanism is straightforward. Laplace’s redundancy at small <span class="math inline">\(N\)</span> is its estimation cost; it’s spending bits learning where <span class="math inline">\(p\)</span> is from the current sequence. The transformer paid that cost during training. At inference time it already knows <span class="math inline">\(p\)</span>, so it starts near entropy immediately. The advantage is real but finite: as <span class="math inline">\(N\)</span> grows, Laplace’s running estimate converges and the gap disappears.</p>
 </section>
 <section id="what-this-connects-to" class="level2" data-number="5">
 <h2 data-number="5" class="anchored" data-anchor-id="what-this-connects-to"><span class="header-section-number">5</span> What This Connects To</h2>
