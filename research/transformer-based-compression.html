@@ -201,18 +201,11 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#motivation" id="toc-motivation" class="nav-link active" data-scroll-target="#motivation"><span class="header-section-number">1</span> Motivation</a></li>
-  <li><a href="#information-theory-primitives" id="toc-information-theory-primitives" class="nav-link" data-scroll-target="#information-theory-primitives"><span class="header-section-number">2</span> Information Theory Primitives</a>
-  <ul class="collapse">
-  <li><a href="#kl-divergence" id="toc-kl-divergence" class="nav-link" data-scroll-target="#kl-divergence"><span class="header-section-number">2.1</span> KL Divergence</a></li>
-  </ul></li>
-  <li><a href="#sequential-universal-source-coding" id="toc-sequential-universal-source-coding" class="nav-link" data-scroll-target="#sequential-universal-source-coding"><span class="header-section-number">3</span> Sequential Universal Source Coding</a></li>
-  <li><a href="#baseline-laplace-estimator-convergence" id="toc-baseline-laplace-estimator-convergence" class="nav-link" data-scroll-target="#baseline-laplace-estimator-convergence"><span class="header-section-number">4</span> Baseline: Laplace Estimator Convergence</a></li>
-  <li><a href="#the-model-mingpt" id="toc-the-model-mingpt" class="nav-link" data-scroll-target="#the-model-mingpt"><span class="header-section-number">5</span> The Model: minGPT</a></li>
-  <li><a href="#inference-windowed-probability-arrays" id="toc-inference-windowed-probability-arrays" class="nav-link" data-scroll-target="#inference-windowed-probability-arrays"><span class="header-section-number">6</span> Inference: Windowed Probability Arrays</a></li>
-  <li><a href="#results-p0.7-pilot" id="toc-results-p0.7-pilot" class="nav-link" data-scroll-target="#results-p0.7-pilot"><span class="header-section-number">7</span> Results: p=0.7 Pilot</a></li>
-  <li><a href="#results-fixed-p-sweep" id="toc-results-fixed-p-sweep" class="nav-link" data-scroll-target="#results-fixed-p-sweep"><span class="header-section-number">8</span> Results: Fixed p sweep</a></li>
-  <li><a href="#next-steps" id="toc-next-steps" class="nav-link" data-scroll-target="#next-steps"><span class="header-section-number">9</span> Next steps</a></li>
+  <li><a href="#the-question" id="toc-the-question" class="nav-link active" data-scroll-target="#the-question"><span class="header-section-number">1</span> The Question</a></li>
+  <li><a href="#setup" id="toc-setup" class="nav-link" data-scroll-target="#setup"><span class="header-section-number">2</span> Setup</a></li>
+  <li><a href="#iid-unknown-p" id="toc-iid-unknown-p" class="nav-link" data-scroll-target="#iid-unknown-p"><span class="header-section-number">3</span> IID – Unknown p</a></li>
+  <li><a href="#fixed-p-offline-learning-helps" id="toc-fixed-p-offline-learning-helps" class="nav-link" data-scroll-target="#fixed-p-offline-learning-helps"><span class="header-section-number">4</span> Fixed p – Offline Learning Helps</a></li>
+  <li><a href="#what-this-connects-to" id="toc-what-this-connects-to" class="nav-link" data-scroll-target="#what-this-connects-to"><span class="header-section-number">5</span> What This Connects To</a></li>
   </ul>
 <div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="transformer-based-compression.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
     </div>
@@ -261,49 +254,42 @@ window.Quarto = {
 </header>
 
 
-<p>Active research notebook. Things are still getting cleaned up and results are still coming in. Documenting the toolkit and experimental pipeline as it gets built.</p>
-<p>The central question: can a small transformer trained offline on IID binary sequences produce better probability estimates than a Laplace estimator, particularly at small sequence lengths where Laplace is known to be slow to converge?</p>
-<section id="motivation" class="level2" data-number="1">
-<h2 data-number="1" class="anchored" data-anchor-id="motivation"><span class="header-section-number">1</span> Motivation</h2>
-<p>Universal source coding is the problem of compressing a sequence from an unknown source. The classical approach is to estimate symbol probabilities sequentially from the data and encode using arithmetic coding. The Laplace estimator does this as follows: after observing <span class="math inline">\(k\)</span> ones in <span class="math inline">\(n\)</span> symbols, it assigns <span class="math inline">\(\hat{p}_1 = \frac{k+1}{n+2}\)</span>.</p>
-<p>The limitation is that at small <span class="math inline">\(n\)</span>, this estimate is noisy and the BPS overhead above the entropy rate is non-trivial. The theoretical overhead for sequential universal source coding scales as <span class="math inline">\(\frac{1}{2} \frac{\log N}{N}\)</span> bits per symbol, fine asymptotically, not great at <span class="math inline">\(N = 10\)</span>.</p>
-<p>The hypothesis is that a transformer trained on IID binary sequences with uniformly sampled <span class="math inline">\(p\)</span> has implicitly learned the Bayes-optimal predictor over this mixture. At inference time it can amortize its “warm-up” cost across training sequences and produce tighter probability estimates from the first few symbols, even on IID data with no temporal structure to exploit.</p>
+<section id="the-question" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="the-question"><span class="header-section-number">1</span> The Question</h2>
+<p>Universal source coders don’t know the true distribution of the data they’re compressing. They have to figure it out on the fly. The classic result here is the Laplace estimator – for binary IID sequences it maintains a running count of 0s and 1s and estimates <span class="math inline">\(p\)</span> as:</p>
+<p><span class="math display">\[\hat{p}_1 = \frac{k + 1}{n + 2}\]</span></p>
+<p>where <span class="math inline">\(k\)</span> is ones seen so far out of <span class="math inline">\(n\)</span> total bits. It starts from a uniform prior and converges to the true <span class="math inline">\(p\)</span> as the sequence grows. The redundancy – the extra bits per symbol paid over the entropy lower bound – decays as <span class="math inline">\(O(1/n)\)</span>.</p>
+<p>A natural question: if you train a model on data from a known source beforehand, can you skip that warm-up cost and start closer to entropy from bit one? And if so, how much training do you need before it’s worth it?</p>
+<p>This is the question <a href="https://par.nsf.gov/servlets/purl/10297477">Host-Madsen (2021)</a> addresses theoretically for binary IID sources and Markov chains. The answer is surprisingly optimistic: a learned coder only needs about <span class="math inline">\(m \sim \frac{l}{\log l}\)</span> training samples to beat a universal coder on sequences of length <span class="math inline">\(l\)</span>. You need fewer training samples than the length of the sequences you want to encode.</p>
+<p>This project is an empirical look at that claim. We train a small GPT (minGPT) on binary sequences and benchmark it against the Laplace estimator across two conditions that test when offline learning actually helps.</p>
 </section>
-<section id="information-theory-primitives" class="level2" data-number="2">
-<h2 data-number="2" class="anchored" data-anchor-id="information-theory-primitives"><span class="header-section-number">2</span> Information Theory Primitives</h2>
-<p>Before getting into the compression experiments, the toolkit builds up the core information-theoretic functions from scratch. These serve as both a sanity check and as the measurement infrastructure for the compression benchmarks.</p>
-<div id="cell-4" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> math <span class="im">import</span> comb</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> itertools <span class="im">import</span> combinations</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> convert_sample_to_pmf(sample):</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    values, counts <span class="op">=</span> np.unique(sample, return_counts<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    probs <span class="op">=</span> counts <span class="op">/</span> counts.<span class="bu">sum</span>()</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">dict</span>(<span class="bu">zip</span>(values, probs))</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> clean_pmf(pmf):</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> {k: v <span class="cf">for</span> k, v <span class="kw">in</span> pmf.items() <span class="cf">if</span> v <span class="op">&gt;</span> <span class="fl">0.0</span>}</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> generate_bin_pmf():</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    p <span class="op">=</span> np.random.rand()</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> {<span class="dv">0</span>: p, <span class="dv">1</span>: <span class="dv">1</span> <span class="op">-</span> p}</span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> iid_generate(p_dict, N):</span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.random.choice([<span class="dv">0</span>, <span class="dv">1</span>], size<span class="op">=</span>N, p<span class="op">=</span>[p_dict[<span class="dv">0</span>], p_dict[<span class="dv">1</span>]])</span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> entropy_calc(pmf):</span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>    pmf <span class="op">=</span> clean_pmf(pmf)</span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>    pmf_array <span class="op">=</span> np.asarray(<span class="bu">list</span>(pmf.values()))</span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="op">-</span>np.<span class="bu">sum</span>(pmf_array <span class="op">*</span> np.log2(pmf_array))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="setup" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="setup"><span class="header-section-number">2</span> Setup</h2>
+<p>Both coders are used as sequential probability models. At each position in a sequence, the model outputs a probability for the next bit. We compute bits per symbol directly from those probabilities:</p>
+<p><span class="math display">\[\text{BPS} = \frac{1}{N} \sum_{i=1}^{N} -\log_2 \hat{p}_{x_i}\]</span></p>
+<p>Laplace estimates <span class="math inline">\(\hat{p}\)</span> from the running count. The transformer takes the preceding bits as context and outputs a probability from its learned weights. Same formula, same comparison baseline.</p>
+<p>Two experimental conditions:</p>
+<ul>
+<li><strong>IID, unknown p</strong>: each test sequence is drawn with a fresh <span class="math inline">\(p \sim \text{Uniform}(0,1)\)</span>. The transformer is trained on sequences from this same distribution, so it has seen many different <span class="math inline">\(p\)</span> values but never knows the current one ahead of time.</li>
+<li><strong>Fixed p</strong>: the transformer is trained exclusively on sequences from a single fixed <span class="math inline">\(p\)</span>. It has the chance to learn the true distribution offline. Laplace doesn’t get this – it always starts fresh regardless of how much data you’ve generated at training time.</li>
+</ul>
+<p>The difference between these two conditions is exactly the question: does offline learning help, and when?</p>
+</section>
+<section id="iid-unknown-p" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="iid-unknown-p"><span class="header-section-number">3</span> IID – Unknown p</h2>
+<p>First the IID case, where <span class="math inline">\(p\)</span> changes every sequence.</p>
+<div id="iid-bps" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="transformer-based-compression_files/figure-html/cell-2-output-1.png" class="img-fluid figure-img"></p>
+</figure>
 </div>
-<section id="kl-divergence" class="level3" data-number="2.1">
-<h3 data-number="2.1" class="anchored" data-anchor-id="kl-divergence"><span class="header-section-number">2.1</span> KL Divergence</h3>
-<p>KL divergence <span class="math inline">\(D_{KL}(p \| q) = \sum_x p(x) \log \frac{p(x)}{q(x)}\)</span> measures how many extra bits are spent encoding a source with true distribution <span class="math inline">\(p\)</span> using a code designed for <span class="math inline">\(q\)</span>. It shows up directly in the compression overhead of the Laplace estimator, the BPS excess above entropy is <span class="math inline">\(D_{KL}(\hat{p} \| p)\)</span> evaluated at the estimated distribution.</p>
-<p>The plot below shows <span class="math inline">\(D_{KL}(\text{Bern}(p) \| \text{Bern}(0.5))\)</span> as a function of <span class="math inline">\(p\)</span>. It is zero at <span class="math inline">\(p=0.5\)</span> (the uniform prior matches the source exactly) and blows up near the extremes.</p>
-<div id="cell-6" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># KL divergence of Bernoulli(p) vs Bernoulli(0.5)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+<div id="iid-gap" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -312,47 +298,25 @@ window.Quarto = {
 </div>
 </div>
 </div>
+<p>The transformer tracks Laplace almost exactly across all tested <span class="math inline">\(p\)</span> values. The gap plot is noisy around zero – no consistent advantage in either direction, and what small differences exist are within the variance of the experiment.</p>
+<p>This makes sense. When <span class="math inline">\(p\)</span> is drawn fresh every sequence, there’s no cross-sequence structure to exploit. Both models are starting from zero information about the current <span class="math inline">\(p\)</span>. The transformer has learned the Laplace behavior from training, which is the correct thing to do in this setting – the best you can do without knowing <span class="math inline">\(p\)</span> is sequential Bayesian updating from a uniform prior, and that’s what both models are effectively doing.</p>
+<p>This isn’t a failure. It’s the right answer. There’s nothing to beat Laplace with here.</p>
 </section>
-</section>
-<section id="sequential-universal-source-coding" class="level2" data-number="3">
-<h2 data-number="3" class="anchored" data-anchor-id="sequential-universal-source-coding"><span class="header-section-number">3</span> Sequential Universal Source Coding</h2>
-<p>The core compression metric is bits-per-symbol (BPS) under arithmetic coding. Given a sequence <span class="math inline">\(x_1, ..., x_N\)</span> and a corresponding probability array <span class="math inline">\(p_1, ..., p_N\)</span> (where <span class="math inline">\(p_i\)</span> is the estimated probability that <span class="math inline">\(x_i = 1\)</span> before observing it), the code length is:</p>
-<p><span class="math display">\[\text{BPS} = -\frac{1}{N} \sum_{i=1}^{N} \log_2 p(x_i)\]</span></p>
-<p>For the Laplace estimator, <span class="math inline">\(p_i\)</span> is updated after each observed symbol. For the transformer, <span class="math inline">\(p_i\)</span> comes from the model’s output softmax given the preceding context. Both schemes are evaluated on the same sequence, the entropy rate <span class="math inline">\(H(p)\)</span> is the lower bound for both.</p>
-<div id="cell-8" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> sequential_universal_source_coding(sequence, p_array<span class="op">=</span><span class="va">None</span>):</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">    Compute expected BPS under arithmetic coding.</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">    If p_array is None, use the Laplace estimator sequentially.</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    n0, n1 <span class="op">=</span> <span class="dv">0</span>, <span class="dv">0</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    total_bits <span class="op">=</span> <span class="fl">0.0</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i, x <span class="kw">in</span> <span class="bu">enumerate</span>(sequence):</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> p_array <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>            p1 <span class="op">=</span> p_array[i]</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Laplace estimate</span></span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>            p1 <span class="op">=</span> (n1 <span class="op">+</span> <span class="dv">1</span>) <span class="op">/</span> (n0 <span class="op">+</span> n1 <span class="op">+</span> <span class="dv">2</span>)</span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>        p1 <span class="op">=</span> np.clip(p1, <span class="fl">1e-10</span>, <span class="dv">1</span> <span class="op">-</span> <span class="fl">1e-10</span>)</span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>        p0 <span class="op">=</span> <span class="dv">1</span> <span class="op">-</span> p1</span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> x <span class="op">==</span> <span class="dv">1</span>:</span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>            total_bits <span class="op">+=</span> <span class="op">-</span>np.log2(p1)</span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>            n1 <span class="op">+=</span> <span class="dv">1</span></span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>            total_bits <span class="op">+=</span> <span class="op">-</span>np.log2(p0)</span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>            n0 <span class="op">+=</span> <span class="dv">1</span></span>
-<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> total_bits <span class="op">/</span> <span class="bu">len</span>(sequence)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="fixed-p-offline-learning-helps" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="fixed-p-offline-learning-helps"><span class="header-section-number">4</span> Fixed p – Offline Learning Helps</h2>
+<p>Now the fixed-p case. The transformer is trained on a single <span class="math inline">\(p\)</span> and tested on sequences from that same <span class="math inline">\(p\)</span>.</p>
+<div id="fixed-p3-bps" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="transformer-based-compression_files/figure-html/cell-4-output-1.png" class="img-fluid figure-img"></p>
+</figure>
 </div>
-</section>
-<section id="baseline-laplace-estimator-convergence" class="level2" data-number="4">
-<h2 data-number="4" class="anchored" data-anchor-id="baseline-laplace-estimator-convergence"><span class="header-section-number">4</span> Baseline: Laplace Estimator Convergence</h2>
-<p>Before introducing the transformer, we characterize how the Laplace estimator converges across sequence lengths at <span class="math inline">\(p=0.7\)</span>. 100 trials per <span class="math inline">\(N\)</span> value.</p>
-<div id="cell-10" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Laplace estimator BPS convergence (p=0.7)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+<div id="fixed-p3-gap" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -361,10 +325,8 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<p>The Laplace estimator converges reliably but the variance at <span class="math inline">\(N=10\)</span> is large. The mean is already pretty close by <span class="math inline">\(N=100\)</span> but the confidence interval still spans roughly 0.1 bits.</p>
-<p>We also compare against the Csiszar-Korner block estimator as a secondary baseline. The CK estimator processes the sequence in non-overlapping blocks and estimates <span class="math inline">\(p\)</span> within each block. With block size 10, it plateaus significantly above entropy even at large <span class="math inline">\(N\)</span>, the block boundaries introduce a hard floor on performance.</p>
-<div id="f62c3ba6" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Laplace vs Csiszar-Korner convergence comparison (p=0.7)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="fixed-p7-bps" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -373,148 +335,25 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<p>The CK estimator is clearly worse here, it never converges to entropy in this regime. Laplace wins and is the baseline the transformer needs to beat.</p>
-</section>
-<section id="the-model-mingpt" class="level2" data-number="5">
-<h2 data-number="5" class="anchored" data-anchor-id="the-model-mingpt"><span class="header-section-number">5</span> The Model: minGPT</h2>
-<p>The transformer used here is minGPT (Karpathy), the <code>gpt-nano</code> configuration: 3 layers, 3 attention heads, embedding dimension 48. About 90K parameters total.</p>
-<p>Training data: IID binary sequences of length 100, where each sequence is drawn from <span class="math inline">\(\text{Bern}(p)\)</span> with <span class="math inline">\(p \sim \text{Uniform}(0,1)\)</span> sampled fresh per sequence. Training task is standard next-token prediction.</p>
-<p>The idea is that at inference time, given the prefix of a new sequence, the model implicitly estimates <span class="math inline">\(p\)</span> from context and outputs a calibrated next-symbol probability. This gets fed directly into the arithmetic coder in place of the Laplace estimate.</p>
-<div id="cell-15" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn.functional <span class="im">as</span> F</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch.utils.data <span class="im">import</span> Dataset</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> mingpt.model <span class="im">import</span> GPT</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> mingpt.trainer <span class="im">import</span> Trainer</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> IID(Dataset):</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""IID binary sequences with uniformly sampled p."""</span></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, n<span class="op">=</span><span class="dv">10</span>, num_samples<span class="op">=</span><span class="dv">10000</span>):</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.n <span class="op">=</span> n</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.num_samples <span class="op">=</span> num_samples</span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> _sample(<span class="va">self</span>):</span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>        p <span class="op">=</span> torch.rand(<span class="dv">1</span>).item()</span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>        seq <span class="op">=</span> torch.bernoulli(torch.full((<span class="va">self</span>.n,), p)).<span class="bu">long</span>()</span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> seq[:<span class="op">-</span><span class="dv">1</span>].clone(), seq[<span class="dv">1</span>:].clone()</span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> get_block_size(<span class="va">self</span>):</span>
-<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.n <span class="op">-</span> <span class="dv">1</span></span>
-<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__getitem__</span>(<span class="va">self</span>, idx):</span>
-<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>._sample()</span>
-<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__len__</span>(<span class="va">self</span>):</span>
-<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.num_samples</span>
-<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>dataset <span class="op">=</span> IID(n<span class="op">=</span><span class="dv">100</span>, num_samples<span class="op">=</span><span class="dv">10000</span>)</span>
-<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>model_config <span class="op">=</span> GPT.get_default_config()</span>
-<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>model_config.model_type <span class="op">=</span> <span class="st">'gpt-nano'</span></span>
-<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>model_config.vocab_size <span class="op">=</span> <span class="dv">2</span></span>
-<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>model_config.block_size <span class="op">=</span> dataset.get_block_size()</span>
-<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> GPT(model_config)</span>
-<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a><span class="co"># Training, already run, weights saved</span></span>
-<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a><span class="co"># train_config = Trainer.get_default_config()</span></span>
-<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a><span class="co"># train_config.learning_rate = 1e-4</span></span>
-<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a><span class="co"># train_config.max_iters = 100000</span></span>
-<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a><span class="co"># train_config.num_workers = 0</span></span>
-<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a><span class="co"># trainer = Trainer(train_config, model, dataset)</span></span>
-<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a><span class="co"># trainer.run()</span></span>
-<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a><span class="co"># torch.save(model.state_dict(), 'iid_model.pt')</span></span>
-<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a>model.load_state_dict(torch.load(<span class="st">'iid_model.pt'</span>))</span>
-<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a>model.<span class="bu">eval</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</section>
-<section id="inference-windowed-probability-arrays" class="level2" data-number="6">
-<h2 data-number="6" class="anchored" data-anchor-id="inference-windowed-probability-arrays"><span class="header-section-number">6</span> Inference: Windowed Probability Arrays</h2>
-<p>For a sequence of length <span class="math inline">\(N\)</span>, we need <span class="math inline">\(P(x_i = 1 \mid x_1, ..., x_{i-1})\)</span> at each position. We use a sliding window: at position <span class="math inline">\(i\)</span>, feed the model the last <code>block_size</code> tokens and take the output logit at the final position. First bit gets a flat 0.5 prior.</p>
-<div id="cell-17" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> transformer_p_array_windowed_fast(sequence, model, device<span class="op">=</span><span class="st">'cpu'</span>):</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    model.<span class="bu">eval</span>()</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    B <span class="op">=</span> model.block_size</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    T <span class="op">=</span> <span class="bu">len</span>(sequence)</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    p_array <span class="op">=</span> [<span class="fl">0.5</span>]  <span class="co"># uniform prior for first bit, no context</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    seq_tensor <span class="op">=</span> torch.tensor(sequence, dtype<span class="op">=</span>torch.<span class="bu">long</span>, device<span class="op">=</span>device)</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> torch.no_grad():</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, T):</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>            start <span class="op">=</span> <span class="bu">max</span>(<span class="dv">0</span>, i <span class="op">-</span> B)</span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>            context <span class="op">=</span> seq_tensor[start:i].unsqueeze(<span class="dv">0</span>)</span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>            logits, _ <span class="op">=</span> model(context)</span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>            next_token_logits <span class="op">=</span> logits[<span class="dv">0</span>, <span class="op">-</span><span class="dv">1</span>, :]</span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>            probs <span class="op">=</span> F.softmax(next_token_logits, dim<span class="op">=-</span><span class="dv">1</span>)</span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>            p_array.append(probs[<span class="dv">1</span>].item())</span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> p_array</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</section>
-<section id="results-p0.7-pilot" class="level2" data-number="7">
-<h2 data-number="7" class="anchored" data-anchor-id="results-p0.7-pilot"><span class="header-section-number">7</span> Results: p=0.7 Pilot</h2>
-<p>Initial experiment at a single <span class="math inline">\(p=0.7\)</span>, sweeping <span class="math inline">\(N \in \{10, 25, 50, 100, 200, 500\}\)</span> with 100 trials each. The transformer is loaded from the saved checkpoint and run on CPU for reproducibility.</p>
-<div id="cell-19" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Laplace vs Transformer BPS convergence (p=0.7)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="fixed-p7-gap" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="transformer-based-compression_files/figure-html/cell-9-output-1.png" class="img-fluid figure-img"></p>
+<p><img src="transformer-based-compression_files/figure-html/cell-7-output-1.png" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
 </div>
-<p>The transformer tracks at or below Laplace across all <span class="math inline">\(N\)</span> values tested. The error bars are large at small <span class="math inline">\(N\)</span>, this is just variance in the sequences themselves. The gap plot shows the signal more cleanly.</p>
-<div id="cell-21" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Transformer advantage over Laplace (p=0.7)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="transformer-based-compression_files/figure-html/cell-10-output-1.png" class="img-fluid figure-img"></p>
-</figure>
-</div>
-</div>
-</div>
-<p>The transformer advantage is strongest at <span class="math inline">\(N=10\)</span> (~0.085 bits) and decreases monotonically as <span class="math inline">\(N\)</span> grows, converging toward zero as Laplace catches up. This is exactly the expected pattern, the transformer’s learned prior matters most when there is almost no data to estimate from.</p>
+<p>Here the results are different. For <span class="math inline">\(p=0.3\)</span>, the transformer starts at around 0.883 BPS at <span class="math inline">\(N=10\)</span>, which is essentially at the entropy lower bound of 0.881. Laplace at <span class="math inline">\(N=10\)</span> is at 0.959 – still paying its estimation cost. The gap at <span class="math inline">\(N=10\)</span> is about 0.076 bits/symbol and decays cleanly as <span class="math inline">\(N\)</span> grows, converging near zero by <span class="math inline">\(N=500\)</span> as Laplace accumulates enough counts to catch up.</p>
+<p>Same story for <span class="math inline">\(p=0.7\)</span>. The gap is comparable in magnitude and decays the same way.</p>
+<p>The mechanism is straightforward. Laplace’s redundancy at small <span class="math inline">\(N\)</span> is its estimation cost – it’s spending bits learning where <span class="math inline">\(p\)</span> is from the current sequence. The transformer paid that cost during training. At inference time it already knows <span class="math inline">\(p\)</span>, so it starts near entropy immediately. The advantage is real but finite: as <span class="math inline">\(N\)</span> grows, Laplace’s running estimate converges and the gap disappears.</p>
 </section>
-<section id="results-fixed-p-sweep" class="level2" data-number="8">
-<h2 data-number="8" class="anchored" data-anchor-id="results-fixed-p-sweep"><span class="header-section-number">8</span> Results: Fixed p sweep</h2>
-<p>Running the same experiment across <span class="math inline">\(p \in \{0.1, 0.3, 0.5, 0.7, 0.9\}\)</span>. The <span class="math inline">\(p=0.7\)</span> result above used sequences with random <span class="math inline">\(p\)</span> during training, this run uses fixed <span class="math inline">\(p\)</span> per trial.</p>
-<div id="cell-24" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Laplace vs Transformer BPS convergence (all p values)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="transformer-based-compression_files/figure-html/cell-11-output-1.png" class="img-fluid figure-img"></p>
-</figure>
-</div>
-</div>
-</div>
-<div id="cell-25" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Transformer advantage over Laplace (all p values)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="transformer-based-compression_files/figure-html/cell-12-output-1.png" class="img-fluid figure-img"></p>
-</figure>
-</div>
-</div>
-</div>
-<p>The full sweep tells a more complicated story than the <span class="math inline">\(p=0.7\)</span> pilot. The gap is noisy and in some cases negative, the transformer occasionally does slightly worse than Laplace, particularly at <span class="math inline">\(p=0.5\)</span> and <span class="math inline">\(p=0.7\)</span> at larger <span class="math inline">\(N\)</span>. The <span class="math inline">\(p=0.1\)</span> and <span class="math inline">\(p=0.9\)</span> cases show the clearest positive gap.</p>
-<p>A few things to unpack here:</p>
-<p>The symmetric <span class="math inline">\(p=0.5\)</span> case is the hardest for the transformer because there is no <span class="math inline">\(p\)</span> to infer, every sequence looks the same. The Laplace estimator’s uniform 0.5 prior is already optimal.</p>
-<p>The <span class="math inline">\(p=0.1\)</span> and <span class="math inline">\(p=0.9\)</span> cases show the strongest advantage because skewed sequences give the model a fast signal about <span class="math inline">\(p\)</span> even in the first few symbols, while Laplace is still mixing in a symmetric prior.</p>
-<p>The negative gaps are small enough (around 0.002 bits) that they are likely within noise, but this needs more trials to confirm.</p>
-</section>
-<section id="next-steps" class="level2" data-number="9">
-<h2 data-number="9" class="anchored" data-anchor-id="next-steps"><span class="header-section-number">9</span> Next steps</h2>
-<ul>
-<li>Increase the trial count and sequence length</li>
-<li>Train separate models using different probability clusters</li>
-<li>Scale up model size</li>
-<li>make big bucks</li>
-</ul>
+<section id="what-this-connects-to" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="what-this-connects-to"><span class="header-section-number">5</span> What This Connects To</h2>
+<p>The two conditions together give a clean empirical picture of the theoretical setup in Host-Madsen. The bound says learning beats universal coding when you have enough training data – specifically <span class="math inline">\(m \sim \frac{l}{\log l}\)</span> samples for sequences of length <span class="math inline">\(l\)</span>. The fixed-<span class="math inline">\(p\)</span> condition is the idealized limit of that: infinite training on one distribution, so the learned coder skips all estimation overhead entirely. The gap we observe is exactly Laplace’s warm-up cost, avoided by offline learning.</p>
+<p>The IID condition shows the other regime: when the distribution shifts every sequence, offline training on the marginal distribution of <span class="math inline">\(p\)</span> values doesn’t help. The model correctly defaults to universal coding behavior.</p>
+<p>What’s not shown here – and what would directly test the theoretical bound – is a sweep over training set size <span class="math inline">\(m\)</span> at fixed sequence length <span class="math inline">\(l\)</span>. That would let you trace the gain as a function of <span class="math inline">\(m\)</span> and compare against the <span class="math inline">\(\frac{l}{\log l}\)</span> prediction quantitatively. That’s the next step for this project.</p>
 
 
 </section>
