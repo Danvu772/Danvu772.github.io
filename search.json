@@ -4,35 +4,49 @@
     "href": "blog/meme-bot.html",
     "title": "Building a Meme Bot That Learns Your Server",
     "section": "",
-    "text": "Every friend group has its own language. Inside jokes, recurring bits, moments that only land if you were there. I wanted to see if I could bottle that — so I built a Discord bot that generates memes entirely from my server’s own history.\nCode is on GitHub."
+    "text": "The jokes already happened. I just needed something to find them.\nThe idea is simple: when someone drops a Tenor GIF in your Discord server, there’s almost always a message right next to it. A reaction, a punchline, a non-sequitur that somehow works. Pair that text with the GIF, stamp it on every frame in Impact font, and you have a meme that’s actually funny because it came from a real moment in your server’s history.\nThat’s the whole bot. Code here."
   },
   {
-    "objectID": "blog/meme-bot.html#the-idea",
-    "href": "blog/meme-bot.html#the-idea",
+    "objectID": "blog/meme-bot.html#how-it-works",
+    "href": "blog/meme-bot.html#how-it-works",
     "title": "Building a Meme Bot That Learns Your Server",
-    "section": "The Idea",
-    "text": "The Idea\nTenor GIFs and text messages don’t exist in a vacuum. When someone drops a GIF in a chat, there’s usually something said right around the same time — a reaction, a setup, a punchline. Pair them and you get something that reads like a real meme. The humor is baked in because both halves are authentic to the server.\nThe bot crawls your message history, finds every Tenor GIF, grabs the text message sent immediately before or after it, and stores the pair. When you run $generatememe, it picks a random pair, fetches the GIF, and stamps the text over every frame in Impact font — the universal language of meme formatting."
+    "section": "How it works",
+    "text": "How it works\nOn first boot, the bot crawls every readable channel and pulls up to 10,000 messages per channel. For every Tenor link it finds, it randomly picks either the message immediately before or after it. If that neighbor is clean text, no URLs, not empty, it gets stored as a pair. Everything goes into a JSON file and gets loaded into memory at startup. Every $generatememe call samples from that in-memory list.\nThe weekly refresh is an incremental crawl. It stores a Unix timestamp per channel in crawl_state.json and only fetches new messages since the last run. No full re-crawl, no database.\nI went with JSON on disk instead of a real database on purpose. The data is written rarely and read often, and all we ever need is random sampling. A database would’ve added operational complexity for no actual query benefit. Flat file is fine."
   },
   {
-    "objectID": "blog/meme-bot.html#how-its-built",
-    "href": "blog/meme-bot.html#how-its-built",
+    "objectID": "blog/meme-bot.html#the-image-processing",
+    "href": "blog/meme-bot.html#the-image-processing",
     "title": "Building a Meme Bot That Learns Your Server",
-    "section": "How It’s Built",
-    "text": "How It’s Built\nThe stack is intentionally minimal: Python, discord.py, Pillow for image processing, and Docker for packaging.\n\nThe Crawl\nRuns on first boot. The bot walks every readable channel, pulls up to 10,000 messages per channel, and for each Tenor link it finds, randomly checks the message immediately before or after it. If that neighbor is clean text — no URLs, not empty — it’s a valid pair and gets stored in a JSON index. A weekly background task via discord.ext.tasks runs an incremental refresh, fetching only new messages since the last crawl per channel.\n\n\nThe Image Processing\nThe most satisfying part. Pillow’s ImageSequence iterator lets you process animated GIFs frame by frame. For each frame:\n\nFont size scales proportionally to image width\nText wraps to fit\nThe outline is drawn by rendering the same text at every pixel offset in a small grid around the position, then white text on top\n\nBrute-force outline rendering, but it produces exactly the right look.\nframes = []\nfor frame in ImageSequence.Iterator(gif):\n    frame = frame.convert(\"RGBA\")\n    draw = ImageDraw.Draw(frame)\n    # draw outline\n    for dx in range(-outline_size, outline_size + 1):\n        for dy in range(-outline_size, outline_size + 1):\n            draw.text((x + dx, y + dy), text, font=font, fill=\"black\")\n    # draw white text\n    draw.text((x, y), text, font=font, fill=\"white\")\n    frames.append(frame)\n\n\nThe Pairing Logic\nRather than trying to find the “best” adjacent message, the bot randomly picks one direction — before or after — and commits to it. If the chosen neighbor isn’t clean text, the pair is skipped entirely. This keeps the index honest: every entry is a real pairing that happened naturally in conversation, not a best-effort reconstruction."
+    "section": "The image processing",
+    "text": "The image processing\nPillow’s ImageSequence.Iterator lets you step through an animated GIF frame by frame. For each frame, the text gets drawn twice: once in black at every pixel offset in a small grid around the target position (the outline), then white on top. Brute-force, but it produces exactly the right look.\nfor frame in ImageSequence.Iterator(gif):\n    frame = frame.convert(\"RGBA\")\n    draw = ImageDraw.Draw(frame)\n    for dx in range(-outline_size, outline_size + 1):\n        for dy in range(-outline_size, outline_size + 1):\n            draw.text((x + dx, y + dy), text, font=font, fill=\"black\")\n    draw.text((x, y), text, font=font, fill=\"white\")\n    frames.append(frame)\nFont size scales with image width at 12% of width, clamped between 30 and 50px. Word wrap is manual: split on spaces, measure each candidate line with draw.textbbox(), wrap when it exceeds the image width minus margin. Nothing fancy."
   },
   {
-    "objectID": "blog/meme-bot.html#what-i-learned",
-    "href": "blog/meme-bot.html#what-i-learned",
+    "objectID": "blog/meme-bot.html#the-pairing-logic",
+    "href": "blog/meme-bot.html#the-pairing-logic",
     "title": "Building a Meme Bot That Learns Your Server",
-    "section": "What I Learned",
-    "text": "What I Learned\nScraping Tenor is fragile. The bot parses page HTML to find the actual GIF CDN URL, which means it breaks if Tenor ever restructures their markup. A proper API integration would be more stable, but scraping works for a personal project and keeps the dependency count low.\nDocker volume mounts matter more than you’d think. The bot runs in a container, which means any files written at runtime — the meme index, crawl state — need to be volume-mounted if you want them to survive rebuilds. Otherwise every image rebuild wipes the index and forces a full re-crawl. Getting the dev workflow right (hot-reload via Docker’s watch mode, separate dev/prod compose configs) took more iteration than the bot itself."
+    "section": "The pairing logic",
+    "text": "The pairing logic\nThe bot randomly picks one direction, before or after the GIF, and commits to it. If the chosen neighbor fails the clean text check, the pair is skipped entirely. No fallback, no retry, no trying the other direction. Every pair in the index is a real adjacency that happened naturally in chat.\nAn earlier version retried recursively with no depth limit on failure. That was not a great idea."
   },
   {
-    "objectID": "blog/meme-bot.html#the-result",
-    "href": "blog/meme-bot.html#the-result",
+    "objectID": "blog/meme-bot.html#what-actually-broke",
+    "href": "blog/meme-bot.html#what-actually-broke",
     "title": "Building a Meme Bot That Learns Your Server",
-    "section": "The Result",
-    "text": "The Result\nIt works better than expected. The memes it generates are genuinely funny in a way that an AI meme generator isn’t — because the humor is already baked in. The bot isn’t creating jokes, it’s surfacing ones that already happened.\nThe codebase is small enough to be a weekend project, specific enough to be interesting, and weird enough to be worth sharing.\nGitHub →"
+    "section": "What actually broke",
+    "text": "What actually broke\ntasks.loop(weeks=1) throws a TypeError at import time. Not a runtime error, the decorator itself rejects the argument. The valid units are seconds, minutes, and hours. Weekly refresh is hours=168.\nThe Dockerfile had COPY . . running as root even after USER appuser was set. Files were root-owned and the app user couldn’t write to them. Fixed with COPY --chown=appuser:appuser . . and creating the output directory before the user switch.\nAt one point I had two containers running simultaneously, bot_dev and bot_prod, both writing to the same index file. Every log line appeared twice. The crawl ran twice. It was fine.\nThe original version loaded a 48MB pandas DataFrame from disk on every single $generatememe call. No caching. That was the first thing I fixed."
+  },
+  {
+    "objectID": "blog/meme-bot.html#the-tenor-scraping-problem",
+    "href": "blog/meme-bot.html#the-tenor-scraping-problem",
+    "title": "Building a Meme Bot That Learns Your Server",
+    "section": "The Tenor scraping problem",
+    "text": "The Tenor scraping problem\nThere’s no API call here. The bot parses Tenor’s HTML to pull the CDN GIF URL out of #single-gif-container. It works, and it requires zero API key setup, but it will break the moment Tenor changes their markup. A proper API integration would be more stable. I haven’t done it yet.\nThe original data source, before the live crawl existed, was a manually exported 48MB JSON dump of the server’s full message history. The entire pandas pipeline I built around it, time-window filtering, Timedelta expansion loops, all of it, got thrown out when I replaced it with the Discord crawl. requirements.txt still ships with pandas, numpy, selenium, and matplotlib. None of them are used at runtime. Leftover from the exploration phase, never cleaned up."
+  },
+  {
+    "objectID": "blog/meme-bot.html#what-id-change",
+    "href": "blog/meme-bot.html#what-id-change",
+    "title": "Building a Meme Bot That Learns Your Server",
+    "section": "What I’d change",
+    "text": "What I’d change\nVolume-mount resources/json from the start so the index survives image rebuilds. Right now the directory is baked into the image, so deleting it on the host does nothing while the container is running. It’s counterintuitive until you understand why, and then it’s still annoying.\nThe index is also global across every server the bot joins, which is fine for a personal project and would be a real problem the second anyone else added it to their server. Per-guild indexing should’ve been the default.\nNeither of those are hard to fix. I just haven’t needed to yet."
   },
   {
     "objectID": "blog/ride-quality-analysis.html",
@@ -249,6 +263,6 @@
     "href": "blog/index.html",
     "title": "blog",
     "section": "",
-    "text": "Building a Meme Bot That Learns Your Server\n\n\n\npython\n\ndiscord\n\nfun\n\n\n\nA Discord bot that generates memes from your server’s own message history — because the jokes already happened.\n\n\n\nApr 22, 2026\n\n\n\n\n\n\n\n\n\n\nRide Quality Analysis of a Passenger Rail System\n\n\n\nsignal-processing\n\npython\n\nembedded-systems\n\ntransportation\n\n\n\nA 1/3 octave band vibration analysis pipeline built from scratch to assess passenger ride comfort against ISO 2631-1 limits.\n\n\n\nMar 13, 2026\n\n\n\n\n\n\nNo matching items"
+    "text": "Building a Meme Bot That Learns Your Server\n\n\n\npython\n\ndiscord\n\nfun\n\n\n\nA Discord bot that generates memes from your server’s own message history. The jokes already happened. The bot just finds them.\n\n\n\nApr 22, 2026\n\n\n\n\n\n\n\n\n\n\nRide Quality Analysis of a Passenger Rail System\n\n\n\nsignal-processing\n\npython\n\nembedded-systems\n\ntransportation\n\n\n\nA 1/3 octave band vibration analysis pipeline built from scratch to assess passenger ride comfort against ISO 2631-1 limits.\n\n\n\nMar 13, 2026\n\n\n\n\n\n\nNo matching items"
   }
 ]

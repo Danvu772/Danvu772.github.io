@@ -8,7 +8,7 @@
 
 <meta name="author" content="Dan Vu">
 <meta name="dcterms.date" content="2026-04-22">
-<meta name="description" content="A Discord bot that generates memes from your server’s own message history — because the jokes already happened.">
+<meta name="description" content="A Discord bot that generates memes from your server’s own message history. The jokes already happened. The bot just finds them.">
 
 <title>Building a Meme Bot That Learns Your Server – Dan Vu</title>
 <style>
@@ -172,15 +172,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#the-idea" id="toc-the-idea" class="nav-link active" data-scroll-target="#the-idea">The Idea</a></li>
-  <li><a href="#how-its-built" id="toc-how-its-built" class="nav-link" data-scroll-target="#how-its-built">How It’s Built</a>
-  <ul class="collapse">
-  <li><a href="#the-crawl" id="toc-the-crawl" class="nav-link" data-scroll-target="#the-crawl">The Crawl</a></li>
-  <li><a href="#the-image-processing" id="toc-the-image-processing" class="nav-link" data-scroll-target="#the-image-processing">The Image Processing</a></li>
-  <li><a href="#the-pairing-logic" id="toc-the-pairing-logic" class="nav-link" data-scroll-target="#the-pairing-logic">The Pairing Logic</a></li>
-  </ul></li>
-  <li><a href="#what-i-learned" id="toc-what-i-learned" class="nav-link" data-scroll-target="#what-i-learned">What I Learned</a></li>
-  <li><a href="#the-result" id="toc-the-result" class="nav-link" data-scroll-target="#the-result">The Result</a></li>
+  <li><a href="#how-it-works" id="toc-how-it-works" class="nav-link active" data-scroll-target="#how-it-works">How it works</a></li>
+  <li><a href="#the-image-processing" id="toc-the-image-processing" class="nav-link" data-scroll-target="#the-image-processing">The image processing</a></li>
+  <li><a href="#the-pairing-logic" id="toc-the-pairing-logic" class="nav-link" data-scroll-target="#the-pairing-logic">The pairing logic</a></li>
+  <li><a href="#what-actually-broke" id="toc-what-actually-broke" class="nav-link" data-scroll-target="#what-actually-broke">What actually broke</a></li>
+  <li><a href="#the-tenor-scraping-problem" id="toc-the-tenor-scraping-problem" class="nav-link" data-scroll-target="#the-tenor-scraping-problem">The Tenor scraping problem</a></li>
+  <li><a href="#what-id-change" id="toc-what-id-change" class="nav-link" data-scroll-target="#what-id-change">What I’d change</a></li>
   </ul>
 </nav>
     </div>
@@ -199,7 +196,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <div>
   <div class="description">
-    A Discord bot that generates memes from your server’s own message history — because the jokes already happened.
+    A Discord bot that generates memes from your server’s own message history. The jokes already happened. The bot just finds them.
   </div>
 </div>
 
@@ -228,56 +225,50 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>Every friend group has its own language. Inside jokes, recurring bits, moments that only land if you were there. I wanted to see if I could bottle that — so I built a Discord bot that generates memes entirely from my server’s own history.</p>
-<p>Code is <a href="https://github.com/Danvu772/tableMemeBot">on GitHub</a>.</p>
-<section id="the-idea" class="level2">
-<h2 class="anchored" data-anchor-id="the-idea">The Idea</h2>
-<p>Tenor GIFs and text messages don’t exist in a vacuum. When someone drops a GIF in a chat, there’s usually something said right around the same time — a reaction, a setup, a punchline. Pair them and you get something that reads like a real meme. The humor is baked in because both halves are authentic to the server.</p>
-<p>The bot crawls your message history, finds every Tenor GIF, grabs the text message sent immediately before or after it, and stores the pair. When you run <code>$generatememe</code>, it picks a random pair, fetches the GIF, and stamps the text over every frame in Impact font — the universal language of meme formatting.</p>
+<p>The jokes already happened. I just needed something to find them.</p>
+<p>The idea is simple: when someone drops a Tenor GIF in your Discord server, there’s almost always a message right next to it. A reaction, a punchline, a non-sequitur that somehow works. Pair that text with the GIF, stamp it on every frame in Impact font, and you have a meme that’s actually funny because it came from a real moment in your server’s history.</p>
+<p>That’s the whole bot. <a href="https://github.com/Danvu772/tableMemeBot">Code here</a>.</p>
+<section id="how-it-works" class="level2">
+<h2 class="anchored" data-anchor-id="how-it-works">How it works</h2>
+<p>On first boot, the bot crawls every readable channel and pulls up to 10,000 messages per channel. For every Tenor link it finds, it randomly picks either the message immediately before or after it. If that neighbor is clean text, no URLs, not empty, it gets stored as a pair. Everything goes into a JSON file and gets loaded into memory at startup. Every <code>$generatememe</code> call samples from that in-memory list.</p>
+<p>The weekly refresh is an incremental crawl. It stores a Unix timestamp per channel in <code>crawl_state.json</code> and only fetches new messages since the last run. No full re-crawl, no database.</p>
+<p>I went with JSON on disk instead of a real database on purpose. The data is written rarely and read often, and all we ever need is random sampling. A database would’ve added operational complexity for no actual query benefit. Flat file is fine.</p>
 </section>
-<section id="how-its-built" class="level2">
-<h2 class="anchored" data-anchor-id="how-its-built">How It’s Built</h2>
-<p>The stack is intentionally minimal: Python, <code>discord.py</code>, Pillow for image processing, and Docker for packaging.</p>
-<section id="the-crawl" class="level3">
-<h3 class="anchored" data-anchor-id="the-crawl">The Crawl</h3>
-<p>Runs on first boot. The bot walks every readable channel, pulls up to 10,000 messages per channel, and for each Tenor link it finds, randomly checks the message immediately before or after it. If that neighbor is clean text — no URLs, not empty — it’s a valid pair and gets stored in a JSON index. A weekly background task via <code>discord.ext.tasks</code> runs an incremental refresh, fetching only new messages since the last crawl per channel.</p>
+<section id="the-image-processing" class="level2">
+<h2 class="anchored" data-anchor-id="the-image-processing">The image processing</h2>
+<p>Pillow’s <code>ImageSequence.Iterator</code> lets you step through an animated GIF frame by frame. For each frame, the text gets drawn twice: once in black at every pixel offset in a small grid around the target position (the outline), then white on top. Brute-force, but it produces exactly the right look.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> frame <span class="kw">in</span> ImageSequence.Iterator(gif):</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    frame <span class="op">=</span> frame.convert(<span class="st">"RGBA"</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    draw <span class="op">=</span> ImageDraw.Draw(frame)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> dx <span class="kw">in</span> <span class="bu">range</span>(<span class="op">-</span>outline_size, outline_size <span class="op">+</span> <span class="dv">1</span>):</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> dy <span class="kw">in</span> <span class="bu">range</span>(<span class="op">-</span>outline_size, outline_size <span class="op">+</span> <span class="dv">1</span>):</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>            draw.text((x <span class="op">+</span> dx, y <span class="op">+</span> dy), text, font<span class="op">=</span>font, fill<span class="op">=</span><span class="st">"black"</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    draw.text((x, y), text, font<span class="op">=</span>font, fill<span class="op">=</span><span class="st">"white"</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    frames.append(frame)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Font size scales with image width at 12% of width, clamped between 30 and 50px. Word wrap is manual: split on spaces, measure each candidate line with <code>draw.textbbox()</code>, wrap when it exceeds the image width minus margin. Nothing fancy.</p>
 </section>
-<section id="the-image-processing" class="level3">
-<h3 class="anchored" data-anchor-id="the-image-processing">The Image Processing</h3>
-<p>The most satisfying part. Pillow’s <code>ImageSequence</code> iterator lets you process animated GIFs frame by frame. For each frame:</p>
-<ul>
-<li>Font size scales proportionally to image width</li>
-<li>Text wraps to fit</li>
-<li>The outline is drawn by rendering the same text at every pixel offset in a small grid around the position, then white text on top</li>
-</ul>
-<p>Brute-force outline rendering, but it produces exactly the right look.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>frames <span class="op">=</span> []</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> frame <span class="kw">in</span> ImageSequence.Iterator(gif):</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    frame <span class="op">=</span> frame.convert(<span class="st">"RGBA"</span>)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    draw <span class="op">=</span> ImageDraw.Draw(frame)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># draw outline</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> dx <span class="kw">in</span> <span class="bu">range</span>(<span class="op">-</span>outline_size, outline_size <span class="op">+</span> <span class="dv">1</span>):</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> dy <span class="kw">in</span> <span class="bu">range</span>(<span class="op">-</span>outline_size, outline_size <span class="op">+</span> <span class="dv">1</span>):</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>            draw.text((x <span class="op">+</span> dx, y <span class="op">+</span> dy), text, font<span class="op">=</span>font, fill<span class="op">=</span><span class="st">"black"</span>)</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># draw white text</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    draw.text((x, y), text, font<span class="op">=</span>font, fill<span class="op">=</span><span class="st">"white"</span>)</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    frames.append(frame)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="the-pairing-logic" class="level2">
+<h2 class="anchored" data-anchor-id="the-pairing-logic">The pairing logic</h2>
+<p>The bot randomly picks one direction, before or after the GIF, and commits to it. If the chosen neighbor fails the clean text check, the pair is skipped entirely. No fallback, no retry, no trying the other direction. Every pair in the index is a real adjacency that happened naturally in chat.</p>
+<p>An earlier version retried recursively with no depth limit on failure. That was not a great idea.</p>
 </section>
-<section id="the-pairing-logic" class="level3">
-<h3 class="anchored" data-anchor-id="the-pairing-logic">The Pairing Logic</h3>
-<p>Rather than trying to find the “best” adjacent message, the bot randomly picks one direction — before or after — and commits to it. If the chosen neighbor isn’t clean text, the pair is skipped entirely. This keeps the index honest: every entry is a real pairing that happened naturally in conversation, not a best-effort reconstruction.</p>
+<section id="what-actually-broke" class="level2">
+<h2 class="anchored" data-anchor-id="what-actually-broke">What actually broke</h2>
+<p><code>tasks.loop(weeks=1)</code> throws a <code>TypeError</code> at import time. Not a runtime error, the decorator itself rejects the argument. The valid units are <code>seconds</code>, <code>minutes</code>, and <code>hours</code>. Weekly refresh is <code>hours=168</code>.</p>
+<p>The Dockerfile had <code>COPY . .</code> running as root even after <code>USER appuser</code> was set. Files were root-owned and the app user couldn’t write to them. Fixed with <code>COPY --chown=appuser:appuser . .</code> and creating the output directory before the user switch.</p>
+<p>At one point I had two containers running simultaneously, <code>bot_dev</code> and <code>bot_prod</code>, both writing to the same index file. Every log line appeared twice. The crawl ran twice. It was fine.</p>
+<p>The original version loaded a 48MB pandas DataFrame from disk on every single <code>$generatememe</code> call. No caching. That was the first thing I fixed.</p>
 </section>
+<section id="the-tenor-scraping-problem" class="level2">
+<h2 class="anchored" data-anchor-id="the-tenor-scraping-problem">The Tenor scraping problem</h2>
+<p>There’s no API call here. The bot parses Tenor’s HTML to pull the CDN GIF URL out of <code>#single-gif-container</code>. It works, and it requires zero API key setup, but it will break the moment Tenor changes their markup. A proper API integration would be more stable. I haven’t done it yet.</p>
+<p>The original data source, before the live crawl existed, was a manually exported 48MB JSON dump of the server’s full message history. The entire pandas pipeline I built around it, time-window filtering, Timedelta expansion loops, all of it, got thrown out when I replaced it with the Discord crawl. <code>requirements.txt</code> still ships with pandas, numpy, selenium, and matplotlib. None of them are used at runtime. Leftover from the exploration phase, never cleaned up.</p>
 </section>
-<section id="what-i-learned" class="level2">
-<h2 class="anchored" data-anchor-id="what-i-learned">What I Learned</h2>
-<p><strong>Scraping Tenor is fragile.</strong> The bot parses page HTML to find the actual GIF CDN URL, which means it breaks if Tenor ever restructures their markup. A proper API integration would be more stable, but scraping works for a personal project and keeps the dependency count low.</p>
-<p><strong>Docker volume mounts matter more than you’d think.</strong> The bot runs in a container, which means any files written at runtime — the meme index, crawl state — need to be volume-mounted if you want them to survive rebuilds. Otherwise every image rebuild wipes the index and forces a full re-crawl. Getting the dev workflow right (hot-reload via Docker’s <code>watch</code> mode, separate dev/prod compose configs) took more iteration than the bot itself.</p>
-</section>
-<section id="the-result" class="level2">
-<h2 class="anchored" data-anchor-id="the-result">The Result</h2>
-<p>It works better than expected. The memes it generates are genuinely funny in a way that an AI meme generator isn’t — because the humor is already baked in. The bot isn’t creating jokes, it’s surfacing ones that already happened.</p>
-<p>The codebase is small enough to be a weekend project, specific enough to be interesting, and weird enough to be worth sharing.</p>
-<p><a href="https://github.com/Danvu772/tableMemeBot">GitHub →</a></p>
+<section id="what-id-change" class="level2">
+<h2 class="anchored" data-anchor-id="what-id-change">What I’d change</h2>
+<p>Volume-mount <code>resources/json</code> from the start so the index survives image rebuilds. Right now the directory is baked into the image, so deleting it on the host does nothing while the container is running. It’s counterintuitive until you understand why, and then it’s still annoying.</p>
+<p>The index is also global across every server the bot joins, which is fine for a personal project and would be a real problem the second anyone else added it to their server. Per-guild indexing should’ve been the default.</p>
+<p>Neither of those are hard to fix. I just haven’t needed to yet.</p>
 
 
 </section>
