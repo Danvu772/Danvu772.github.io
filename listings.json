@@ -1,9 +1,7 @@
 [
   {
-    "listing": "/blog/index.html",
-    "items": [
-      "/blog/ride-quality-analysis.html"
-    ]
+    "listing": "/coursework/index.html",
+    "items": []
   },
   {
     "listing": "/research/index.html",
@@ -13,7 +11,10 @@
     ]
   },
   {
-    "listing": "/coursework/index.html",
-    "items": []
+    "listing": "/blog/index.html",
+    "items": [
+      "/blog/meme-bot.html",
+      "/blog/ride-quality-analysis.html"
+    ]
   }
 ]

@@ -6,8 +6,11 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Dan Vu">
+<meta name="dcterms.date" content="2026-04-22">
+<meta name="description" content="A Discord bot that generates memes from your server’s own message history — because the jokes already happened.">
 
-<title>blog – Dan Vu</title>
+<title>Building a Meme Bot That Learns Your Server – Dan Vu</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,6 +23,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -31,8 +69,6 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
 <link href="../assets/favicon.ico" rel="icon">
-<script src="../site_libs/quarto-listing/list.min.js"></script>
-<script src="../site_libs/quarto-listing/quarto-listing.js"></script>
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
@@ -71,70 +107,12 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script>
-
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
-
-    const options = {
-      valueNames: ['listing-title','listing-date','listing-categories','listing-description',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
-      
-      searchColumns: ["listing-title","listing-author","listing-date","listing-image","listing-description"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
 <style>html{ scroll-behavior: smooth; }</style>
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
 
 </head>
 
-<body class="nav-fixed fullcontent quarto-light">
+<body class="nav-fixed quarto-light">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -159,7 +137,7 @@ window.Quarto = {
 <span class="menu-text">research</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="../blog/index.html" aria-current="page"> 
+    <a class="nav-link" href="../blog/index.html"> 
 <span class="menu-text">blog</span></a>
   </li>  
 </ul>
@@ -189,20 +167,58 @@ window.Quarto = {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#the-idea" id="toc-the-idea" class="nav-link active" data-scroll-target="#the-idea">The Idea</a></li>
+  <li><a href="#how-its-built" id="toc-how-its-built" class="nav-link" data-scroll-target="#how-its-built">How It’s Built</a>
+  <ul class="collapse">
+  <li><a href="#the-crawl" id="toc-the-crawl" class="nav-link" data-scroll-target="#the-crawl">The Crawl</a></li>
+  <li><a href="#the-image-processing" id="toc-the-image-processing" class="nav-link" data-scroll-target="#the-image-processing">The Image Processing</a></li>
+  <li><a href="#the-pairing-logic" id="toc-the-pairing-logic" class="nav-link" data-scroll-target="#the-pairing-logic">The Pairing Logic</a></li>
+  </ul></li>
+  <li><a href="#what-i-learned" id="toc-what-i-learned" class="nav-link" data-scroll-target="#what-i-learned">What I Learned</a></li>
+  <li><a href="#the-result" id="toc-the-result" class="nav-link" data-scroll-target="#the-result">The Result</a></li>
+  </ul>
+</nav>
+    </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">blog</h1>
-</div>
+<h1 class="title">Building a Meme Bot That Learns Your Server</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">python</div>
+    <div class="quarto-category">discord</div>
+    <div class="quarto-category">fun</div>
+  </div>
+  </div>
 
+<div>
+  <div class="description">
+    A Discord bot that generates memes from your server’s own message history — because the jokes already happened.
+  </div>
+</div>
 
 
 <div class="quarto-title-meta">
 
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Dan Vu </p>
+          </div>
+  </div>
     
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">April 22, 2026</p>
+    </div>
+  </div>
   
     
   </div>
@@ -212,71 +228,61 @@ window.Quarto = {
 </header>
 
 
+<p>Every friend group has its own language. Inside jokes, recurring bits, moments that only land if you were there. I wanted to see if I could bottle that — so I built a Discord bot that generates memes entirely from my server’s own history.</p>
+<p>Code is <a href="https://github.com/Danvu772/tableMemeBot">on GitHub</a>.</p>
+<section id="the-idea" class="level2">
+<h2 class="anchored" data-anchor-id="the-idea">The Idea</h2>
+<p>Tenor GIFs and text messages don’t exist in a vacuum. When someone drops a GIF in a chat, there’s usually something said right around the same time — a reaction, a setup, a punchline. Pair them and you get something that reads like a real meme. The humor is baked in because both halves are authentic to the server.</p>
+<p>The bot crawls your message history, finds every Tenor GIF, grabs the text message sent immediately before or after it, and stores the pair. When you run <code>$generatememe</code>, it picks a random pair, fetches the GIF, and stamps the text over every frame in Impact font — the universal language of meme formatting.</p>
+</section>
+<section id="how-its-built" class="level2">
+<h2 class="anchored" data-anchor-id="how-its-built">How It’s Built</h2>
+<p>The stack is intentionally minimal: Python, <code>discord.py</code>, Pillow for image processing, and Docker for packaging.</p>
+<section id="the-crawl" class="level3">
+<h3 class="anchored" data-anchor-id="the-crawl">The Crawl</h3>
+<p>Runs on first boot. The bot walks every readable channel, pulls up to 10,000 messages per channel, and for each Tenor link it finds, randomly checks the message immediately before or after it. If that neighbor is clean text — no URLs, not empty — it’s a valid pair and gets stored in a JSON index. A weekly background task via <code>discord.ext.tasks</code> runs an incremental refresh, fetching only new messages since the last crawl per channel.</p>
+</section>
+<section id="the-image-processing" class="level3">
+<h3 class="anchored" data-anchor-id="the-image-processing">The Image Processing</h3>
+<p>The most satisfying part. Pillow’s <code>ImageSequence</code> iterator lets you process animated GIFs frame by frame. For each frame:</p>
+<ul>
+<li>Font size scales proportionally to image width</li>
+<li>Text wraps to fit</li>
+<li>The outline is drawn by rendering the same text at every pixel offset in a small grid around the position, then white text on top</li>
+</ul>
+<p>Brute-force outline rendering, but it produces exactly the right look.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>frames <span class="op">=</span> []</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> frame <span class="kw">in</span> ImageSequence.Iterator(gif):</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    frame <span class="op">=</span> frame.convert(<span class="st">"RGBA"</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    draw <span class="op">=</span> ImageDraw.Draw(frame)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># draw outline</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> dx <span class="kw">in</span> <span class="bu">range</span>(<span class="op">-</span>outline_size, outline_size <span class="op">+</span> <span class="dv">1</span>):</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> dy <span class="kw">in</span> <span class="bu">range</span>(<span class="op">-</span>outline_size, outline_size <span class="op">+</span> <span class="dv">1</span>):</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>            draw.text((x <span class="op">+</span> dx, y <span class="op">+</span> dy), text, font<span class="op">=</span>font, fill<span class="op">=</span><span class="st">"black"</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># draw white text</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    draw.text((x, y), text, font<span class="op">=</span>font, fill<span class="op">=</span><span class="st">"white"</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    frames.append(frame)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="the-pairing-logic" class="level3">
+<h3 class="anchored" data-anchor-id="the-pairing-logic">The Pairing Logic</h3>
+<p>Rather than trying to find the “best” adjacent message, the bot randomly picks one direction — before or after — and commits to it. If the chosen neighbor isn’t clean text, the pair is skipped entirely. This keeps the index honest: every entry is a real pairing that happened naturally in conversation, not a best-effort reconstruction.</p>
+</section>
+</section>
+<section id="what-i-learned" class="level2">
+<h2 class="anchored" data-anchor-id="what-i-learned">What I Learned</h2>
+<p><strong>Scraping Tenor is fragile.</strong> The bot parses page HTML to find the actual GIF CDN URL, which means it breaks if Tenor ever restructures their markup. A proper API integration would be more stable, but scraping works for a personal project and keeps the dependency count low.</p>
+<p><strong>Docker volume mounts matter more than you’d think.</strong> The bot runs in a container, which means any files written at runtime — the meme index, crawl state — need to be volume-mounted if you want them to survive rebuilds. Otherwise every image rebuild wipes the index and forces a full re-crawl. Getting the dev workflow right (hot-reload via Docker’s <code>watch</code> mode, separate dev/prod compose configs) took more iteration than the bot itself.</p>
+</section>
+<section id="the-result" class="level2">
+<h2 class="anchored" data-anchor-id="the-result">The Result</h2>
+<p>It works better than expected. The memes it generates are genuinely funny in a way that an AI meme generator isn’t — because the humor is already baked in. The bot isn’t creating jokes, it’s surfacing ones that already happened.</p>
+<p>The codebase is small enough to be a weekend project, specific enough to be interesting, and weird enough to be worth sharing.</p>
+<p><a href="https://github.com/Danvu772/tableMemeBot">GitHub →</a></p>
 
 
+</section>
 
-
-<div class="quarto-listing quarto-listing-container-grid" id="listing-listing">
-<div class="list grid quarto-listing-cols-2">
-<div class="g-col-1" data-index="0" data-categories="cHl0aG9uJTJDZGlzY29yZCUyQ2Z1bg==" data-listing-date-sort="1776852000000" data-listing-file-modified-sort="1776855840768" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="643">
-<a href="../blog/meme-bot.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Building a Meme Bot That Learns Your Server
-</h5>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('cHl0aG9u'); return false;">python</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('ZGlzY29yZA=='); return false;">discord</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('ZnVu'); return false;">fun</div>
-
-</div>
-<div class="card-text listing-description delink">
-<p>A Discord bot that generates memes from your server’s own message history — because the jokes already happened.</p>
-</div>
-<div class="card-attribution card-text-small end">
-<div class="listing-date">
-Apr 22, 2026
-</div>
-</div>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="1" data-categories="c2lnbmFsLXByb2Nlc3NpbmclMkNweXRob24lMkNlbWJlZGRlZC1zeXN0ZW1zJTJDdHJhbnNwb3J0YXRpb24=" data-listing-date-sort="1773396000000" data-listing-file-modified-sort="1773402944278" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="7" data-listing-word-count-sort="1303">
-<a href="../blog/ride-quality-analysis.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Ride Quality Analysis of a Passenger Rail System
-</h5>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('c2lnbmFsLXByb2Nlc3Npbmc='); return false;">signal-processing</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('cHl0aG9u'); return false;">python</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('ZW1iZWRkZWQtc3lzdGVtcw=='); return false;">embedded-systems</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('dHJhbnNwb3J0YXRpb24='); return false;">transportation</div>
-
-</div>
-<div class="card-text listing-description delink">
-<p>A 1/3 octave band vibration analysis pipeline built from scratch to assess passenger ride comfort against ISO 2631-1 limits.</p>
-</div>
-<div class="card-attribution card-text-small end">
-<div class="listing-date">
-Mar 13, 2026
-</div>
-</div>
-</div>
-</div></a>
-</div>
-</div>
-<div class="listing-no-matching d-none">No matching items</div>
-</div></main> <!-- /main -->
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";
