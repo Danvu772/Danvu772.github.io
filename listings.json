@@ -1,14 +1,14 @@
 [
   {
-    "listing": "/coursework/index.html",
-    "items": []
-  },
-  {
     "listing": "/research/index.html",
     "items": [
-      "/research/credit-risk-svm.html",
-      "/research/transformer-based-compression.html"
+      "/research/transformer-based-compression.html",
+      "/research/credit-risk-svm.html"
     ]
+  },
+  {
+    "listing": "/coursework/index.html",
+    "items": []
   },
   {
     "listing": "/blog/index.html",

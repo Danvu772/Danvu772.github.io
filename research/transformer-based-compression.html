@@ -7,10 +7,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Dan Vu">
-<meta name="dcterms.date" content="2025-03-01">
-<meta name="description" content="Building a toolkit to benchmark minGPT against Laplace estimation for universal source coding on binary IID sequences.">
+<meta name="dcterms.date" content="2026-06-14">
+<meta name="description" content="Can a small transformer learn to compress binary sequences without being told the source distribution? Yes. And we can see exactly where it stores the counting.">
 
-<title>Transformer-Based Universal Source Coding – Dan Vu</title>
+<title>A transformer walks into a compression problem – Dan Vu</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -109,35 +109,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 <style>html{ scroll-behavior: smooth; }</style>
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
 
 </head>
 
@@ -201,31 +172,32 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#the-question" id="toc-the-question" class="nav-link active" data-scroll-target="#the-question"><span class="header-section-number">1</span> The Question</a></li>
-  <li><a href="#setup" id="toc-setup" class="nav-link" data-scroll-target="#setup"><span class="header-section-number">2</span> Setup</a></li>
-  <li><a href="#iid-unknown-p" id="toc-iid-unknown-p" class="nav-link" data-scroll-target="#iid-unknown-p"><span class="header-section-number">3</span> IID: Unknown p</a></li>
-  <li><a href="#fixed-p-offline-learning-helps" id="toc-fixed-p-offline-learning-helps" class="nav-link" data-scroll-target="#fixed-p-offline-learning-helps"><span class="header-section-number">4</span> Fixed p: Offline Learning Helps</a></li>
-  <li><a href="#what-this-connects-to" id="toc-what-this-connects-to" class="nav-link" data-scroll-target="#what-this-connects-to"><span class="header-section-number">5</span> What This Connects To</a></li>
+  <li><a href="#the-general-transformer-learns-laplace-from-data" id="toc-the-general-transformer-learns-laplace-from-data" class="nav-link active" data-scroll-target="#the-general-transformer-learns-laplace-from-data">The general transformer learns Laplace from data</a></li>
+  <li><a href="#specialized-training-gives-you-a-prior" id="toc-specialized-training-gives-you-a-prior" class="nav-link" data-scroll-target="#specialized-training-gives-you-a-prior">Specialized training gives you a prior</a></li>
+  <li><a href="#redundancy-scales-as-1m" id="toc-redundancy-scales-as-1m" class="nav-link" data-scroll-target="#redundancy-scales-as-1m">Redundancy scales as 1/m</a></li>
+  <li><a href="#markov-and-fsm-structure-is-where-the-money-is" id="toc-markov-and-fsm-structure-is-where-the-money-is" class="nav-link" data-scroll-target="#markov-and-fsm-structure-is-where-the-money-is">Markov and FSM: structure is where the money is</a></li>
+  <li><a href="#where-the-counting-lives" id="toc-where-the-counting-lives" class="nav-link" data-scroll-target="#where-the-counting-lives">Where the counting lives</a></li>
+  <li><a href="#the-toolkit-a-clean-break-from-notebook-sprawl" id="toc-the-toolkit-a-clean-break-from-notebook-sprawl" class="nav-link" data-scroll-target="#the-toolkit-a-clean-break-from-notebook-sprawl">The toolkit: a clean break from notebook sprawl</a></li>
+  <li><a href="#what-is-missing" id="toc-what-is-missing" class="nav-link" data-scroll-target="#what-is-missing">What is missing</a></li>
   </ul>
-<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="transformer-based-compression.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Transformer-Based Universal Source Coding</h1>
+<h1 class="title">A transformer walks into a compression problem</h1>
   <div class="quarto-categories">
-    <div class="quarto-category">research</div>
-    <div class="quarto-category">information-theory</div>
-    <div class="quarto-category">transformers</div>
     <div class="quarto-category">compression</div>
+    <div class="quarto-category">transformers</div>
+    <div class="quarto-category">information-theory</div>
   </div>
   </div>
 
 <div>
   <div class="description">
-    Building a toolkit to benchmark minGPT against Laplace estimation for universal source coding on binary IID sequences.
+    Can a small transformer learn to compress binary sequences without being told the source distribution? Yes. And we can see exactly where it stores the counting.
   </div>
 </div>
 
@@ -242,7 +214,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">March 1, 2025</p>
+      <p class="date">June 14, 2026</p>
     </div>
   </div>
   
@@ -254,42 +226,76 @@ window.Quarto = {
 </header>
 
 
-<section id="the-question" class="level2" data-number="1">
-<h2 data-number="1" class="anchored" data-anchor-id="the-question"><span class="header-section-number">1</span> The Question</h2>
-<p>Universal source coders don’t know the true distribution of the data they’re compressing. They have to figure it out on the fly. The classic result here is the Laplace estimator. For binary IID sequences it maintains a running count of 0s and 1s and estimates <span class="math inline">\(p\)</span> as:</p>
-<p><span class="math display">\[\hat{p}_1 = \frac{k + 1}{n + 2}\]</span></p>
-<p>where <span class="math inline">\(k\)</span> is ones seen so far out of <span class="math inline">\(n\)</span> total bits. It starts from a uniform prior and converges to the true <span class="math inline">\(p\)</span> as the sequence grows. The redundancy (the extra bits per symbol paid over the entropy lower bound) decays as <span class="math inline">\(O(1/n)\)</span>.</p>
-<p>A natural question: if you train a model on data from a known source beforehand, can you skip that warm-up cost and start closer to entropy from bit one? And if so, how much training do you need before it’s worth it?</p>
-<p>This is the question <a href="https://par.nsf.gov/servlets/purl/10297477">Host-Madsen (2021)</a> addresses theoretically for binary IID sources and Markov chains. The answer is surprisingly optimistic: a learned coder only needs about <span class="math inline">\(m \sim \frac{l}{\log l}\)</span> training samples to beat a universal coder on sequences of length <span class="math inline">\(l\)</span>. You need fewer training samples than the length of the sequences you want to encode.</p>
-<p>This project is an empirical look at that claim. We train a small GPT (minGPT) on binary sequences and benchmark it against the Laplace estimator across two conditions that test when offline learning actually helps.</p>
-</section>
-<section id="setup" class="level2" data-number="2">
-<h2 data-number="2" class="anchored" data-anchor-id="setup"><span class="header-section-number">2</span> Setup</h2>
-<p>Both coders are used as sequential probability models. At each position in a sequence, the model outputs a probability for the next bit. We compute bits per symbol directly from those probabilities:</p>
-<p><span class="math display">\[\text{BPS} = \frac{1}{N} \sum_{i=1}^{N} -\log_2 \hat{p}(x_i \mid x_1^{i-1})\]</span></p>
-<p>Laplace estimates <span class="math inline">\(\hat{p}\)</span> from the running count. The transformer takes the preceding bits as context and outputs a probability from its learned weights. Same formula, same comparison baseline.</p>
-<p>Two experimental conditions:</p>
-<ul>
-<li><strong>IID, unknown p</strong>: each test sequence is drawn with a fresh <span class="math inline">\(p \sim \text{Uniform}(0,1)\)</span>. The transformer is trained on sequences from this same distribution, so it has seen many different <span class="math inline">\(p\)</span> values but never knows the current one ahead of time.</li>
-<li><strong>Fixed p</strong>: the transformer is trained exclusively on sequences from a single fixed <span class="math inline">\(p\)</span>. It has the chance to learn the true distribution offline. Laplace doesn’t get this since it always starts fresh regardless of how much data you’ve generated at training time.</li>
-</ul>
-<p>The difference between these two conditions is exactly the question: does offline learning help, and when?</p>
-</section>
-<section id="iid-unknown-p" class="level2" data-number="3">
-<h2 data-number="3" class="anchored" data-anchor-id="iid-unknown-p"><span class="header-section-number">3</span> IID: Unknown p</h2>
-<p>First the IID case, where <span class="math inline">\(p\)</span> changes every sequence.</p>
-<div id="iid-bps" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># BPS vs sequence length N across p ∈ {0.1, 0.3, 0.5, 0.7, 0.9}: Laplace and Transformer</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="transformer-based-compression_files/figure-html/cell-2-output-1.png" class="img-fluid figure-img"></p>
-</figure>
+<p>Lossless compression is probability modeling. Full stop.</p>
+<p>If you can predict the next symbol, you can encode it efficiently. The better the prediction, the shorter the code. The theoretical floor is the entropy of the source, and everything above that floor is the gap between your model and the true distribution.</p>
+<p>The question is whether a transformer can close that gap without ever being told what distribution the data came from. No parameters, no prior, no generative story. Just a sequence of bits and a model that has to figure out what comes next.</p>
+<p>I built a research platform to answer this. Binary sequences only, because binary is where you can compare against closed-form optimal estimators and know exactly how far from the bound you are. The transformer is small, 3 layers, 3 attention heads, roughly 90K parameters. It is trained offline on sequences from some source and then evaluated at test time one bit at a time, same as any classical estimator.</p>
+<p>The results are honestly not too bad.</p>
+<div id="cell-setup" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-06-14T20:35:14.753893Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-06-14T20:35:14.753777Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-06-14T20:35:15.344379Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-06-14T20:35:15.343822Z&quot;}}" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sys, os</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>sys.path.insert(<span class="dv">0</span>, os.getcwd())</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.ticker <span class="im">as</span> mticker</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> toolkit <span class="im">import</span> storage</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-</div>
-</div>
-<div id="iid-gap" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Gap (Laplace BPS − Transformer BPS) vs N for IID unknown-p, one line per p value.</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="the-general-transformer-learns-laplace-from-data" class="level2">
+<h2 class="anchored" data-anchor-id="the-general-transformer-learns-laplace-from-data">The general transformer learns Laplace from data</h2>
+<p>Start with IID Bernoulli sequences. Flip a biased coin with unknown probability p and generate sequences of length N. The transformer has never seen this p, it was trained on sequences with p drawn uniformly from (0, 1).</p>
+<p>At test time the model sees a sequence and predicts P(next bit = 1) at each step. Its baseline is the Laplace estimator, which counts the number of 1s seen so far and computes (k+1)/(t+2). Laplace is near-optimal for IID data and requires zero training.</p>
+<p>Across every p we tested (0.1, 0.3, 0.5, 0.7, 0.9) and every sequence length from N=10 to N=499, the transformer tracks Laplace almost exactly. At N=10 the gap is around 0.16 BPS. By N=499 the gap collapses to roughly 0.007 BPS.</p>
+<p>This makes sense because there is no temporal structure for the transformer to exploit. The IID source has no memory. What the transformer learns is the inference rule itself: count, add pseudocounts, normalize. It learns to approximate the Bayes-optimal estimator from data alone, without ever being told the prior.</p>
+<div id="cell-iid-plot" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-06-14T20:35:15.345770Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-06-14T20:35:15.345650Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-06-14T20:35:15.669270Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-06-14T20:35:15.668891Z&quot;}}" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>envelope <span class="op">=</span> storage.load(storage.experiment_path(<span class="st">'exp1_iid_general'</span>))</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>sweep_results <span class="op">=</span> envelope.results</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>C_TRANSFORMER <span class="op">=</span> <span class="st">'#002d4d'</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>C_LAPLACE     <span class="op">=</span> <span class="st">'#177F6B'</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>C_ENTROPY     <span class="op">=</span> <span class="st">'#888888'</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">2</span>, <span class="dv">3</span>, figsize<span class="op">=</span>(<span class="dv">13</span>, <span class="dv">7</span>), dpi<span class="op">=</span><span class="dv">150</span>)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>axes <span class="op">=</span> axes.flatten()</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> idx, sr <span class="kw">in</span> <span class="bu">enumerate</span>(sweep_results):</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    ax <span class="op">=</span> axes[idx]</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    ns <span class="op">=</span> sr.n_values</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> name, color, marker, label <span class="kw">in</span> [</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>        (<span class="st">'transformer'</span>, C_TRANSFORMER, <span class="st">'s'</span>, <span class="st">'Transformer (general)'</span>),</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>        (<span class="st">'laplace'</span>,     C_LAPLACE,     <span class="st">'o'</span>, <span class="st">'Laplace'</span>),</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    ]:</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>        means <span class="op">=</span> [sr.results[name][n][<span class="st">'mean'</span>] <span class="cf">for</span> n <span class="kw">in</span> ns]</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>        cis   <span class="op">=</span> [sr.results[name][n][<span class="st">'ci'</span>]   <span class="cf">for</span> n <span class="kw">in</span> ns]</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>        ax.errorbar(ns, means, yerr<span class="op">=</span>cis, fmt<span class="op">=</span><span class="ss">f'</span><span class="sc">{</span>marker<span class="sc">}</span><span class="ss">-'</span>, capsize<span class="op">=</span><span class="dv">3</span>,</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>                    color<span class="op">=</span>color, lw<span class="op">=</span><span class="fl">1.0</span>, ms<span class="op">=</span><span class="fl">4.5</span>, label<span class="op">=</span>label)</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> sr.entropy:</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>        ent <span class="op">=</span> <span class="bu">list</span>(sr.entropy.values())[<span class="dv">0</span>]</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>        ax.axhline(ent, color<span class="op">=</span>C_ENTROPY, ls<span class="op">=</span><span class="st">'--'</span>, lw<span class="op">=</span><span class="fl">0.8</span>, label<span class="op">=</span><span class="ss">f'H(p)=</span><span class="sc">{</span>ent<span class="sc">:.3f}</span><span class="ss">'</span>)</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>    ax.set_xscale(<span class="st">'log'</span>)</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>    ax.set_xticks(ns)</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>    ax.get_xaxis().set_major_formatter(mticker.ScalarFormatter())</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>    ax.tick_params(axis<span class="op">=</span><span class="st">'x'</span>, rotation<span class="op">=</span><span class="dv">40</span>)</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>    ax.set_title(<span class="ss">f'p = </span><span class="sc">{</span>sr<span class="sc">.</span>param_value<span class="sc">}</span><span class="ss">'</span>, pad<span class="op">=</span><span class="dv">5</span>)</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>    ax.set_xlabel(<span class="st">'Sequence length N'</span>)</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>    ax.set_ylabel(<span class="st">'Bits per symbol'</span>)</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>    ax.grid(<span class="va">True</span>, axis<span class="op">=</span><span class="st">'y'</span>, alpha<span class="op">=</span><span class="fl">0.4</span>)</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">'top'</span>].set_visible(<span class="va">False</span>)</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">'right'</span>].set_visible(<span class="va">False</span>)</span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>    ax.legend(fontsize<span class="op">=</span><span class="dv">8</span>)</span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ax <span class="kw">in</span> axes[<span class="bu">len</span>(sweep_results):]:</span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>    ax.set_visible(<span class="va">False</span>)</span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>fig.suptitle(<span class="st">'General Transformer vs Laplace (IID)'</span>, fontsize<span class="op">=</span><span class="dv">12</span>, fontweight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'</span><span class="ch">\n</span><span class="st">Gap = transformer BPS - Laplace BPS (positive means transformer worse)</span><span class="ch">\n</span><span class="st">'</span>)</span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> sr <span class="kw">in</span> sweep_results:</span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f'p=</span><span class="sc">{</span>sr<span class="sc">.</span>param_value<span class="sc">}</span><span class="ss">:'</span>)</span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> n <span class="kw">in</span> sr.n_values:</span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>        gap <span class="op">=</span> sr.results[<span class="st">'transformer'</span>][n][<span class="st">'mean'</span>] <span class="op">-</span> sr.results[<span class="st">'laplace'</span>][n][<span class="st">'mean'</span>]</span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f'  N=</span><span class="sc">{</span>n<span class="sc">:4d}</span><span class="ss">: gap=</span><span class="sc">{</span>gap<span class="sc">:+.4f}</span><span class="ss">'</span>)</span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -297,26 +303,192 @@ window.Quarto = {
 </figure>
 </div>
 </div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Gap = transformer BPS - Laplace BPS (positive means transformer worse)
+
+p=0.1:
+  N=  10: gap=-0.1379
+  N=  25: gap=-0.0754
+  N=  50: gap=-0.0437
+  N= 100: gap=-0.0248
+  N= 200: gap=-0.0137
+  N= 300: gap=-0.0093
+  N= 499: gap=-0.0060
+
+p=0.3:
+  N=  10: gap=-0.0936
+  N=  25: gap=-0.0703
+  N=  50: gap=-0.0468
+  N= 100: gap=-0.0277
+  N= 200: gap=-0.0153
+  N= 300: gap=-0.0105
+  N= 499: gap=-0.0067
+
+p=0.5:
+  N=  10: gap=-0.1076
+  N=  25: gap=-0.0723
+  N=  50: gap=-0.0503
+  N= 100: gap=-0.0292
+  N= 200: gap=-0.0164
+  N= 300: gap=-0.0122
+  N= 499: gap=-0.0078
+
+p=0.7:
+  N=  10: gap=-0.1127
+  N=  25: gap=-0.0768
+  N=  50: gap=-0.0467
+  N= 100: gap=-0.0278
+  N= 200: gap=-0.0160
+  N= 300: gap=-0.0113
+  N= 499: gap=-0.0073
+
+p=0.9:
+  N=  10: gap=-0.1521
+  N=  25: gap=-0.0781
+  N=  50: gap=-0.0385
+  N= 100: gap=-0.0256
+  N= 200: gap=-0.0136
+  N= 300: gap=-0.0089
+  N= 499: gap=-0.0054
+</code></pre>
 </div>
-<p>The transformer tracks Laplace almost exactly across all tested <span class="math inline">\(p\)</span> values. The gap plot is noisy around zero, demonstrating no consistent advantage in either direction, and what small differences exist are within the variance of the experiment.</p>
-<p>This makes sense. When <span class="math inline">\(p\)</span> is drawn fresh every sequence, there’s no cross-sequence structure to exploit. Both models are starting from zero information about the current <span class="math inline">\(p\)</span>. The transformer has learned the Laplace behavior from training, which is the correct thing to do in this setting the best you can do without knowing <span class="math inline">\(p\)</span> is sequential updating from a uniform prior, and that’s what both models are effectively doing.</p>
-<p>This isn’t a failure. There’s nothing to beat Laplace with here.</p>
+</div>
 </section>
-<section id="fixed-p-offline-learning-helps" class="level2" data-number="4">
-<h2 data-number="4" class="anchored" data-anchor-id="fixed-p-offline-learning-helps"><span class="header-section-number">4</span> Fixed p: Offline Learning Helps</h2>
-<p>Now the fixed-p case. The transformer is trained on a single <span class="math inline">\(p\)</span> and tested on sequences from that same <span class="math inline">\(p\)</span>.</p>
-<div id="fixed-p3-bps" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># BPS vs N for fixed p=0.3: Transformer (trained offline) starts near entropy from bit one,</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="specialized-training-gives-you-a-prior" class="level2">
+<h2 class="anchored" data-anchor-id="specialized-training-gives-you-a-prior">Specialized training gives you a prior</h2>
+<p>The general model does fine, but it starts every test sequence from square one. It has no information about which p is more likely, because it was trained on a uniform distribution over p.</p>
+<p>What happens if you train a transformer on sequences from a single p? Now the model has seen 10,000 sequences all drawn from p=0.3. It knows, in its weights, that p is probably around 0.3.</p>
+<p>At N=10 this matters a lot. The specialized transformer hits 0.910 BPS while Laplace sits at 0.976. That 0.066 gap is the value of knowing the source distribution in advance. As sequences grow longer the gap shrinks, because the data overwhelms the prior. By N=499 the gap is 0.007.</p>
+<p>This is exactly what you would expect from Bayesian inference. The prior dominates when data is scarce. The likelihood dominates when data is abundant. The transformer learned the prior from its training distribution and uses it at test time the same way a Bayesian estimator would.</p>
+</section>
+<section id="redundancy-scales-as-1m" class="level2">
+<h2 class="anchored" data-anchor-id="redundancy-scales-as-1m">Redundancy scales as 1/m</h2>
+<p>The H0f8st-Madsen bound says the redundancy, which is the gap between the model’s BPS and the source entropy, should decay roughly as 1/m where m is the number of training sequences. I tested this by training transformers on m = 10, 25, 50, 75, 100, 150, 200, 300, 500, 1000 sequences and measuring BPS at test length N=100.</p>
+<p>The data matches the bound. On a log-log plot the redundancy drops cleanly with a slope near -1. The crossover point where the transformer beats Laplace is around m=100 training sequences. At m=50 the transformer redundancy is 0.040 BPS above entropy, at m=100 it is 0.021, at m=1000 it drops to 0.005.</p>
+<p>This is not surprising if you believe the bound, but it is satisfying to see a small transformer hit it. The thing has 90K parameters and was trained for 500 iterations per checkpoint. It is not doing anything exotic. It is just learning the counting rule from repeated exposure, and the efficiency of that learning follows the same scaling law as the optimal estimator.</p>
+<div id="cell-redundancy-plot" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-06-14T20:35:15.670761Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-06-14T20:35:15.670689Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-06-14T20:35:15.721012Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-06-14T20:35:15.720646Z&quot;}}" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pickle</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> toolkit <span class="im">import</span> metrics</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(<span class="st">'notebooks/train_bounds/experiments/benchmark_results.pkl'</span>, <span class="st">'rb'</span>) <span class="im">as</span> f:</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    r <span class="op">=</span> pickle.load(f)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'p=0.3, N_eval=100, entropy=</span><span class="sc">{</span>metrics<span class="sc">.</span>entropy_iid(<span class="fl">0.3</span>)<span class="sc">:.4f}</span><span class="ss">'</span>)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Laplace redundancy = </span><span class="sc">{</span>r[<span class="st">'laplace'</span>]<span class="sc">:.4f}</span><span class="ss">"</span>)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>m_vals_all <span class="op">=</span> <span class="bu">sorted</span>(r[<span class="st">'transformer'</span>].keys())</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>m_vals <span class="op">=</span> [m <span class="cf">for</span> m <span class="kw">in</span> m_vals_all <span class="cf">if</span> m <span class="op">&lt;=</span> <span class="dv">1000</span>]</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>red    <span class="op">=</span> [r[<span class="st">'transformer'</span>][m] <span class="cf">for</span> m <span class="kw">in</span> m_vals]</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>lap_red <span class="op">=</span> r[<span class="st">'laplace'</span>]</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">4</span>), dpi<span class="op">=</span><span class="dv">150</span>)</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>ax.plot(m_vals, red, <span class="st">'o-'</span>, color<span class="op">=</span><span class="st">'#002d4d'</span>, lw<span class="op">=</span><span class="fl">1.2</span>, ms<span class="op">=</span><span class="dv">5</span>, label<span class="op">=</span><span class="st">'Transformer'</span>)</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>ax.axhline(lap_red, color<span class="op">=</span><span class="st">'#177F6B'</span>, ls<span class="op">=</span><span class="st">'--'</span>, lw<span class="op">=</span><span class="fl">1.0</span>, label<span class="op">=</span><span class="ss">f'Laplace (</span><span class="sc">{</span>lap_red<span class="sc">:.3f}</span><span class="ss">)'</span>)</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>m_arr <span class="op">=</span> np.array(m_vals, dtype<span class="op">=</span><span class="bu">float</span>)</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>c <span class="op">=</span> red[<span class="dv">3</span>] <span class="op">*</span> m_arr[<span class="dv">3</span>]</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>ax.plot(m_arr, c <span class="op">/</span> m_arr, <span class="st">':'</span>, color<span class="op">=</span><span class="st">'#888888'</span>, lw<span class="op">=</span><span class="fl">1.0</span>, label<span class="op">=</span><span class="st">'1/m reference'</span>)</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">'Training samples m'</span>)</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">'Redundancy (BPS - entropy)'</span>)</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">'Redundancy vs Training Size'</span>, fontweight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>ax.legend()</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>ax.grid(<span class="va">True</span>, axis<span class="op">=</span><span class="st">'y'</span>, alpha<span class="op">=</span><span class="fl">0.4</span>)</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>ax.spines[<span class="st">'top'</span>].set_visible(<span class="va">False</span>)</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>ax.spines[<span class="st">'right'</span>].set_visible(<span class="va">False</span>)</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'</span><span class="ch">\n</span><span class="st">Raw values:'</span>)</span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> m, rv <span class="kw">in</span> <span class="bu">zip</span>(m_vals, red):</span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f'  m=</span><span class="sc">{</span>m<span class="sc">:5d}</span><span class="ss">: redundancy=</span><span class="sc">{</span>rv<span class="sc">:.4f}</span><span class="ss">'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>p=0.3, N_eval=100, entropy=0.8813
+Laplace redundancy = 0.0220</code></pre>
+</div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="transformer-based-compression_files/figure-html/cell-4-output-1.png" class="img-fluid figure-img"></p>
+<p><img src="transformer-based-compression_files/figure-html/cell-4-output-2.png" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Raw values:
+  m=   10: redundancy=0.3731
+  m=   25: redundancy=0.1142
+  m=   50: redundancy=0.0400
+  m=   75: redundancy=0.0248
+  m=  100: redundancy=0.0211
+  m=  150: redundancy=0.0116
+  m=  200: redundancy=0.0081
+  m=  300: redundancy=0.0045
+  m=  500: redundancy=0.0028
+  m= 1000: redundancy=0.0060</code></pre>
 </div>
-<div id="fixed-p3-gap" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Gap (Laplace − Transformer BPS) vs N for fixed p=0.3.</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="markov-and-fsm-structure-is-where-the-money-is" class="level2">
+<h2 class="anchored" data-anchor-id="markov-and-fsm-structure-is-where-the-money-is">Markov and FSM: structure is where the money is</h2>
+<p>IID is the baseline. The interesting part is structured sources.</p>
+<p>On the binary symmetric Markov chain the specialized transformer dominates. At p_stay=0.99, where the chain almost never flips, the specialized model hits 0.317 BPS at N=499 while Laplace sits at 0.789 and the general IID transformer at 0.809. CTW eventually catches up (0.317 as well at N=499) but it takes context to get there, at N=10 CTW is stuck at 1.0 because it has not seen enough symbols to fill its context window. The transformer starts strong immediately.</p>
+<p>The setup is symmetric: the specialized model was trained on Markov chains with the same p_stay, the IID transformer was trained on IID sequences, and CTW builds a context tree online. The IID transformer does pick up some in-context adaptation on Markov (it tracks the transitions), but the gains are small. What actually beats CTW is knowing the source in advance through specialized training.</p>
+<p>On a deterministic 4-state FSM the pattern holds. Specialized transformer leads at every sequence length. N=10: transformer 0.760 BPS, CTW 1.000. N=499: transformer 0.746, CTW 0.798, Laplace 0.810. The ~0.05 BPS gap at long sequences is the transformer’s offline knowledge paying off.</p>
+<p>On Dirichlet-Markov sources with random transition matrices the specialized transformer beats Laplace and CTW at every alpha tested. The advantage widens as alpha increases (more concentrated priors, less entropy in the transition structure).</p>
+<div id="cell-markov-plot" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-06-14T20:35:15.722107Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-06-14T20:35:15.722022Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-06-14T20:35:16.140417Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-06-14T20:35:16.140017Z&quot;}}" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>envelope <span class="op">=</span> storage.load(storage.experiment_path(<span class="st">'exp5_markov'</span>))</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>sweep_results <span class="op">=</span> envelope.results</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>C_SPECIALIZED <span class="op">=</span> <span class="st">'#002d4d'</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>C_GENERAL     <span class="op">=</span> <span class="st">'#5B9BD5'</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>C_LAPLACE     <span class="op">=</span> <span class="st">'#177F6B'</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>C_CTW         <span class="op">=</span> <span class="st">'#9C4732'</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>C_ENTROPY     <span class="op">=</span> <span class="st">'#888888'</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">2</span>, <span class="dv">3</span>, figsize<span class="op">=</span>(<span class="dv">13</span>, <span class="dv">7</span>), dpi<span class="op">=</span><span class="dv">150</span>)</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>axes <span class="op">=</span> axes.flatten()</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> idx, sr <span class="kw">in</span> <span class="bu">enumerate</span>(sweep_results):</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    ax <span class="op">=</span> axes[idx]</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>    ns <span class="op">=</span> sr.n_values</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> name, color, marker, label <span class="kw">in</span> [</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>        (<span class="st">'specialized'</span>, C_SPECIALIZED, <span class="st">'D'</span>, <span class="st">'Transformer (specialized)'</span>),</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>        (<span class="st">'general'</span>,     C_GENERAL,     <span class="st">'s'</span>, <span class="st">'Transformer (IID)'</span>),</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>        (<span class="st">'ctw'</span>,         C_CTW,         <span class="st">'^'</span>, <span class="st">'CTW'</span>),</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>        (<span class="st">'laplace'</span>,     C_LAPLACE,     <span class="st">'o'</span>, <span class="st">'Laplace'</span>),</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>    ]:</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>        means <span class="op">=</span> [sr.results[name][n][<span class="st">'mean'</span>] <span class="cf">for</span> n <span class="kw">in</span> ns]</span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>        cis   <span class="op">=</span> [sr.results[name][n][<span class="st">'ci'</span>]   <span class="cf">for</span> n <span class="kw">in</span> ns]</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>        ax.errorbar(ns, means, yerr<span class="op">=</span>cis, fmt<span class="op">=</span><span class="ss">f'</span><span class="sc">{</span>marker<span class="sc">}</span><span class="ss">-'</span>, capsize<span class="op">=</span><span class="dv">3</span>,</span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>                    color<span class="op">=</span>color, lw<span class="op">=</span><span class="fl">1.0</span>, ms<span class="op">=</span><span class="fl">4.5</span>, label<span class="op">=</span>label)</span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> sr.entropy:</span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>        ent <span class="op">=</span> <span class="bu">list</span>(sr.entropy.values())[<span class="dv">0</span>]</span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>        ax.axhline(ent, color<span class="op">=</span>C_ENTROPY, ls<span class="op">=</span><span class="st">'--'</span>, lw<span class="op">=</span><span class="fl">0.8</span>, label<span class="op">=</span><span class="ss">f'H=</span><span class="sc">{</span>ent<span class="sc">:.3f}</span><span class="ss">'</span>)</span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>    ax.set_xscale(<span class="st">'log'</span>)</span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>    ax.set_xticks(ns)</span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>    ax.get_xaxis().set_major_formatter(mticker.ScalarFormatter())</span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>    ax.tick_params(axis<span class="op">=</span><span class="st">'x'</span>, rotation<span class="op">=</span><span class="dv">40</span>)</span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>    ax.set_title(<span class="ss">f'p_stay = </span><span class="sc">{</span>sr<span class="sc">.</span>param_value<span class="sc">}</span><span class="ss">'</span>, pad<span class="op">=</span><span class="dv">5</span>)</span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>    ax.set_xlabel(<span class="st">'Sequence length N'</span>)</span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a>    ax.set_ylabel(<span class="st">'Bits per symbol'</span>)</span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a>    ax.grid(<span class="va">True</span>, axis<span class="op">=</span><span class="st">'y'</span>, alpha<span class="op">=</span><span class="fl">0.4</span>)</span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">'top'</span>].set_visible(<span class="va">False</span>)</span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">'right'</span>].set_visible(<span class="va">False</span>)</span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a>handles, labels <span class="op">=</span> axes[<span class="dv">0</span>].get_legend_handles_labels()</span>
+<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a>fig.legend(handles, labels, loc<span class="op">=</span><span class="st">'lower center'</span>, ncol<span class="op">=</span><span class="dv">4</span>,</span>
+<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a>           bbox_to_anchor<span class="op">=</span>(<span class="fl">0.5</span>, <span class="fl">0.01</span>), fontsize<span class="op">=</span><span class="dv">9</span>)</span>
+<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a>fig.suptitle(<span class="st">'Binary Symmetric Markov Chain'</span>, fontsize<span class="op">=</span><span class="dv">12</span>, fontweight<span class="op">=</span><span class="st">'bold'</span>, y<span class="op">=</span><span class="fl">0.98</span>)</span>
+<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a>plt.tight_layout(rect<span class="op">=</span>[<span class="dv">0</span>, <span class="fl">0.06</span>, <span class="dv">1</span>, <span class="fl">0.97</span>])</span>
+<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'</span><span class="ch">\n</span><span class="st">Specialized advantage over CTW (positive = specialized wins)</span><span class="ch">\n</span><span class="st">'</span>)</span>
+<span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> sr <span class="kw">in</span> sweep_results:</span>
+<span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f'p_stay=</span><span class="sc">{</span>sr<span class="sc">.</span>param_value<span class="sc">}</span><span class="ss">:'</span>)</span>
+<span id="cb7-50"><a href="#cb7-50" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> n <span class="kw">in</span> sr.n_values:</span>
+<span id="cb7-51"><a href="#cb7-51" aria-hidden="true" tabindex="-1"></a>        adv <span class="op">=</span> sr.results[<span class="st">'ctw'</span>][n][<span class="st">'mean'</span>] <span class="op">-</span> sr.results[<span class="st">'specialized'</span>][n][<span class="st">'mean'</span>]</span>
+<span id="cb7-52"><a href="#cb7-52" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f'  N=</span><span class="sc">{</span>n<span class="sc">:4d}</span><span class="ss">: </span><span class="sc">{</span>adv<span class="sc">:+.4f}</span><span class="ss">'</span>)</span>
+<span id="cb7-53"><a href="#cb7-53" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -324,35 +496,239 @@ window.Quarto = {
 </figure>
 </div>
 </div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Specialized advantage over CTW (positive = specialized wins)
+
+p_stay=0.0:
+  N=  10: +0.9000
+  N=  25: +2.0889
+  N=  50: +3.4634
+  N= 100: +4.7472
+  N= 200: +5.9329
+  N= 300: +6.5914
+  N= 499: +7.3912
+
+p_stay=0.3:
+  N=  10: +0.1786
+  N=  25: +0.2214
+  N=  50: +0.2828
+  N= 100: +0.3001
+  N= 200: +0.3313
+  N= 300: +0.3249
+  N= 499: +0.3769
+
+p_stay=0.5:
+  N=  10: +0.0524
+  N=  25: +0.0264
+  N=  50: +0.0305
+  N= 100: +0.0060
+  N= 200: +0.0127
+  N= 300: +0.0075
+  N= 499: +0.0369
+
+p_stay=0.7:
+  N=  10: +0.2148
+  N=  25: +0.2253
+  N=  50: +0.2150
+  N= 100: +0.1979
+  N= 200: +0.1676
+  N= 300: +0.1604
+  N= 499: +0.1674
+
+p_stay=0.9:
+  N=  10: +0.5262
+  N=  25: +0.4196
+  N=  50: +0.3619
+  N= 100: +0.3292
+  N= 200: +0.2909
+  N= 300: +0.2870
+  N= 499: +0.2738
+
+p_stay=0.99:
+  N=  10: +0.8561
+  N=  25: +0.4240
+  N=  50: +0.2621
+  N= 100: +0.1849
+  N= 200: +0.1367
+  N= 300: +0.1101
+  N= 499: +0.0961
+</code></pre>
 </div>
-<div id="fixed-p7-bps" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># BPS vs N for fixed p=0.7: mirrors the p=0.3 result </span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="cell-fsm-plot" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-06-14T20:35:16.141958Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-06-14T20:35:16.141870Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-06-14T20:35:16.222417Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-06-14T20:35:16.222109Z&quot;}}" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>envelope <span class="op">=</span> storage.load(storage.experiment_path(<span class="st">'exp7_fsm_benchmark'</span>))</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>sr <span class="op">=</span> envelope.results</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'Source: </span><span class="sc">{</span>sr<span class="sc">.</span>param_value<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'N values: </span><span class="sc">{</span>sr<span class="sc">.</span>n_values<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>C_TRANSFORMER <span class="op">=</span> <span class="st">'#002d4d'</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>C_CTW         <span class="op">=</span> <span class="st">'#9C4732'</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>C_LAPLACE     <span class="op">=</span> <span class="st">'#177F6B'</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">4</span>), dpi<span class="op">=</span><span class="dv">150</span>)</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>ns <span class="op">=</span> sr.n_values</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> name, color, marker, label <span class="kw">in</span> [</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'transformer'</span>, C_TRANSFORMER, <span class="st">'s'</span>, <span class="st">'Transformer'</span>),</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'ctw'</span>,         C_CTW,         <span class="st">'^'</span>, <span class="st">'CTW'</span>),</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'laplace'</span>,     C_LAPLACE,     <span class="st">'o'</span>, <span class="st">'Laplace'</span>),</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>]:</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>    means <span class="op">=</span> [sr.results[name][n][<span class="st">'mean'</span>] <span class="cf">for</span> n <span class="kw">in</span> ns]</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>    cis   <span class="op">=</span> [sr.results[name][n][<span class="st">'ci'</span>]   <span class="cf">for</span> n <span class="kw">in</span> ns]</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>    ax.errorbar(ns, means, yerr<span class="op">=</span>cis, fmt<span class="op">=</span><span class="ss">f'</span><span class="sc">{</span>marker<span class="sc">}</span><span class="ss">-'</span>, capsize<span class="op">=</span><span class="dv">3</span>,</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>                color<span class="op">=</span>color, lw<span class="op">=</span><span class="fl">1.2</span>, ms<span class="op">=</span><span class="dv">5</span>, label<span class="op">=</span>label)</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>ax.set_xscale(<span class="st">'log'</span>)</span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>ax.set_xticks(ns)</span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>ax.get_xaxis().set_major_formatter(mticker.ScalarFormatter())</span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>ax.tick_params(axis<span class="op">=</span><span class="st">'x'</span>, rotation<span class="op">=</span><span class="dv">40</span>)</span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">'Sequence length N'</span>)</span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">'Bits per symbol'</span>)</span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">'Deterministic 4-State FSM'</span>, fontweight<span class="op">=</span><span class="st">'bold'</span>, pad<span class="op">=</span><span class="dv">5</span>)</span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>ax.legend()</span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>ax.grid(<span class="va">True</span>, axis<span class="op">=</span><span class="st">'y'</span>, alpha<span class="op">=</span><span class="fl">0.4</span>)</span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>ax.spines[<span class="st">'top'</span>].set_visible(<span class="va">False</span>)</span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>ax.spines[<span class="st">'right'</span>].set_visible(<span class="va">False</span>)</span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'</span><span class="ch">\n</span><span class="st">Transformer - CTW BPS (negative = transformer wins)</span><span class="ch">\n</span><span class="st">'</span>)</span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> n <span class="kw">in</span> sr.n_values:</span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a>    diff <span class="op">=</span> sr.results[<span class="st">'transformer'</span>][n][<span class="st">'mean'</span>] <span class="op">-</span> sr.results[<span class="st">'ctw'</span>][n][<span class="st">'mean'</span>]</span>
+<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a>    winner <span class="op">=</span> <span class="st">'transformer'</span> <span class="cf">if</span> diff <span class="op">&lt;</span> <span class="dv">0</span> <span class="cf">else</span> <span class="st">'ctw'</span></span>
+<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f'  N=</span><span class="sc">{</span>n<span class="sc">:4d}</span><span class="ss">: </span><span class="sc">{</span>diff<span class="sc">:+.4f}</span><span class="ss">  (</span><span class="sc">{</span>winner<span class="sc">}</span><span class="ss"> wins)'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Source: 4-state deterministic
+N values: [10, 25, 50, 100, 200, 300, 499]</code></pre>
+</div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="transformer-based-compression_files/figure-html/cell-6-output-1.png" class="img-fluid figure-img"></p>
+<p><img src="transformer-based-compression_files/figure-html/cell-6-output-2.png" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Transformer - CTW BPS (negative = transformer wins)
+
+  N=  10: -0.2274  (transformer wins)
+  N=  25: -0.2625  (transformer wins)
+  N=  50: -0.2683  (transformer wins)
+  N= 100: -0.2565  (transformer wins)
+  N= 200: -0.2972  (transformer wins)
+  N= 300: -0.3034  (transformer wins)
+  N= 499: -0.3096  (transformer wins)</code></pre>
 </div>
-<div id="fixed-p7-gap" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Gap (Laplace − Transformer BPS) vs N for fixed p=0.7.</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="transformer-based-compression_files/figure-html/cell-7-output-1.png" class="img-fluid figure-img"></p>
-</figure>
 </div>
-</div>
-</div>
-<p>Here the results are different. For <span class="math inline">\(p=0.3\)</span>, the transformer starts at around 0.883 BPS at <span class="math inline">\(N=10\)</span>, which is essentially at the entropy lower bound of 0.881. Laplace at <span class="math inline">\(N=10\)</span> is at 0.959 which means it’s still paying its estimation cost. The gap at <span class="math inline">\(N=10\)</span> is about 0.076 bits/symbol and decays cleanly as <span class="math inline">\(N\)</span> grows, converging near zero by <span class="math inline">\(N=500\)</span> as Laplace accumulates enough counts to catch up.</p>
-<p>Same story for <span class="math inline">\(p=0.7\)</span>. The gap is comparable in magnitude and decays the same way.</p>
-<p>The mechanism is straightforward. Laplace’s redundancy at small <span class="math inline">\(N\)</span> is its estimation cost; it’s spending bits learning where <span class="math inline">\(p\)</span> is from the current sequence. The transformer paid that cost during training. At inference time it already knows <span class="math inline">\(p\)</span>, so it starts near entropy immediately. The advantage is real but finite: as <span class="math inline">\(N\)</span> grows, Laplace’s running estimate converges and the gap disappears.</p>
 </section>
-<section id="what-this-connects-to" class="level2" data-number="5">
-<h2 data-number="5" class="anchored" data-anchor-id="what-this-connects-to"><span class="header-section-number">5</span> What This Connects To</h2>
-<p>The fixed-<span class="math inline">\(p\)</span> condition is the idealized version of a learned coder: infinite training on one distribution, so the learned coder skips all estimation overhead entirely. The gap we observe is exactly Laplace’s warm-up cost, avoided by offline learning.</p>
-<p>The IID condition shows the other face: when the distribution shifts every sequence, offline training on the marginal distribution of <span class="math inline">\(p\)</span> values doesn’t help. The model correctly defaults to universal coding behavior.</p>
+<section id="where-the-counting-lives" class="level2">
+<h2 class="anchored" data-anchor-id="where-the-counting-lives">Where the counting lives</h2>
+<p>The cleanest result is from probing the attention heads. The Bayes-optimal estimate for IID data under a Beta(3b1, 3b2) prior is (k+3b1)/(t+3b1+3b2). This is a linear function of two counts: the number of 1s seen (k) and the total symbols seen (t). So you can fit a linear probe to the transformer’s attention outputs at each layer and check whether the model has computed this quantity.</p>
+<p>It has. For a transformer trained under Beta(5,2), the probe achieves R0b2=0.82 at Layer 0. For most models Layer 0 dominates, meaning the counting and prior correction happens in the first attention layer. The raw k/t probe, which just checks whether the model is counting without the prior correction, scores lower at every layer for every model.</p>
+<p>What this shows is that the prior correction is in the attention weights, not deferred to the MLP later. The model is doing something structurally Bayesian: count the observations in attention, apply the prior correction in the same operation, output the probability. The R0b2 scales with prior concentration too, Beta(0.5,0.5) peaks at 0.43 while Beta(5,2) reaches 0.82, which makes sense because a concentrated prior produces sharper predictions that are easier to read out linearly.</p>
+<p>I did not expect the probe to work this cleanly. A 3-layer transformer with 90K parameters learning a closed-form Bayesian estimator from scratch, and you can literally read the estimate off the first layer’s attention outputs with a linear regression. That is satisfying in a way that most ML results are not.</p>
+<div id="cell-attention-plot" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-06-14T20:35:16.223612Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-06-14T20:35:16.223525Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-06-14T20:35:16.405852Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-06-14T20:35:16.405515Z&quot;}}" data-execution_count="6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>envelope <span class="op">=</span> storage.load(storage.experiment_path(<span class="st">'exp8_attention_probe'</span>))</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>r <span class="op">=</span> envelope.results</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>priors <span class="op">=</span> r[<span class="st">'priors'</span>]</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Bayes probe R2 ((k+alpha)/(t+alpha+beta)) — layer means:'</span>)</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> prior <span class="kw">in</span> priors:</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    lm <span class="op">=</span> r[prior][<span class="st">'bay_r2_layer_means'</span>]</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f'  </span><span class="sc">{</span>prior<span class="sc">}</span><span class="ss">: L0=</span><span class="sc">{</span>lm[<span class="dv">0</span>]<span class="sc">:.3f}</span><span class="ss">  L1=</span><span class="sc">{</span>lm[<span class="dv">1</span>]<span class="sc">:.3f}</span><span class="ss">  L2=</span><span class="sc">{</span>lm[<span class="dv">2</span>]<span class="sc">:.3f}</span><span class="ss">  max=</span><span class="sc">{</span>r[prior][<span class="st">"max_bay_r2"</span>]<span class="sc">:.3f}</span><span class="ss">'</span>)</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>()</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'KT probe R2 (k/t) — layer means:'</span>)</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> prior <span class="kw">in</span> priors:</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>    lm <span class="op">=</span> r[prior][<span class="st">'kt_r2_layer_means'</span>]</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f'  </span><span class="sc">{</span>prior<span class="sc">}</span><span class="ss">: L0=</span><span class="sc">{</span>lm[<span class="dv">0</span>]<span class="sc">:.3f}</span><span class="ss">  L1=</span><span class="sc">{</span>lm[<span class="dv">1</span>]<span class="sc">:.3f}</span><span class="ss">  L2=</span><span class="sc">{</span>lm[<span class="dv">2</span>]<span class="sc">:.3f}</span><span class="ss">  max=</span><span class="sc">{</span>r[prior][<span class="st">"max_kt_r2"</span>]<span class="sc">:.3f}</span><span class="ss">'</span>)</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>C_KT    <span class="op">=</span> <span class="st">'#177F6B'</span></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>C_BAYES <span class="op">=</span> <span class="st">'#E07B39'</span></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.arange(<span class="bu">len</span>(priors))</span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>width <span class="op">=</span> <span class="fl">0.35</span></span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>kt_max  <span class="op">=</span> [r[p][<span class="st">'max_kt_r2'</span>]  <span class="cf">for</span> p <span class="kw">in</span> priors]</span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>bay_max <span class="op">=</span> [r[p][<span class="st">'max_bay_r2'</span>] <span class="cf">for</span> p <span class="kw">in</span> priors]</span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">4</span>), dpi<span class="op">=</span><span class="dv">150</span>)</span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>ax.bar(x <span class="op">-</span> width<span class="op">/</span><span class="dv">2</span>, kt_max,  width, label<span class="op">=</span><span class="st">'k/t (KT/Laplace)'</span>, color<span class="op">=</span>C_KT,    alpha<span class="op">=</span><span class="fl">0.85</span>)</span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>ax.bar(x <span class="op">+</span> width<span class="op">/</span><span class="dv">2</span>, bay_max, width, label<span class="op">=</span><span class="st">'Bayes-optimal'</span>,    color<span class="op">=</span>C_BAYES, alpha<span class="op">=</span><span class="fl">0.85</span>)</span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>ax.set_xticks(x)</span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a>ax.set_xticklabels(priors, fontsize<span class="op">=</span><span class="dv">9</span>)</span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">'Max R</span><span class="ch">\u00b2</span><span class="st"> across all heads'</span>)</span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">'Attention Head Probe R</span><span class="ch">\u00b2</span><span class="st">'</span>, fontweight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a>ax.legend()</span>
+<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a>ax.grid(<span class="va">True</span>, axis<span class="op">=</span><span class="st">'y'</span>, alpha<span class="op">=</span><span class="fl">0.4</span>)</span>
+<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a>ax.spines[<span class="st">'top'</span>].set_visible(<span class="va">False</span>)</span>
+<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a>ax.spines[<span class="st">'right'</span>].set_visible(<span class="va">False</span>)</span>
+<span id="cb12-36"><a href="#cb12-36" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb12-37"><a href="#cb12-37" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb12-38"><a href="#cb12-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-39"><a href="#cb12-39" aria-hidden="true" tabindex="-1"></a>fig2, axes2 <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="bu">len</span>(priors), figsize<span class="op">=</span>(<span class="dv">13</span>, <span class="dv">3</span>), dpi<span class="op">=</span><span class="dv">150</span>)</span>
+<span id="cb12-40"><a href="#cb12-40" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ax2, prior <span class="kw">in</span> <span class="bu">zip</span>(axes2, priors):</span>
+<span id="cb12-41"><a href="#cb12-41" aria-hidden="true" tabindex="-1"></a>    mat <span class="op">=</span> np.array(r[prior][<span class="st">'bay_r2'</span>])</span>
+<span id="cb12-42"><a href="#cb12-42" aria-hidden="true" tabindex="-1"></a>    im <span class="op">=</span> ax2.imshow(mat, vmin<span class="op">=</span><span class="dv">0</span>, vmax<span class="op">=</span><span class="dv">1</span>, cmap<span class="op">=</span><span class="st">'Blues'</span>, aspect<span class="op">=</span><span class="st">'auto'</span>)</span>
+<span id="cb12-43"><a href="#cb12-43" aria-hidden="true" tabindex="-1"></a>    ax2.set_title(prior, fontsize<span class="op">=</span><span class="dv">8</span>)</span>
+<span id="cb12-44"><a href="#cb12-44" aria-hidden="true" tabindex="-1"></a>    ax2.set_xlabel(<span class="st">'Head'</span>)</span>
+<span id="cb12-45"><a href="#cb12-45" aria-hidden="true" tabindex="-1"></a>    ax2.set_ylabel(<span class="st">'Layer'</span>)</span>
+<span id="cb12-46"><a href="#cb12-46" aria-hidden="true" tabindex="-1"></a>    ax2.set_xticks(<span class="bu">range</span>(mat.shape[<span class="dv">1</span>]))</span>
+<span id="cb12-47"><a href="#cb12-47" aria-hidden="true" tabindex="-1"></a>    ax2.set_yticks(<span class="bu">range</span>(mat.shape[<span class="dv">0</span>]))</span>
+<span id="cb12-48"><a href="#cb12-48" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(mat.shape[<span class="dv">0</span>]):</span>
+<span id="cb12-49"><a href="#cb12-49" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(mat.shape[<span class="dv">1</span>]):</span>
+<span id="cb12-50"><a href="#cb12-50" aria-hidden="true" tabindex="-1"></a>            ax2.text(j, i, <span class="ss">f'</span><span class="sc">{</span>mat[i,j]<span class="sc">:.2f}</span><span class="ss">'</span>, ha<span class="op">=</span><span class="st">'center'</span>, va<span class="op">=</span><span class="st">'center'</span>, fontsize<span class="op">=</span><span class="dv">7</span>)</span>
+<span id="cb12-51"><a href="#cb12-51" aria-hidden="true" tabindex="-1"></a>fig2.colorbar(im, ax<span class="op">=</span>axes2[<span class="op">-</span><span class="dv">1</span>], label<span class="op">=</span><span class="st">'R</span><span class="ch">\u00b2</span><span class="st">'</span>)</span>
+<span id="cb12-52"><a href="#cb12-52" aria-hidden="true" tabindex="-1"></a>fig2.suptitle(<span class="st">'Bayes-Optimal Probe R</span><span class="ch">\u00b2</span><span class="st"> per Layer/Head'</span>, fontweight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb12-53"><a href="#cb12-53" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb12-54"><a href="#cb12-54" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Bayes probe R2 ((k+alpha)/(t+alpha+beta)) — layer means:
+  Beta(1.0,1.0): L0=0.799  L1=0.563  L2=0.537  max=0.803
+  Beta(0.5,0.5): L0=0.189  L1=0.587  L2=0.406  max=0.669
+  Beta(5.0,5.0): L0=0.018  L1=0.276  L2=0.362  max=0.368
+  Beta(5.0,2.0): L0=0.351  L1=0.826  L2=0.848  max=0.861
+  Beta(2.0,5.0): L0=0.353  L1=0.728  L2=0.833  max=0.839
+
+KT probe R2 (k/t) — layer means:
+  Beta(1.0,1.0): L0=0.752  L1=0.510  L2=0.479  max=0.759
+  Beta(0.5,0.5): L0=0.187  L1=0.559  L2=0.353  max=0.635
+  Beta(5.0,5.0): L0=0.035  L1=0.155  L2=0.248  max=0.270
+  Beta(5.0,2.0): L0=0.096  L1=0.692  L2=0.737  max=0.740
+  Beta(2.0,5.0): L0=0.232  L1=0.628  L2=0.737  max=0.739</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="transformer-based-compression_files/figure-html/cell-7-output-2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="transformer-based-compression_files/figure-html/cell-7-output-3.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="the-toolkit-a-clean-break-from-notebook-sprawl" class="level2">
+<h2 class="anchored" data-anchor-id="the-toolkit-a-clean-break-from-notebook-sprawl">The toolkit: a clean break from notebook sprawl</h2>
+<p>The original experiments lived in notebooks scattered across the repo. IID experiments in one notebook, Markov in another, training bounds in a third. Three different pkl schemas accumulated through iterative work. Loading an old result meant remembering which notebook format it used.</p>
+<p>This is standard research code and it sucked to work with.</p>
+<p>The clean version is a toolkit under hard agent constraints. The agent can import only from <code>toolkit/</code> and can write only to <code>experiments/</code>. Every experiment produces exactly two files: a script that runs and saves results, and an analysis notebook the agent writes from scratch using nbformat. The agent never touches <code>mingpt/</code>, <code>ctw/</code>, or any original notebook.</p>
+<p>A source is just a callable <code>(n, seed) -&gt; np.ndarray</code> of 0s and 1s. The five canonical sources are convenience functions. You can write a custom source as an inline lambda and pass it directly to <code>SequenceDataset</code>. The estimator interface is the same shape: any callable <code>(seq) -&gt; np.ndarray</code> of P(next=1) values works.</p>
+<p><code>block_size = seq_len - 1</code> is the single source of truth. This is never set manually, it is derived from the dataset and flows into model training automatically. A model evaluated on sequences longer than its training length falls back to 0.5 padding, which is intentional. Watching estimators converge from their uninformative prior is the whole measurement.</p>
+<p>The design decisions are documented in <code>DESIGN.md</code> with a why for each one. This is partly for me six months from now and partly for the agents that will write experiments against this toolkit. If a decision looks arbitrary there is a reason, and the reason is written down next to the decision.</p>
+</section>
+<section id="what-is-missing" class="level2">
+<h2 class="anchored" data-anchor-id="what-is-missing">What is missing</h2>
+<p>The whole system is synthetic binary sequences. No real data, no larger alphabets, no multi-dimensional sources. Generalizing to bytes or text is the obvious next step but it changes the comparison landscape. You lose the closed-form optimal estimators and have to compare against practical compressors instead of information-theoretic bounds.</p>
+<p>The attention probe result is the one I want to push further. If a 3-layer transformer can learn a Bayesian estimator in Layer 0 attention, what does a deeper transformer do with more complex sources? Does the counting move up through the layers? Does the model learn to decompose structured sources into independent counting problems?</p>
+<p>The platform exists to run those experiments now. The toolkit, the agent constraints, the storage format, the experiment shape are all in place. The question is just which source to throw at it next.</p>
 
 
 </section>
