@@ -6,8 +6,11 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Dan Vu">
+<meta name="dcterms.date" content="2026-06-14">
+<meta name="description" content="A single-purpose DPV feature extraction library. One peak, eight features, no configuration files.">
 
-<title>Dan Vu</title>
+<title>dpv-monopeak – Dan Vu</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,28 +23,63 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<link href="./assets/favicon.ico" rel="icon">
-<script src="site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-58e7cb164a30d0964bc3a4cf0cb5a652.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-0bfe021cbad7778764f6380846393d4a.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../assets/favicon.ico" rel="icon">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-58e7cb164a30d0964bc3a4cf0cb5a652.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-0bfe021cbad7778764f6380846393d4a.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -74,14 +112,14 @@ ul.task-list li input[type="checkbox"] {
 
 </head>
 
-<body class="nav-fixed quarto-light">
+<body class="nav-fixed fullcontent quarto-light">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../index.html">
     <span class="navbar-title">Dan Vu</span>
     </a>
   </div>
@@ -91,21 +129,21 @@ ul.task-list li input[type="checkbox"] {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link active" href="./index.html" aria-current="page"> 
+    <a class="nav-link" href="../index.html"> 
 <span class="menu-text">~/</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./research/index.html"> 
+    <a class="nav-link" href="../research/index.html"> 
 <span class="menu-text">research</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./blog/index.html"> 
+    <a class="nav-link" href="../blog/index.html"> 
 <span class="menu-text">blog</span></a>
   </li>  
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./assets/resume.pdf"> 
+    <a class="nav-link" href="../assets/resume.pdf"> 
 <span class="menu-text">resume</span></a>
   </li>  
 </ul>
@@ -116,178 +154,123 @@ ul.task-list li input[type="checkbox"] {
     </nav>
 </header>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     
 <!-- main -->
-<main class="content column-page" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><h1 class="landing-name title display-7">Dan Vu</h1></header>
+<main class="content" id="quarto-document-content">
 
-
-
-
-<div class="landing">
-
-  <div class="landing-hero">
-    <div class="landing-hero-text">
-      
-      <p class="landing-tag">EE / Systems &amp; Data Science · UH Mānoa</p>
-      <p class="landing-bio">
-      My interests are in machine learning, signal processing, info theory, AI agents.
-      </p>
-      <p class="landing-bio">
-      <a href="./research/index.html">research</a>
-        · <a href="./blog/index.html">blog</a>
-        · <a href="https://github.com/danvu772">github</a>
-        · <a href="assets/resume.pdf">resume</a>
-      </p>
-    </div>
-    <div class="landing-hero-photo">
-      <img src="assets/dan-headshot.jpg" alt="Dan Vu">
-    </div>
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">dpv-monopeak</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">electrochemistry</div>
+    <div class="quarto-category">python</div>
+    <div class="quarto-category">signal-processing</div>
+  </div>
   </div>
 
-  <hr>
-
-  <h2 class="anchored">research</h2>
-
-  <p>
-    <strong><a href="research/experiment-platform.html">experiment-platform</a></strong>
-    Sensor characterization rig. Cam drives a capacitive sensor, LCR meter measures it, force gauge verifies it.
-    <em>[in progress]</em>
-  </p>
-
-  <p>
-    <strong><a href="research/bluetooth-receiver.html">labsense ble receiver</a></strong>
-    Single-file async app. BLE capacitance sensor to SQLite to REST API.
-    <em>[in progress]</em>
-  </p>
-
-  <p>
-    <strong><a href="research/pump-automation.html">syringe pump automation</a></strong>
-    Multi-pump control for Harvard and New Era pumps. Rate limits, worker threads, tkinter UI.
-  </p>
-
-  <p>
-    <strong><a href="research/transformer-based-compression.html">transformer based compression</a></strong>
-    Benchmarking minGPT against Laplace estimation for universal source coding.
-  </p>
-
-  <p>
-    <strong><a href="research/dpv-monopeak.html">dpv-monopeak</a></strong>
-    Single-purpose DPV feature extraction library. One peak, eight features, no config files.
-  </p>
-
-  <hr>
-
-  <h2 class="anchored">blog</h2>
-
-  <p>
-    <strong><a href="blog/ride-quality-analysis.html">rail ride quality analysis</a></strong>
-    ISO 2631-1 1/3 octave band vibration analysis for passenger rail.
-  </p>
-
-  <p>
-    <strong><a href="blog/meme-bot.html">building a meme bot that learns your server</a></strong>
-    Discord bot that generates memes from your server's own message history.
-  </p>
-
+<div>
+  <div class="description">
+    A single-purpose DPV feature extraction library. One peak, eight features, no configuration files.
+  </div>
 </div>
-<style>
-.page-full .page-columns,
-.page-full #quarto-content,
-.page-full .quarto-title-block {
-  max-width: 100% !important;
-  padding: 0 !important;
-}
-
-.landing {
-  max-width: 740px;
-  margin: 0 auto;
-  padding: 48px 32px 64px;
-}
-
-.landing-hero {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 48px;
-  margin-bottom: 32px;
-}
-
-.landing-hero-photo img {
-  width: 120px;
-  height: 120px;
-  object-fit: cover;
-  object-position: center top;
-  border-radius: 50%;
-  display: block;
-}
-
-.landing-hero-text {
-  flex: 1;
-  min-width: 0;
-}
-
-.landing-hero-photo {
-  flex-shrink: 0;
-  width: 120px;
-}
-
-@media (max-width: 560px) {
-  .landing-hero {
-    flex-direction: column-reverse;
-    gap: 24px;
-  }
-  .landing-hero-photo {
-    width: 96px;
-  }
-  .landing-hero-photo img {
-    width: 96px;
-    height: 96px;
-  }
-}
-
-.landing-name {
-  font-size: 2em !important;
-  font-weight: 700 !important;
-  color: #111 !important;
-  margin: 0 0 4px 0 !important;
-  border: none !important;
-  padding: 0 !important;
-}
-
-.landing-tag {
-  color: #666;
-  font-size: 0.85em;
-  margin-bottom: 16px;
-}
-
-.landing-bio {
-  color: #444;
-  font-size: 0.92em;
-  line-height: 1.7;
-  max-width: 480px;
-}
-
-.landing h2 {
-  font-size: 1em;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: #888;
-  margin-bottom: 0.8em;
-  border: none;
-  padding: 0;
-}
-
-.landing p {
-  margin-bottom: 0.6em;
-  line-height: 1.65;
-  font-size: 0.92em;
-}
-</style>
 
 
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Dan Vu </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">June 14, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>I kept rewriting the same peak-extraction code across calibration experiments. Find the max, subtract a baseline, pull some slopes off the shape. Every notebook had its own version, each broken in its own special way. The third time I tracked down a sign error in a width calculation, I gave up and made it a library.</p>
+<p><code>dpv-monopeak</code> does one thing. You hand it a voltage array and a current array from a Differential Pulse Voltammetry scan with a single dominant Faradaic peak. It hands back eight electrochemical features and every intermediate it used to get them. That is the whole scope.</p>
+<section id="the-monopeak-assumption" class="level2">
+<h2 class="anchored" data-anchor-id="the-monopeak-assumption">The monopeak assumption</h2>
+<p>The name is the constraint. One Faradaic peak per scan, no more. If your voltammogram has multiple redox couples, the global current maximum wins and everything else is treated as background. No peak fitting, no deconvolution.</p>
+<p>That looks like a limitation. It is the point. Multi-peak DPV is a different problem with different failure modes and a baseline model that is far more involved. Refusing to handle it keeps this library small enough to read in one sitting and fast enough to run on thousands of scans without anyone wondering what is happening inside.</p>
+</section>
+<section id="the-baseline-and-the-capacitive-hump" class="level2">
+<h2 class="anchored" data-anchor-id="the-baseline-and-the-capacitive-hump">The baseline and the capacitive hump</h2>
+<p>DPV scans from our instrument carry a characteristic artifact. On the left side of the peak, before the Faradaic current rises, there is a hump: a slow climb in baseline current as the electrode double layer charges and discharges. Search naively for the current minimum left of the peak to anchor your baseline and you latch onto the tip of that hump instead of the real pre-peak floor. The baseline tilts up, the corrected peak height shrinks, and everything downstream comes out wrong.</p>
+<p>The fix is the left-chop heuristic. The entire thing:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> _find_left_chop(i, peak_idx):</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    quarter_end <span class="op">=</span> peak_idx <span class="op">//</span> <span class="dv">2</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> quarter_end <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">int</span>(np.argmax(i[:quarter_end]))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Three lines. Take the quarter of the scan before the peak. The current maximum in that window is the shoulder of the capacitive hump, so start the left-anchor search there and exclude everything before it.</p>
+<p>This is embarrassingly simple and it works, because the hump always sits in the first half of the pre-peak region for the scans this instrument produces. Different instrument, different artifact shape? Inject your own <code>left_chop_fn</code> and the rest of the extraction logic does not change. The interface is <code>(i: ndarray, peak_idx: int) -&gt; int</code>. Return an index. Done.</p>
+</section>
+<section id="the-eight-features" class="level2">
+<h2 class="anchored" data-anchor-id="the-eight-features">The eight features</h2>
+<p>Once the anchors are placed, the rest is deterministic geometry. The baseline is a straight line between the left and right current minima flanking the peak. The corrected current is <code>i - baseline</code>. From there:</p>
+<p><code>X</code> is the peak voltage, the voltage at the maximum of the corrected current. This is your redox potential proxy, the primary signal of which analyte you are looking at.</p>
+<p><code>Height</code> is the peak current after baseline subtraction. It scales with concentration and it is the most direct quantitative feature.</p>
+<p><code>Area</code> is the trapezoidal integral of the corrected peak between the anchors. It holds up better than Height when the peak shape shifts across replicates.</p>
+<p><code>Width</code> is the FWHM, the voltage span at half the peak height. It needs both half-max crossings to exist and returns NaN if one is missing, which is more honest than guessing.</p>
+<p><code>YOffset</code> is the baseline current at the peak voltage, the non-Faradaic background. If this drifts across a concentration series while Height stays flat, your electrode is fouling rather than the analyte changing.</p>
+<p><code>MaxSlope</code> and <code>MinSlope</code> are the steepest rising and falling slopes of the corrected peak, computed as finite differences on the raw data with no smoothing. Positive and negative by convention. Sharp peaks get large absolute values, broad peaks get small ones.</p>
+<p><code>SumSlope</code> is <code>MaxSlope + abs(MinSlope)</code>, a single number for peak sharpness. Narrow, well-defined peaks score high. Broad, flat peaks score low.</p>
+<p>Every one of these has a physical meaning. None of them are dimensionless scores or model embeddings. They are numbers you can point at on the voltammogram and explain to a colleague in one sentence.</p>
+</section>
+<section id="when-it-returns-none" class="level2">
+<h2 class="anchored" data-anchor-id="when-it-returns-none">When it returns None</h2>
+<p>The extraction returns <code>None</code> when the scan does not contain a valid single peak. Arrays of different lengths, fewer than five points, flat current, duplicate voltage values, a peak sitting at either edge of the window, a positive peak height (which would put the baseline above the peak, impossible for a real Faradaic signal), zero peak area. Each gets its own early return with no diagnostic message.</p>
+<p>That is deliberate. The calling code loops over hundreds of scan files. When a scan fails, the loop skips it and logs the filename. A detailed error per scan would bury the researcher in noise. The failure is the signal: this scan has no valid monopeak, move on.</p>
+</section>
+<section id="two-functions-not-one-class" class="level2">
+<h2 class="anchored" data-anchor-id="two-functions-not-one-class">Two functions, not one class</h2>
+<p>Two public functions, no classes. <code>extract_dpv_features</code> returns the eight features as a flat dict. <code>compute_dpv</code> returns those eight plus every intermediate: the baseline array, the corrected current, the half-max indices, the derivative array, the slope indices. Use <code>extract_dpv_features</code> for batch processing and <code>compute_dpv</code> when you need to plot a result or debug a scan that is misbehaving.</p>
+<p>They share internals. <code>extract_dpv_features</code> calls <code>compute_dpv</code> and drops the extra keys. No duplication, and no way for the two paths to drift apart.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dpv_monopeak <span class="im">import</span> extract_dpv_features</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>v <span class="op">=</span> df[<span class="st">"v_V"</span>].to_numpy(dtype<span class="op">=</span><span class="bu">float</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>i <span class="op">=</span> df[<span class="st">"i_uA"</span>].to_numpy(dtype<span class="op">=</span><span class="bu">float</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>feats <span class="op">=</span> extract_dpv_features(v, i)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> feats:</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>feats[<span class="st">'X'</span>]<span class="sc">:.4f}</span><span class="ss"> V, </span><span class="sc">{</span>feats[<span class="st">'Height'</span>]<span class="sc">:.2f}</span><span class="ss"> uA"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="plot-as-sanity-check" class="level2">
+<h2 class="anchored" data-anchor-id="plot-as-sanity-check">Plot as sanity check</h2>
+<p>The optional <code>plot_dpv</code> function gives you a two-panel figure: raw current with baseline on top, corrected current with FWHM and area shading on the bottom. It takes the same <code>left_chop_fn</code> parameter, so the plot matches whatever extraction logic you are running. It is the fastest way to confirm the baseline is reasonable on one scan before you batch-process three hundred.</p>
+<p>Plotting is optional because matplotlib is heavy and this library is pure numpy by default. <code>pip install dpv-monopeak[plot]</code> pulls it in. The core stays at one dependency.</p>
+</section>
+<section id="testing-against-synthetic-peaks" class="level2">
+<h2 class="anchored" data-anchor-id="testing-against-synthetic-peaks">Testing against synthetic peaks</h2>
+<p>The test suite generates Gaussian peaks on flat and tilted baselines and checks the extracted features against analytic ground truth, to within discretization error. Peak voltage within one sample step, height within one percent, FWHM within two sample steps, area within five percent. Off-center peaks, edge peaks, linear baselines. The left-chop heuristic is tested for correctness and for pluggability: inject a recording lambda and confirm it was called exactly once with the right peak index.</p>
+<p>Every edge case that returns <code>None</code> has a test. Peak at the last sample, flat current, mismatched array lengths. If a scan should fail, the test asserts it does.</p>
+</section>
+<section id="dpv-calibration" class="level2">
+<h2 class="anchored" data-anchor-id="dpv-calibration">dpv-calibration</h2>
+<p>There is a sibling package, <code>dpv-calibration</code>, that turns these eight features into concentration-response curves. Point it at a directory of scans from known concentrations, it extracts features from each, fits a model, and returns calibration parameters. It is less mature, currently in that awkward phase where the API surface is mapped out but the edge cases are still being found by throwing real data at it. It exists because once feature extraction is clean, calibration is the obvious next thing, and bundling both into one package felt wrong. Feature extraction is a solved problem here. Calibration is a modeling problem with its own failure modes.</p>
+</section>
+<section id="what-i-got-wrong" class="level2">
+<h2 class="anchored" data-anchor-id="what-i-got-wrong">What I got wrong</h2>
+<p>The monopeak assumption is baked into the package name and every function signature. Right call for the instrument it was built for. It also means that if someone hands you a scan with two Faradaic peaks, the library quietly picks the taller one and pretends the other is not there. A <code>validate_monopeak</code> check that scans the corrected current for secondary peaks above some fraction of the main Height would catch it. I skipped it because every scan I had seen from our instrument was single-peak. The first time I ran it on a different dataset, that assumption broke.</p>
+<p>The other miss is error reporting. Returning <code>None</code> from every failure path is clean code and terrible debugging. When a batch job runs 200 scans and 14 silently drop, you have no idea why until you re-run those 14 through <code>compute_dpv</code> and stare at the intermediates. A <code>reason</code> key next to the <code>None</code> would have saved me an afternoon.</p>
+
+
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -708,5 +691,5 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<script src="site_libs/quarto-html/zenscroll-min.js"></script>
+<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>

@@ -8,7 +8,7 @@
 
 <meta name="author" content="Dan Vu">
 <meta name="dcterms.date" content="2025-03-12">
-<meta name="description" content="Using kernel SVMs to predict credit card default – exploring support vectors, asymmetric loss, and probability scoring.">
+<meta name="description" content="Using kernel SVMs to predict credit card default. Support vectors, asymmetric loss, and probability scoring.">
 
 <title>Credit Risk Modeling with SVMs – Dan Vu</title>
 <style>
@@ -76,10 +76,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-c27fcf49d1f223a5e9e0478296a4f52c.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-58e7cb164a30d0964bc3a4cf0cb5a652.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-d1ea70a2704e2bbf22df3926531478d3.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-0bfe021cbad7778764f6380846393d4a.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -141,7 +141,7 @@ window.Quarto = {
 
 </head>
 
-<body class="nav-fixed quarto-light">
+<body class="nav-fixed fullcontent quarto-light">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -175,16 +175,6 @@ window.Quarto = {
     <a class="nav-link" href="../assets/resume.pdf"> 
 <span class="menu-text">resume</span></a>
   </li>  
-  <li class="nav-item compact">
-    <a class="nav-link" href="https://github.com/danvu772"> <i class="bi bi-github" role="img" aria-label="GitHub">
-</i> 
-<span class="menu-text"></span></a>
-  </li>  
-  <li class="nav-item compact">
-    <a class="nav-link" href="https://linkedin.com/in/danvu772"> <i class="bi bi-linkedin" role="img">
-</i> 
-<span class="menu-text"></span></a>
-  </li>  
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
@@ -196,21 +186,7 @@ window.Quarto = {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">On this page</h2>
-   
-  <ul>
-  <li><a href="#the-problem" id="toc-the-problem" class="nav-link active" data-scroll-target="#the-problem"><span class="header-section-number">1</span> The Problem</a></li>
-  <li><a href="#data-split" id="toc-data-split" class="nav-link" data-scroll-target="#data-split"><span class="header-section-number">2</span> Data Split</a></li>
-  <li><a href="#base-rbf-svc" id="toc-base-rbf-svc" class="nav-link" data-scroll-target="#base-rbf-svc"><span class="header-section-number">3</span> Base RBF SVC</a></li>
-  <li><a href="#hyperparameter-tuning" id="toc-hyperparameter-tuning" class="nav-link" data-scroll-target="#hyperparameter-tuning"><span class="header-section-number">4</span> Hyperparameter Tuning</a></li>
-  <li><a href="#asymmetric-margins" id="toc-asymmetric-margins" class="nav-link" data-scroll-target="#asymmetric-margins"><span class="header-section-number">5</span> Asymmetric Margins</a></li>
-  <li><a href="#probability-scoring-via-platt-scaling" id="toc-probability-scoring-via-platt-scaling" class="nav-link" data-scroll-target="#probability-scoring-via-platt-scaling"><span class="header-section-number">6</span> Probability Scoring via Platt Scaling</a></li>
-  <li><a href="#final-evaluation-on-test-set" id="toc-final-evaluation-on-test-set" class="nav-link" data-scroll-target="#final-evaluation-on-test-set"><span class="header-section-number">7</span> Final Evaluation on Test Set</a></li>
-  </ul>
-<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="credit-risk-svm.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
-    </div>
+    
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
@@ -226,7 +202,7 @@ window.Quarto = {
 
 <div>
   <div class="description">
-    Using kernel SVMs to predict credit card default – exploring support vectors, asymmetric loss, and probability scoring.
+    Using kernel SVMs to predict credit card default. Support vectors, asymmetric loss, and probability scoring.
   </div>
 </div>
 
@@ -255,15 +231,15 @@ window.Quarto = {
 </header>
 
 
-<section id="the-problem" class="level2" data-number="1">
-<h2 data-number="1" class="anchored" data-anchor-id="the-problem"><span class="header-section-number">1</span> The Problem</h2>
-<p>Credit card default prediction is a classification problem with a twist: the two kinds of errors are not equally bad. Missing a client who is about to default (false negative) costs the bank money. Flagging a client who is actually fine (false positive) just means a declined transaction which is annoying, but recoverable.</p>
-<p>Standard classifiers don’t know this. They minimize overall error, which on an imbalanced dataset mostly means learning to predict the majority class and ignoring the minority. We use kernel SVMs to build a credit risk model and explore how to handle this asymmetry explicitly.</p>
-<p>Dataset: <a href="https://archive.ics.uci.edu/dataset/350/default+of+credit+card+clients">UCI Default of Credit Card Clients</a>: 30,000 clients, 23 features (payment history, bill amounts, demographics), binary target (default next month: yes/no). No missing values, no preprocessing complications.</p>
+<section id="the-problem" class="level2">
+<h2 class="anchored" data-anchor-id="the-problem">The problem</h2>
+<p>Credit card default prediction is a classification problem with a twist: the two kinds of error are not equally bad. Miss a client who is about to default (false negative) and the bank loses money. Flag a client who is actually fine (false positive) and you get a declined transaction, which is annoying but recoverable.</p>
+<p>Standard classifiers do not know this. They minimize overall error, which on an imbalanced dataset mostly means learning to predict the majority class and ignoring the minority. Here we use kernel SVMs to build a credit risk model and handle that asymmetry on purpose.</p>
+<p>Dataset: <a href="https://archive.ics.uci.edu/dataset/350/default+of+credit+card+clients">UCI Default of Credit Card Clients</a>. 30,000 clients, 23 features (payment history, bill amounts, demographics), binary target (does the client default next month). No missing values, no preprocessing headaches.</p>
 </section>
-<section id="data-split" class="level2" data-number="2">
-<h2 data-number="2" class="anchored" data-anchor-id="data-split"><span class="header-section-number">2</span> Data Split</h2>
-<p>Test set is held out immediately and never touched until the final evaluation. Within the training set, we carve out a validation set for all hyperparameter decisions. Normalization is fit only on train_train and applied forward to val and test.</p>
+<section id="data-split" class="level2">
+<h2 class="anchored" data-anchor-id="data-split">Data split</h2>
+<p>The test set is held out immediately and not touched until the final evaluation. Inside the training set, we carve out a validation set for every hyperparameter decision. Normalization is fit on train_train only and applied forward to val and test, so nothing downstream leaks back into the fit.</p>
 <div id="code" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span>
@@ -288,12 +264,12 @@ x_test_scaled 9000</code></pre>
 </div>
 </div>
 </section>
-<section id="base-rbf-svc" class="level2" data-number="3">
-<h2 data-number="3" class="anchored" data-anchor-id="base-rbf-svc"><span class="header-section-number">3</span> Base RBF SVC</h2>
-<p>RBF SVM is a natural starting point for tabular classification. The kernel <span class="math inline">\(K(x_i, x_j) = \exp(-\gamma \|x_i - x_j\|^2)\)</span> maps the data into a high-dimensional space where a linear separator often exists even when the original feature space isn’t linearly separable.</p>
-<p>Before tuning anything, let’s look at what the default model actually learned. The SVM dual problem is:</p>
+<section id="base-rbf-svc" class="level2">
+<h2 class="anchored" data-anchor-id="base-rbf-svc">Base RBF SVC</h2>
+<p>RBF SVM is the natural starting point for tabular classification. The kernel <span class="math inline">\(K(x_i, x_j) = \exp(-\gamma \|x_i - x_j\|^2)\)</span> maps the data into a high-dimensional space where a linear separator often exists even when the original feature space is not linearly separable.</p>
+<p>Before tuning anything, look at what the default model actually learned. The SVM dual problem is:</p>
 <p><span class="math display">\[\max_{\alpha} \sum_i \alpha_i - \frac{1}{2} \sum_{i,j} \alpha_i \alpha_j y_i y_j K(x_i, x_j)\]</span></p>
-<p>subject to <span class="math inline">\(0 \leq \alpha_i \leq C\)</span> and <span class="math inline">\(\sum_i \alpha_i y_i = 0\)</span>. Points with <span class="math inline">\(\alpha_i &gt; 0\)</span> are support vectors – the only training points that matter at inference time. Prediction for a new point <span class="math inline">\(x\)</span> is:</p>
+<p>subject to <span class="math inline">\(0 \leq \alpha_i \leq C\)</span> and <span class="math inline">\(\sum_i \alpha_i y_i = 0\)</span>. Points with <span class="math inline">\(\alpha_i &gt; 0\)</span> are support vectors, the only training points that matter at inference time. Prediction for a new point <span class="math inline">\(x\)</span> is:</p>
 <p><span class="math display">\[f(x) = \sum_{i \in SV} \alpha_i y_i K(x_i, x) + b\]</span></p>
 <div id="code" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn <span class="im">import</span> svm</span>
@@ -307,17 +283,17 @@ x_test_scaled 9000</code></pre>
 dual_coef_ shape:          (1, 7412)</code></pre>
 </div>
 </div>
-<p>7,412 support vectors out of 16,800 training points which is about 44%. That’s high, and it tells us the default decision boundary is not clean. The classes overlap significantly in feature space, so the model needs a lot of points to define the margin.</p>
-<p><code>dual_coef_</code> has shape <code>(1, 7412)</code> which means one <span class="math inline">\(\alpha_i y_i\)</span> per support vector. A large magnitude means that support vector is pulling hard on the boundary. Most are clustered near the margin; the high-magnitude ones are the contested, borderline clients.</p>
+<p>7,412 support vectors out of 16,800 training points, about 44%. That is high, and it tells us the default decision boundary is not clean. The classes overlap a lot in feature space, so the model needs many points to pin down the margin.</p>
+<p><code>dual_coef_</code> has shape <code>(1, 7412)</code>, one <span class="math inline">\(\alpha_i y_i\)</span> per support vector. Large magnitude means that support vector is pulling hard on the boundary. Most cluster near the margin. The high-magnitude ones are the contested, borderline clients.</p>
 </section>
-<section id="hyperparameter-tuning" class="level2" data-number="4">
-<h2 data-number="4" class="anchored" data-anchor-id="hyperparameter-tuning"><span class="header-section-number">4</span> Hyperparameter Tuning</h2>
+<section id="hyperparameter-tuning" class="level2">
+<h2 class="anchored" data-anchor-id="hyperparameter-tuning">Hyperparameter tuning</h2>
 <p>Two knobs matter for the RBF SVM:</p>
 <ul>
 <li><strong>C</strong>: penalty for margin violations. Low C gives a wider, softer margin. High C fits tighter and risks overfitting.</li>
-<li><strong>gamma</strong>: kernel bandwidth. Low gamma = each point influences a wide region (smooth boundary). High gamma = influence is very local (complex boundary, more support vectors, risks memorization).</li>
+<li><strong>gamma</strong>: kernel bandwidth. Low gamma means each point influences a wide region and the boundary is smooth. High gamma makes influence local, the boundary complex, the support vector count high, and memorization likely.</li>
 </ul>
-<p>We sweep a grid and track both F1 on the validation set and support vector count.</p>
+<p>We sweep a grid and track both validation F1 and support vector count.</p>
 <div id="code" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.svm <span class="im">import</span> SVC</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> f1_score</span>
@@ -373,17 +349,17 @@ C
 100.0   7053   6977   8105  11890</code></pre>
 </div>
 </div>
-<p>The sweet spot is C=1, gamma=0.1. We got a few things worth noting:</p>
-<p>At gamma=1, support vector count explodes past 11,000 regardless of C. The kernel is so narrow that almost every point needs to be a support vector to define the boundary. F1 collapses too. That’s overfitting.</p>
-<p>At gamma=0.001, the boundary is so smooth that for C=0.1 the model just predicts the majority class and F1 for the default class hits zero. Too much regularization in both directions.</p>
-<p>The C=1, gamma=0.1 combo gives the best F1 while keeping support vector count reasonable at 8,233.</p>
+<p>The sweet spot is C=1, gamma=0.1. A few things worth flagging.</p>
+<p>At gamma=1, support vector count blows past 11,000 regardless of C. The kernel is so narrow that almost every point has to be a support vector to define the boundary, and F1 collapses with it. That is overfitting in plain sight.</p>
+<p>At gamma=0.001 the boundary is so smooth that for C=0.1 the model just predicts the majority class and F1 on the default class hits zero. Too much regularization, the other direction.</p>
+<p>C=1, gamma=0.1 gives the best F1 while keeping support vector count reasonable at 8,233.</p>
 </section>
-<section id="asymmetric-margins" class="level2" data-number="5">
-<h2 data-number="5" class="anchored" data-anchor-id="asymmetric-margins"><span class="header-section-number">5</span> Asymmetric Margins</h2>
-<p>The baseline model at C=1, gamma=0.1 has recall of 0.36 on the default class which means it’s missing 64% of actual defaulters. For a bank, that’s the worst possible failure mode.</p>
-<p>Standard SVM penalizes misclassification equally for both classes. We can fix this by using different penalty parameters <span class="math inline">\(C^+\)</span> and <span class="math inline">\(C^-\)</span> in the primal:</p>
+<section id="asymmetric-margins" class="level2">
+<h2 class="anchored" data-anchor-id="asymmetric-margins">Asymmetric margins</h2>
+<p>The baseline model at C=1, gamma=0.1 has recall of 0.36 on the default class. It is missing 64% of actual defaulters. For a bank, that is the worst failure mode there is.</p>
+<p>A standard SVM penalizes both classes equally. We fix that with separate penalty parameters <span class="math inline">\(C^+\)</span> and <span class="math inline">\(C^-\)</span> in the primal:</p>
 <p><span class="math display">\[\min_{w,b,\xi} \frac{1}{2}\|w\|^2 + C^+ \sum_{i: y_i=1} \xi_i + C^- \sum_{i: y_i=-1} \xi_i\]</span></p>
-<p>Setting <span class="math inline">\(C^+ &gt; C^-\)</span> makes misclassifying a defaulter more expensive. The boundary shifts away from the positive class to give it more margin, trading some precision for recall on the class that actually matters.</p>
+<p>Setting <span class="math inline">\(C^+ &gt; C^-\)</span> makes misclassifying a defaulter more expensive. The boundary shifts away from the positive class to give it more margin, trading precision for recall on the class that actually matters.</p>
 <p>We try three setups: baseline (no weighting), balanced (auto-computed from class frequencies), and manual ({0:1, 1:5}).</p>
 <div id="code" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn <span class="im">import</span> svm</span>
@@ -446,21 +422,21 @@ weighted avg       0.78      0.68      0.71      4200
 </code></pre>
 </div>
 </div>
-<p>The tradeoff is visible in the numbers. Baseline recall on defaulters: 0.37. Balanced: 0.58. Manual {0:1, 1:5}: 0.71.</p>
-<p>Each step up in recall costs precision the model flags more non-defaulters as risky. Whether that’s acceptable depends on the business cost ratio. For a bank that loses, say, 10x more on a default than on a declined transaction, the manual weighting is the right call even though accuracy drops to 0.68.</p>
-<p>This is the core reason accuracy is a useless metric here. A model that predicts nobody defaults gets 78% accuracy on this dataset and catches zero defaulters.</p>
+<p>The tradeoff shows up directly in the numbers. Baseline recall on defaulters: 0.37. Balanced: 0.58. Manual {0:1, 1:5}: 0.71.</p>
+<p>Every step up in recall costs precision, because the model flags more non-defaulters as risky. Whether that is acceptable depends on the business cost ratio. For a bank that loses 10x more on a default than on a declined transaction, the manual weighting is the right call even though accuracy drops to 0.68.</p>
+<p>This is why accuracy is a useless metric here. A model that predicts nobody defaults gets 78% accuracy on this dataset and catches zero defaulters.</p>
 </section>
-<section id="probability-scoring-via-platt-scaling" class="level2" data-number="6">
-<h2 data-number="6" class="anchored" data-anchor-id="probability-scoring-via-platt-scaling"><span class="header-section-number">6</span> Probability Scoring via Platt Scaling</h2>
-<p>Hard class labels are often not what you want in credit risk. A probability of default is more useful since it lets you rank applicants, set thresholds, and integrate with downstream risk systems.</p>
-<p>Setting <code>probability=True</code> enables Platt scaling. After the SVM is trained, a logistic regression is fit using 5-fold internal CV to map the decision function <span class="math inline">\(f(x)\)</span> to a probability:</p>
+<section id="probability-scoring-via-platt-scaling" class="level2">
+<h2 class="anchored" data-anchor-id="probability-scoring-via-platt-scaling">Probability scoring via Platt scaling</h2>
+<p>Hard class labels are usually not what you want in credit risk. A probability of default is more useful, because it lets you rank applicants, set thresholds, and feed downstream risk systems.</p>
+<p>Setting <code>probability=True</code> enables Platt scaling. After the SVM trains, a logistic regression is fit with 5-fold internal CV to map the decision function <span class="math inline">\(f(x)\)</span> to a probability:</p>
 <p><span class="math display">\[P(y=1 \mid x) = \frac{1}{1 + \exp(A \cdot f(x) + B)}\]</span></p>
-<p>where <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> are fit by MLE. The decision function measures signed distance to the hyperplane and a large positive value means the model is confident the client defaults, large negative means confident they won’t. Platt scaling converts that distance into a calibrated probability.</p>
-<p>The internal CV is what makes this reasonable – it prevents the calibration from just memorizing training labels. The result is a score you can actually interpret: <code>predict_proba(x)[1]</code> reflects the empirical default rate among clients with similar features.</p>
+<p>where <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> are fit by MLE. The decision function measures signed distance to the hyperplane: large positive means the model is confident the client defaults, large negative means confident they will not. Platt scaling turns that distance into a calibrated probability.</p>
+<p>The internal CV is what keeps this honest. It stops the calibration from just memorizing training labels. What comes out is a score you can actually read: <code>predict_proba(x)[1]</code> reflects the empirical default rate among clients with similar features.</p>
 </section>
-<section id="final-evaluation-on-test-set" class="level2" data-number="7">
-<h2 data-number="7" class="anchored" data-anchor-id="final-evaluation-on-test-set"><span class="header-section-number">7</span> Final Evaluation on Test Set</h2>
-<p>We use the manual-weighted model (C=1, gamma=0.1, class_weight={0:1, 1:5}) as our final model. This is the first and only time we touch the test set.</p>
+<section id="final-evaluation-on-the-test-set" class="level2">
+<h2 class="anchored" data-anchor-id="final-evaluation-on-the-test-set">Final evaluation on the test set</h2>
+<p>We take the manual-weighted model (C=1, gamma=0.1, class_weight={0:1, 1:5}) as the final model. This is the first and only time we touch the test set.</p>
 <div id="code" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>best_model <span class="op">=</span> svm.SVC(kernel<span class="op">=</span><span class="st">'rbf'</span>, gamma<span class="op">=</span><span class="fl">0.1</span>, C<span class="op">=</span><span class="dv">1</span>, class_weight<span class="op">=</span>{<span class="dv">0</span>:<span class="dv">1</span>, <span class="dv">1</span>:<span class="dv">5</span>}, probability<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>best_model.fit(X_train_train_scaled, y_train_train)</span>
@@ -482,9 +458,9 @@ weighted avg       0.78      0.68      0.71      9000
 </code></pre>
 </div>
 </div>
-<p>Test results hold; the recall on the default class is 0.70, consistent with what we saw on validation. No surprise collapse, which confirms the validation set decisions generalized.</p>
-<p>The model catches 70% of defaulters at the cost of flagging about a third of non-defaulters as risky. Whether you’d deploy this is a different story (don’t), but it’s a meaningful starting point and a significant improvement over the naive baseline that missed 63% of defaulters.</p>
-<p>We have many improvements to make from here: a probability threshold sweep to find the operating point that matches your actual loss ratio, and potentially a richer feature set or kernel choice. But the core machinery: asymmetric loss, Platt-scaled probabilities, is pointing us in the right direction.</p>
+<p>Test results hold. Recall on the default class is 0.70, in line with validation. No surprise collapse, which means the validation decisions generalized.</p>
+<p>The model catches 70% of defaulters at the cost of flagging about a third of non-defaulters as risky. Would you deploy this? No.&nbsp;But it is a meaningful starting point and a real improvement over the naive baseline that missed 63% of defaulters.</p>
+<p>Plenty left to do: a probability threshold sweep to find the operating point that matches your actual loss ratio, maybe a richer feature set or a different kernel. The core machinery, asymmetric loss and Platt-scaled probabilities, is pointing the right direction.</p>
 
 
 </section>

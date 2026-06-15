@@ -6,8 +6,11 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Dan Vu">
+<meta name="dcterms.date" content="2026-06-14">
+<meta name="description" content="Single-file async app. BLE capacitance sensor to SQLite to REST API. Auto-reconnect, staleness detection, rolling buffer.">
 
-<title>Dan Vu</title>
+<title>LabSense BLE Receiver – Dan Vu</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -23,25 +26,25 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<link href="./assets/favicon.ico" rel="icon">
-<script src="site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-58e7cb164a30d0964bc3a4cf0cb5a652.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-0bfe021cbad7778764f6380846393d4a.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../assets/favicon.ico" rel="icon">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-58e7cb164a30d0964bc3a4cf0cb5a652.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-0bfe021cbad7778764f6380846393d4a.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -74,14 +77,14 @@ ul.task-list li input[type="checkbox"] {
 
 </head>
 
-<body class="nav-fixed quarto-light">
+<body class="nav-fixed fullcontent quarto-light">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../index.html">
     <span class="navbar-title">Dan Vu</span>
     </a>
   </div>
@@ -91,21 +94,21 @@ ul.task-list li input[type="checkbox"] {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link active" href="./index.html" aria-current="page"> 
+    <a class="nav-link" href="../index.html"> 
 <span class="menu-text">~/</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./research/index.html"> 
+    <a class="nav-link" href="../research/index.html"> 
 <span class="menu-text">research</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./blog/index.html"> 
+    <a class="nav-link" href="../blog/index.html"> 
 <span class="menu-text">blog</span></a>
   </li>  
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./assets/resume.pdf"> 
+    <a class="nav-link" href="../assets/resume.pdf"> 
 <span class="menu-text">resume</span></a>
   </li>  
 </ul>
@@ -116,178 +119,104 @@ ul.task-list li input[type="checkbox"] {
     </nav>
 </header>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     
 <!-- main -->
-<main class="content column-page" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><h1 class="landing-name title display-7">Dan Vu</h1></header>
+<main class="content" id="quarto-document-content">
 
-
-
-
-<div class="landing">
-
-  <div class="landing-hero">
-    <div class="landing-hero-text">
-      
-      <p class="landing-tag">EE / Systems &amp; Data Science · UH Mānoa</p>
-      <p class="landing-bio">
-      My interests are in machine learning, signal processing, info theory, AI agents.
-      </p>
-      <p class="landing-bio">
-      <a href="./research/index.html">research</a>
-        · <a href="./blog/index.html">blog</a>
-        · <a href="https://github.com/danvu772">github</a>
-        · <a href="assets/resume.pdf">resume</a>
-      </p>
-    </div>
-    <div class="landing-hero-photo">
-      <img src="assets/dan-headshot.jpg" alt="Dan Vu">
-    </div>
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">LabSense BLE Receiver</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">bluetooth</div>
+    <div class="quarto-category">iot</div>
+    <div class="quarto-category">python</div>
+    <div class="quarto-category">fastapi</div>
+  </div>
   </div>
 
-  <hr>
-
-  <h2 class="anchored">research</h2>
-
-  <p>
-    <strong><a href="research/experiment-platform.html">experiment-platform</a></strong>
-    Sensor characterization rig. Cam drives a capacitive sensor, LCR meter measures it, force gauge verifies it.
-    <em>[in progress]</em>
-  </p>
-
-  <p>
-    <strong><a href="research/bluetooth-receiver.html">labsense ble receiver</a></strong>
-    Single-file async app. BLE capacitance sensor to SQLite to REST API.
-    <em>[in progress]</em>
-  </p>
-
-  <p>
-    <strong><a href="research/pump-automation.html">syringe pump automation</a></strong>
-    Multi-pump control for Harvard and New Era pumps. Rate limits, worker threads, tkinter UI.
-  </p>
-
-  <p>
-    <strong><a href="research/transformer-based-compression.html">transformer based compression</a></strong>
-    Benchmarking minGPT against Laplace estimation for universal source coding.
-  </p>
-
-  <p>
-    <strong><a href="research/dpv-monopeak.html">dpv-monopeak</a></strong>
-    Single-purpose DPV feature extraction library. One peak, eight features, no config files.
-  </p>
-
-  <hr>
-
-  <h2 class="anchored">blog</h2>
-
-  <p>
-    <strong><a href="blog/ride-quality-analysis.html">rail ride quality analysis</a></strong>
-    ISO 2631-1 1/3 octave band vibration analysis for passenger rail.
-  </p>
-
-  <p>
-    <strong><a href="blog/meme-bot.html">building a meme bot that learns your server</a></strong>
-    Discord bot that generates memes from your server's own message history.
-  </p>
-
+<div>
+  <div class="description">
+    Single-file async app. BLE capacitance sensor to SQLite to REST API. Auto-reconnect, staleness detection, rolling buffer.
+  </div>
 </div>
-<style>
-.page-full .page-columns,
-.page-full #quarto-content,
-.page-full .quarto-title-block {
-  max-width: 100% !important;
-  padding: 0 !important;
-}
-
-.landing {
-  max-width: 740px;
-  margin: 0 auto;
-  padding: 48px 32px 64px;
-}
-
-.landing-hero {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 48px;
-  margin-bottom: 32px;
-}
-
-.landing-hero-photo img {
-  width: 120px;
-  height: 120px;
-  object-fit: cover;
-  object-position: center top;
-  border-radius: 50%;
-  display: block;
-}
-
-.landing-hero-text {
-  flex: 1;
-  min-width: 0;
-}
-
-.landing-hero-photo {
-  flex-shrink: 0;
-  width: 120px;
-}
-
-@media (max-width: 560px) {
-  .landing-hero {
-    flex-direction: column-reverse;
-    gap: 24px;
-  }
-  .landing-hero-photo {
-    width: 96px;
-  }
-  .landing-hero-photo img {
-    width: 96px;
-    height: 96px;
-  }
-}
-
-.landing-name {
-  font-size: 2em !important;
-  font-weight: 700 !important;
-  color: #111 !important;
-  margin: 0 0 4px 0 !important;
-  border: none !important;
-  padding: 0 !important;
-}
-
-.landing-tag {
-  color: #666;
-  font-size: 0.85em;
-  margin-bottom: 16px;
-}
-
-.landing-bio {
-  color: #444;
-  font-size: 0.92em;
-  line-height: 1.7;
-  max-width: 480px;
-}
-
-.landing h2 {
-  font-size: 1em;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: #888;
-  margin-bottom: 0.8em;
-  border: none;
-  padding: 0;
-}
-
-.landing p {
-  margin-bottom: 0.6em;
-  line-height: 1.65;
-  font-size: 0.92em;
-}
-</style>
 
 
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Dan Vu </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">June 14, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>We have a BLE capacitance sensor that broadcasts readings over the Nordic UART Service. I needed something to receive those readings, persist them, and expose them over a REST API so other lab tools could grab the latest value without knowing anything about Bluetooth. The whole thing is 434 lines of Python in one file.</p>
+<p>It scans for a device matching a configurable name prefix, connects, subscribes to TX notifications, parses integer readings, writes them to SQLite with a rolling buffer cap, and serves a FastAPI on port 8000 with endpoints for health, status, latest reading, and history. If the device drops, it reconnects on its own after a configurable backoff. No external database, no message broker, no Docker. One process, one file.</p>
+<section id="three-async-tasks-one-queue" class="level2">
+<h2 class="anchored" data-anchor-id="three-async-tasks-one-queue">Three async tasks, one queue</h2>
+<p>The app runs three concurrent tasks in a single asyncio event loop. The BLE receiver task scans, connects, and subscribes to notifications in an infinite loop with reconnect backoff. The DB writer task drains an <code>asyncio.Queue</code> and persists readings to SQLite. FastAPI runs on the same loop through <code>uvicorn</code>.</p>
+<p>The handoff from BLE to database crosses a sync-to-async boundary. Bleak’s notification callback is synchronous and fires on a background thread owned by the OS Bluetooth stack. The callback parses the raw bytes into an integer and pushes it onto the async queue with <code>loop.call_soon_threadsafe</code>. That is the only threading concern in the whole app. <code>asyncio.Queue</code> is not thread-safe for <code>put</code>, and <code>call_soon_threadsafe</code> is the standard asyncio escape hatch for exactly this.</p>
+<p>Any packet that will not parse as an integer gets logged as a warning to a file and dropped. The BLE connection stays open, the queue stays clean, and the API never sees a <code>None</code> reading.</p>
+</section>
+<section id="sqlite-with-a-rolling-cap" class="level2">
+<h2 class="anchored" data-anchor-id="sqlite-with-a-rolling-cap">SQLite with a rolling cap</h2>
+<p>The readings table has five columns: an auto-incrementing ID, the integer value, an ISO 8601 timestamp with milliseconds, the device name, and the device address. Every insert triggers a count check. If the table holds more rows than <code>MAX_READINGS</code> (default 5000), the oldest rows get deleted to bring it back to the cap.</p>
+<p>The cap is a rolling window, not a time-based TTL. The history endpoint always holds exactly the most recent N readings, regardless of how fast the sensor transmits. At 10 Hz, 5000 readings is about eight minutes of history. At 1 Hz, it is over an hour. You lose older data silently, but for a lab tool that exists to answer “what is the sensor reading right now, and what was it doing for the last few minutes,” that is the right tradeoff.</p>
+<p>The trim query deletes by ID rather than timestamp to dodge a full table scan on every insert. With a 5000-row cap, the delete touches at most a few rows per insert, even if the table briefly runs one over.</p>
+</section>
+<section id="staleness-as-a-first-class-concept" class="level2">
+<h2 class="anchored" data-anchor-id="staleness-as-a-first-class-concept">Staleness as a first-class concept</h2>
+<p>A reading can be stale for two reasons. The device disconnected and the BLE receiver has not reconnected yet. Or the device is still connected but has not transmitted within <code>STALE_THRESHOLD_SECS</code> seconds (default 5). Both get checked on every API request.</p>
+<p>The <code>/data/latest</code> endpoint returns a <code>stale</code> boolean next to the reading. If stale is true, the value you are looking at might be seconds or minutes old, and you should not treat it as live. The <code>/status</code> endpoint reports connection state and staleness separately, so a monitoring dashboard can tell “device is gone” apart from “device is present but silent.”</p>
+<p>This matters because capacitive sensors in our setup throw the occasional spurious BLE disconnect when the environment is noisy or the sensor gets moved. The auto-reconnect loop picks it back up within a few seconds, but during that gap any tool polling the API needs to know the data is not current. A stale flag is simpler and more honest than handing back a null and making the consumer guess why.</p>
+</section>
+<section id="the-reconnect-loop" class="level2">
+<h2 class="anchored" data-anchor-id="the-reconnect-loop">The reconnect loop</h2>
+<p>The BLE receiver task is an infinite loop with three phases: scan, connect, wait for disconnect. Scan finds no matching device, it sleeps for <code>RECONNECT_BACKOFF</code> seconds and tries again. Connection fails, same thing. Connection succeeds and the device later drops, the <code>disconnected_callback</code> sets an <code>asyncio.Event</code> the task is awaiting, wakes it, and it goes back to scanning.</p>
+<p>No exponential backoff, no max retry count, no circuit breaker. The device is a lab sensor on a bench three feet away. If it is not connecting, the problem is physical: dead battery, out of range, powered off. Exponential backoff fixes none of those. A fixed five-second retry means the researcher sees a five-second gap, fixes the hardware, and the app picks it up on the next scan.</p>
+</section>
+<section id="configuration-without-a-config-file" class="level2">
+<h2 class="anchored" data-anchor-id="configuration-without-a-config-file">Configuration without a config file</h2>
+<p>All configuration is environment variables with defaults, loaded from a <code>.env</code> file by <code>python-dotenv</code>. Device name prefix, database path, log path, buffer size, staleness threshold, scan timeout, reconnect backoff, API host and port. Every constant reads from <code>os.getenv</code> with a fallback.</p>
+<p>This is deliberate. A JSON or YAML config adds a parsing step and a file-format dependency for six strings and integers. Environment variables are the config format every deployment tool already speaks. The <code>.env</code> file gives you file-based config for development, the environment gives you deploy-time config for everything else, and the code does not change between the two.</p>
+</section>
+<section id="the-api-surface" class="level2">
+<h2 class="anchored" data-anchor-id="the-api-surface">The API surface</h2>
+<p>Four endpoints. <code>GET /health</code> returns <code>{"status": "ok", "version": "0.1.0"}</code>. <code>GET /status</code> returns connection state, staleness, device info, last seen timestamp, and uptime. <code>GET /data/latest</code> returns the most recent reading and a stale flag. <code>GET /data/history?n=100</code> returns the last N readings, newest first, with optional device name and address filters.</p>
+<p>The history endpoint caps <code>n</code> at <code>MAX_READINGS</code> so a request for 1000000 rows cannot scan the whole database. The SQL uses a parameterized <code>LIMIT</code>, not a string format, so the query planner treats it as a bound parameter.</p>
+<p>Every endpoint returns a Pydantic model declared on the route decorator. FastAPI uses these for OpenAPI schema generation and response validation. The models set <code>from_attributes = True</code>, so they can be built from ORM-style objects. The database rows are not ORM objects, they are plain tuples from <code>aiosqlite</code>, but the model constructor is called by hand with keyword arguments. So the flag is future-proofing rather than something the code leans on today.</p>
+</section>
+<section id="lifespan-management" class="level2">
+<h2 class="anchored" data-anchor-id="lifespan-management">Lifespan management</h2>
+<p>FastAPI’s lifespan context manager handles startup and shutdown. On startup it initializes the SQLite database, creates the table if it is missing, and spawns the DB writer and BLE receiver as asyncio tasks. On shutdown it cancels both tasks, awaits their cancellation, and closes the database connection.</p>
+<p>This beats global <code>__init__</code> side effects or module-level <code>asyncio.create_task</code> calls you cannot await on shutdown. The lifespan is the one entry and exit point for every async resource. If the app crashes, the exception propagates through the lifespan and uvicorn restarts the process. The database connection always closes, either by <code>await db.close()</code> on the shutdown path or by the process exiting.</p>
+</section>
+<section id="what-i-would-change" class="level2">
+<h2 class="anchored" data-anchor-id="what-i-would-change">What I would change</h2>
+<p>The BLE callback parses bytes to int and enqueues in the same function. If the parsing ever gets more involved (signed values, multi-byte packing, different formats per device), that callback would need to split into parse and enqueue steps with the parse step testable on its own. Right now parsing is one call to <code>int()</code> and the only failure is a ValueError, which is caught and logged. For a single sensor emitting plain integer strings, fine. For several sensor types, not fine.</p>
+<p>The staleness check compares <code>last_seen</code> against <code>datetime.now(timezone.utc)</code> on every API call, and <code>last_seen</code> updates in the DB writer after a successful insert. If the callback fires but the DB write runs unusually long (which should not happen for a single-row insert into a local SQLite file), the API could call a reading stale while the writer is mid-insert. A separate <code>last_received</code> timestamp set in the BLE callback, independent of the DB write, would close that gap.</p>
+<p>I would also add a WebSocket endpoint. Polling <code>/data/latest</code> from a dashboard is fine for a few clients, but a live capacitance trace wants push. The pieces are already there: the async queue is a natural fan-out point and FastAPI has first-class WebSocket support. It was out of scope for v0.1, which targeted a single consumer running a data logging script.</p>
+
+
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -708,5 +637,5 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<script src="site_libs/quarto-html/zenscroll-min.js"></script>
+<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>

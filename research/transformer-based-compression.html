@@ -23,41 +23,6 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-/* CSS for syntax highlighting */
-html { -webkit-text-size-adjust: 100%; }
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
 </style>
 
 
@@ -76,10 +41,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-c27fcf49d1f223a5e9e0478296a4f52c.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-58e7cb164a30d0964bc3a4cf0cb5a652.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-d1ea70a2704e2bbf22df3926531478d3.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-0bfe021cbad7778764f6380846393d4a.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -112,7 +77,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </head>
 
-<body class="nav-fixed quarto-light">
+<body class="nav-fixed fullcontent quarto-light">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -146,16 +111,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="nav-link" href="../assets/resume.pdf"> 
 <span class="menu-text">resume</span></a>
   </li>  
-  <li class="nav-item compact">
-    <a class="nav-link" href="https://github.com/danvu772"> <i class="bi bi-github" role="img" aria-label="GitHub">
-</i> 
-<span class="menu-text"></span></a>
-  </li>  
-  <li class="nav-item compact">
-    <a class="nav-link" href="https://linkedin.com/in/danvu772"> <i class="bi bi-linkedin" role="img">
-</i> 
-<span class="menu-text"></span></a>
-  </li>  
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
@@ -167,21 +122,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">On this page</h2>
-   
-  <ul>
-  <li><a href="#the-general-transformer-learns-laplace-from-data" id="toc-the-general-transformer-learns-laplace-from-data" class="nav-link active" data-scroll-target="#the-general-transformer-learns-laplace-from-data">The general transformer learns Laplace from data</a></li>
-  <li><a href="#specialized-training-gives-you-a-prior" id="toc-specialized-training-gives-you-a-prior" class="nav-link" data-scroll-target="#specialized-training-gives-you-a-prior">Specialized training gives you a prior</a></li>
-  <li><a href="#redundancy-scales-as-1m" id="toc-redundancy-scales-as-1m" class="nav-link" data-scroll-target="#redundancy-scales-as-1m">Redundancy scales as 1/m</a></li>
-  <li><a href="#markov-and-fsm-structure-is-where-the-money-is" id="toc-markov-and-fsm-structure-is-where-the-money-is" class="nav-link" data-scroll-target="#markov-and-fsm-structure-is-where-the-money-is">Markov and FSM: structure is where the money is</a></li>
-  <li><a href="#where-the-counting-lives" id="toc-where-the-counting-lives" class="nav-link" data-scroll-target="#where-the-counting-lives">Where the counting lives</a></li>
-  <li><a href="#the-toolkit-a-clean-break-from-notebook-sprawl" id="toc-the-toolkit-a-clean-break-from-notebook-sprawl" class="nav-link" data-scroll-target="#the-toolkit-a-clean-break-from-notebook-sprawl">The toolkit: a clean break from notebook sprawl</a></li>
-  <li><a href="#what-is-missing" id="toc-what-is-missing" class="nav-link" data-scroll-target="#what-is-missing">What is missing</a></li>
-  </ul>
-</nav>
-    </div>
+    
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
@@ -231,14 +172,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>The question is whether a transformer can close that gap without ever being told what distribution the data came from. No parameters, no prior, no generative story. Just a sequence of bits and a model that has to figure out what comes next.</p>
 <p>I built a research platform to answer this. Binary sequences only, because binary is where you can compare against closed-form optimal estimators and know exactly how far from the bound you are. The transformer is small, 3 layers, 3 attention heads, roughly 90K parameters. It is trained offline on sequences from some source and then evaluated at test time one bit at a time, same as any classical estimator.</p>
 <p>The results are honestly not too bad.</p>
-<div id="cell-setup" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-06-14T20:35:14.753893Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-06-14T20:35:14.753777Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-06-14T20:35:15.344379Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-06-14T20:35:15.343822Z&quot;}}" data-execution_count="1">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sys, os</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>sys.path.insert(<span class="dv">0</span>, os.getcwd())</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.ticker <span class="im">as</span> mticker</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> toolkit <span class="im">import</span> storage</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
 <section id="the-general-transformer-learns-laplace-from-data" class="level2">
 <h2 class="anchored" data-anchor-id="the-general-transformer-learns-laplace-from-data">The general transformer learns Laplace from data</h2>
 <p>Start with IID Bernoulli sequences. Flip a biased coin with unknown probability p and generate sequences of length N. The transformer has never seen this p, it was trained on sequences with p drawn uniformly from (0, 1).</p>
@@ -246,56 +179,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Across every p we tested (0.1, 0.3, 0.5, 0.7, 0.9) and every sequence length from N=10 to N=499, the transformer tracks Laplace almost exactly. At N=10 the gap is around 0.16 BPS. By N=499 the gap collapses to roughly 0.007 BPS.</p>
 <p>This makes sense because there is no temporal structure for the transformer to exploit. The IID source has no memory. What the transformer learns is the inference rule itself: count, add pseudocounts, normalize. It learns to approximate the Bayes-optimal estimator from data alone, without ever being told the prior.</p>
 <div id="cell-iid-plot" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-06-14T20:35:15.345770Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-06-14T20:35:15.345650Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-06-14T20:35:15.669270Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-06-14T20:35:15.668891Z&quot;}}" data-execution_count="2">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>envelope <span class="op">=</span> storage.load(storage.experiment_path(<span class="st">'exp1_iid_general'</span>))</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>sweep_results <span class="op">=</span> envelope.results</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>C_TRANSFORMER <span class="op">=</span> <span class="st">'#002d4d'</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>C_LAPLACE     <span class="op">=</span> <span class="st">'#177F6B'</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>C_ENTROPY     <span class="op">=</span> <span class="st">'#888888'</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">2</span>, <span class="dv">3</span>, figsize<span class="op">=</span>(<span class="dv">13</span>, <span class="dv">7</span>), dpi<span class="op">=</span><span class="dv">150</span>)</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>axes <span class="op">=</span> axes.flatten()</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> idx, sr <span class="kw">in</span> <span class="bu">enumerate</span>(sweep_results):</span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    ax <span class="op">=</span> axes[idx]</span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    ns <span class="op">=</span> sr.n_values</span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> name, color, marker, label <span class="kw">in</span> [</span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>        (<span class="st">'transformer'</span>, C_TRANSFORMER, <span class="st">'s'</span>, <span class="st">'Transformer (general)'</span>),</span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>        (<span class="st">'laplace'</span>,     C_LAPLACE,     <span class="st">'o'</span>, <span class="st">'Laplace'</span>),</span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    ]:</span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>        means <span class="op">=</span> [sr.results[name][n][<span class="st">'mean'</span>] <span class="cf">for</span> n <span class="kw">in</span> ns]</span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>        cis   <span class="op">=</span> [sr.results[name][n][<span class="st">'ci'</span>]   <span class="cf">for</span> n <span class="kw">in</span> ns]</span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>        ax.errorbar(ns, means, yerr<span class="op">=</span>cis, fmt<span class="op">=</span><span class="ss">f'</span><span class="sc">{</span>marker<span class="sc">}</span><span class="ss">-'</span>, capsize<span class="op">=</span><span class="dv">3</span>,</span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>                    color<span class="op">=</span>color, lw<span class="op">=</span><span class="fl">1.0</span>, ms<span class="op">=</span><span class="fl">4.5</span>, label<span class="op">=</span>label)</span>
-<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> sr.entropy:</span>
-<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>        ent <span class="op">=</span> <span class="bu">list</span>(sr.entropy.values())[<span class="dv">0</span>]</span>
-<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>        ax.axhline(ent, color<span class="op">=</span>C_ENTROPY, ls<span class="op">=</span><span class="st">'--'</span>, lw<span class="op">=</span><span class="fl">0.8</span>, label<span class="op">=</span><span class="ss">f'H(p)=</span><span class="sc">{</span>ent<span class="sc">:.3f}</span><span class="ss">'</span>)</span>
-<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>    ax.set_xscale(<span class="st">'log'</span>)</span>
-<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>    ax.set_xticks(ns)</span>
-<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>    ax.get_xaxis().set_major_formatter(mticker.ScalarFormatter())</span>
-<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>    ax.tick_params(axis<span class="op">=</span><span class="st">'x'</span>, rotation<span class="op">=</span><span class="dv">40</span>)</span>
-<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>    ax.set_title(<span class="ss">f'p = </span><span class="sc">{</span>sr<span class="sc">.</span>param_value<span class="sc">}</span><span class="ss">'</span>, pad<span class="op">=</span><span class="dv">5</span>)</span>
-<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>    ax.set_xlabel(<span class="st">'Sequence length N'</span>)</span>
-<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>    ax.set_ylabel(<span class="st">'Bits per symbol'</span>)</span>
-<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>    ax.grid(<span class="va">True</span>, axis<span class="op">=</span><span class="st">'y'</span>, alpha<span class="op">=</span><span class="fl">0.4</span>)</span>
-<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">'top'</span>].set_visible(<span class="va">False</span>)</span>
-<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">'right'</span>].set_visible(<span class="va">False</span>)</span>
-<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>    ax.legend(fontsize<span class="op">=</span><span class="dv">8</span>)</span>
-<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ax <span class="kw">in</span> axes[<span class="bu">len</span>(sweep_results):]:</span>
-<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>    ax.set_visible(<span class="va">False</span>)</span>
-<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>fig.suptitle(<span class="st">'General Transformer vs Laplace (IID)'</span>, fontsize<span class="op">=</span><span class="dv">12</span>, fontweight<span class="op">=</span><span class="st">'bold'</span>)</span>
-<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
-<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
-<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'</span><span class="ch">\n</span><span class="st">Gap = transformer BPS - Laplace BPS (positive means transformer worse)</span><span class="ch">\n</span><span class="st">'</span>)</span>
-<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> sr <span class="kw">in</span> sweep_results:</span>
-<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f'p=</span><span class="sc">{</span>sr<span class="sc">.</span>param_value<span class="sc">}</span><span class="ss">:'</span>)</span>
-<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> n <span class="kw">in</span> sr.n_values:</span>
-<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>        gap <span class="op">=</span> sr.results[<span class="st">'transformer'</span>][n][<span class="st">'mean'</span>] <span class="op">-</span> sr.results[<span class="st">'laplace'</span>][n][<span class="st">'mean'</span>]</span>
-<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f'  N=</span><span class="sc">{</span>n<span class="sc">:4d}</span><span class="ss">: gap=</span><span class="sc">{</span>gap<span class="sc">:+.4f}</span><span class="ss">'</span>)</span>
-<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -364,43 +247,10 @@ p=0.9:
 </section>
 <section id="redundancy-scales-as-1m" class="level2">
 <h2 class="anchored" data-anchor-id="redundancy-scales-as-1m">Redundancy scales as 1/m</h2>
-<p>The H0f8st-Madsen bound says the redundancy, which is the gap between the model’s BPS and the source entropy, should decay roughly as 1/m where m is the number of training sequences. I tested this by training transformers on m = 10, 25, 50, 75, 100, 150, 200, 300, 500, 1000 sequences and measuring BPS at test length N=100.</p>
+<p>The Høst-Madsen bound says the redundancy, which is the gap between the model’s BPS and the source entropy, should decay roughly as 1/m where m is the number of training sequences. I tested this by training transformers on m = 10, 25, 50, 75, 100, 150, 200, 300, 500, 1000 sequences and measuring BPS at test length N=100.</p>
 <p>The data matches the bound. On a log-log plot the redundancy drops cleanly with a slope near -1. The crossover point where the transformer beats Laplace is around m=100 training sequences. At m=50 the transformer redundancy is 0.040 BPS above entropy, at m=100 it is 0.021, at m=1000 it drops to 0.005.</p>
 <p>This is not surprising if you believe the bound, but it is satisfying to see a small transformer hit it. The thing has 90K parameters and was trained for 500 iterations per checkpoint. It is not doing anything exotic. It is just learning the counting rule from repeated exposure, and the efficiency of that learning follows the same scaling law as the optimal estimator.</p>
 <div id="cell-redundancy-plot" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-06-14T20:35:15.670761Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-06-14T20:35:15.670689Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-06-14T20:35:15.721012Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-06-14T20:35:15.720646Z&quot;}}" data-execution_count="3">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pickle</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> toolkit <span class="im">import</span> metrics</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(<span class="st">'notebooks/train_bounds/experiments/benchmark_results.pkl'</span>, <span class="st">'rb'</span>) <span class="im">as</span> f:</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    r <span class="op">=</span> pickle.load(f)</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'p=0.3, N_eval=100, entropy=</span><span class="sc">{</span>metrics<span class="sc">.</span>entropy_iid(<span class="fl">0.3</span>)<span class="sc">:.4f}</span><span class="ss">'</span>)</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Laplace redundancy = </span><span class="sc">{</span>r[<span class="st">'laplace'</span>]<span class="sc">:.4f}</span><span class="ss">"</span>)</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>m_vals_all <span class="op">=</span> <span class="bu">sorted</span>(r[<span class="st">'transformer'</span>].keys())</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>m_vals <span class="op">=</span> [m <span class="cf">for</span> m <span class="kw">in</span> m_vals_all <span class="cf">if</span> m <span class="op">&lt;=</span> <span class="dv">1000</span>]</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>red    <span class="op">=</span> [r[<span class="st">'transformer'</span>][m] <span class="cf">for</span> m <span class="kw">in</span> m_vals]</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>lap_red <span class="op">=</span> r[<span class="st">'laplace'</span>]</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">4</span>), dpi<span class="op">=</span><span class="dv">150</span>)</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>ax.plot(m_vals, red, <span class="st">'o-'</span>, color<span class="op">=</span><span class="st">'#002d4d'</span>, lw<span class="op">=</span><span class="fl">1.2</span>, ms<span class="op">=</span><span class="dv">5</span>, label<span class="op">=</span><span class="st">'Transformer'</span>)</span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>ax.axhline(lap_red, color<span class="op">=</span><span class="st">'#177F6B'</span>, ls<span class="op">=</span><span class="st">'--'</span>, lw<span class="op">=</span><span class="fl">1.0</span>, label<span class="op">=</span><span class="ss">f'Laplace (</span><span class="sc">{</span>lap_red<span class="sc">:.3f}</span><span class="ss">)'</span>)</span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>m_arr <span class="op">=</span> np.array(m_vals, dtype<span class="op">=</span><span class="bu">float</span>)</span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>c <span class="op">=</span> red[<span class="dv">3</span>] <span class="op">*</span> m_arr[<span class="dv">3</span>]</span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>ax.plot(m_arr, c <span class="op">/</span> m_arr, <span class="st">':'</span>, color<span class="op">=</span><span class="st">'#888888'</span>, lw<span class="op">=</span><span class="fl">1.0</span>, label<span class="op">=</span><span class="st">'1/m reference'</span>)</span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">'Training samples m'</span>)</span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">'Redundancy (BPS - entropy)'</span>)</span>
-<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">'Redundancy vs Training Size'</span>, fontweight<span class="op">=</span><span class="st">'bold'</span>)</span>
-<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>ax.legend()</span>
-<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>ax.grid(<span class="va">True</span>, axis<span class="op">=</span><span class="st">'y'</span>, alpha<span class="op">=</span><span class="fl">0.4</span>)</span>
-<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>ax.spines[<span class="st">'top'</span>].set_visible(<span class="va">False</span>)</span>
-<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>ax.spines[<span class="st">'right'</span>].set_visible(<span class="va">False</span>)</span>
-<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
-<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
-<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'</span><span class="ch">\n</span><span class="st">Raw values:'</span>)</span>
-<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> m, rv <span class="kw">in</span> <span class="bu">zip</span>(m_vals, red):</span>
-<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f'  m=</span><span class="sc">{</span>m<span class="sc">:5d}</span><span class="ss">: redundancy=</span><span class="sc">{</span>rv<span class="sc">:.4f}</span><span class="ss">'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>p=0.3, N_eval=100, entropy=0.8813
 Laplace redundancy = 0.0220</code></pre>
@@ -436,59 +286,6 @@ Raw values:
 <p>On a deterministic 4-state FSM the pattern holds. Specialized transformer leads at every sequence length. N=10: transformer 0.760 BPS, CTW 1.000. N=499: transformer 0.746, CTW 0.798, Laplace 0.810. The ~0.05 BPS gap at long sequences is the transformer’s offline knowledge paying off.</p>
 <p>On Dirichlet-Markov sources with random transition matrices the specialized transformer beats Laplace and CTW at every alpha tested. The advantage widens as alpha increases (more concentrated priors, less entropy in the transition structure).</p>
 <div id="cell-markov-plot" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-06-14T20:35:15.722107Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-06-14T20:35:15.722022Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-06-14T20:35:16.140417Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-06-14T20:35:16.140017Z&quot;}}" data-execution_count="4">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>envelope <span class="op">=</span> storage.load(storage.experiment_path(<span class="st">'exp5_markov'</span>))</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>sweep_results <span class="op">=</span> envelope.results</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>C_SPECIALIZED <span class="op">=</span> <span class="st">'#002d4d'</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>C_GENERAL     <span class="op">=</span> <span class="st">'#5B9BD5'</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>C_LAPLACE     <span class="op">=</span> <span class="st">'#177F6B'</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>C_CTW         <span class="op">=</span> <span class="st">'#9C4732'</span></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>C_ENTROPY     <span class="op">=</span> <span class="st">'#888888'</span></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">2</span>, <span class="dv">3</span>, figsize<span class="op">=</span>(<span class="dv">13</span>, <span class="dv">7</span>), dpi<span class="op">=</span><span class="dv">150</span>)</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>axes <span class="op">=</span> axes.flatten()</span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> idx, sr <span class="kw">in</span> <span class="bu">enumerate</span>(sweep_results):</span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    ax <span class="op">=</span> axes[idx]</span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>    ns <span class="op">=</span> sr.n_values</span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> name, color, marker, label <span class="kw">in</span> [</span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>        (<span class="st">'specialized'</span>, C_SPECIALIZED, <span class="st">'D'</span>, <span class="st">'Transformer (specialized)'</span>),</span>
-<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>        (<span class="st">'general'</span>,     C_GENERAL,     <span class="st">'s'</span>, <span class="st">'Transformer (IID)'</span>),</span>
-<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>        (<span class="st">'ctw'</span>,         C_CTW,         <span class="st">'^'</span>, <span class="st">'CTW'</span>),</span>
-<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>        (<span class="st">'laplace'</span>,     C_LAPLACE,     <span class="st">'o'</span>, <span class="st">'Laplace'</span>),</span>
-<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>    ]:</span>
-<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>        means <span class="op">=</span> [sr.results[name][n][<span class="st">'mean'</span>] <span class="cf">for</span> n <span class="kw">in</span> ns]</span>
-<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>        cis   <span class="op">=</span> [sr.results[name][n][<span class="st">'ci'</span>]   <span class="cf">for</span> n <span class="kw">in</span> ns]</span>
-<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>        ax.errorbar(ns, means, yerr<span class="op">=</span>cis, fmt<span class="op">=</span><span class="ss">f'</span><span class="sc">{</span>marker<span class="sc">}</span><span class="ss">-'</span>, capsize<span class="op">=</span><span class="dv">3</span>,</span>
-<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>                    color<span class="op">=</span>color, lw<span class="op">=</span><span class="fl">1.0</span>, ms<span class="op">=</span><span class="fl">4.5</span>, label<span class="op">=</span>label)</span>
-<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> sr.entropy:</span>
-<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>        ent <span class="op">=</span> <span class="bu">list</span>(sr.entropy.values())[<span class="dv">0</span>]</span>
-<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>        ax.axhline(ent, color<span class="op">=</span>C_ENTROPY, ls<span class="op">=</span><span class="st">'--'</span>, lw<span class="op">=</span><span class="fl">0.8</span>, label<span class="op">=</span><span class="ss">f'H=</span><span class="sc">{</span>ent<span class="sc">:.3f}</span><span class="ss">'</span>)</span>
-<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>    ax.set_xscale(<span class="st">'log'</span>)</span>
-<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>    ax.set_xticks(ns)</span>
-<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>    ax.get_xaxis().set_major_formatter(mticker.ScalarFormatter())</span>
-<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>    ax.tick_params(axis<span class="op">=</span><span class="st">'x'</span>, rotation<span class="op">=</span><span class="dv">40</span>)</span>
-<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>    ax.set_title(<span class="ss">f'p_stay = </span><span class="sc">{</span>sr<span class="sc">.</span>param_value<span class="sc">}</span><span class="ss">'</span>, pad<span class="op">=</span><span class="dv">5</span>)</span>
-<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>    ax.set_xlabel(<span class="st">'Sequence length N'</span>)</span>
-<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a>    ax.set_ylabel(<span class="st">'Bits per symbol'</span>)</span>
-<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a>    ax.grid(<span class="va">True</span>, axis<span class="op">=</span><span class="st">'y'</span>, alpha<span class="op">=</span><span class="fl">0.4</span>)</span>
-<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">'top'</span>].set_visible(<span class="va">False</span>)</span>
-<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a>    ax.spines[<span class="st">'right'</span>].set_visible(<span class="va">False</span>)</span>
-<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a>handles, labels <span class="op">=</span> axes[<span class="dv">0</span>].get_legend_handles_labels()</span>
-<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a>fig.legend(handles, labels, loc<span class="op">=</span><span class="st">'lower center'</span>, ncol<span class="op">=</span><span class="dv">4</span>,</span>
-<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a>           bbox_to_anchor<span class="op">=</span>(<span class="fl">0.5</span>, <span class="fl">0.01</span>), fontsize<span class="op">=</span><span class="dv">9</span>)</span>
-<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a>fig.suptitle(<span class="st">'Binary Symmetric Markov Chain'</span>, fontsize<span class="op">=</span><span class="dv">12</span>, fontweight<span class="op">=</span><span class="st">'bold'</span>, y<span class="op">=</span><span class="fl">0.98</span>)</span>
-<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a>plt.tight_layout(rect<span class="op">=</span>[<span class="dv">0</span>, <span class="fl">0.06</span>, <span class="dv">1</span>, <span class="fl">0.97</span>])</span>
-<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
-<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'</span><span class="ch">\n</span><span class="st">Specialized advantage over CTW (positive = specialized wins)</span><span class="ch">\n</span><span class="st">'</span>)</span>
-<span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> sr <span class="kw">in</span> sweep_results:</span>
-<span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f'p_stay=</span><span class="sc">{</span>sr<span class="sc">.</span>param_value<span class="sc">}</span><span class="ss">:'</span>)</span>
-<span id="cb7-50"><a href="#cb7-50" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> n <span class="kw">in</span> sr.n_values:</span>
-<span id="cb7-51"><a href="#cb7-51" aria-hidden="true" tabindex="-1"></a>        adv <span class="op">=</span> sr.results[<span class="st">'ctw'</span>][n][<span class="st">'mean'</span>] <span class="op">-</span> sr.results[<span class="st">'specialized'</span>][n][<span class="st">'mean'</span>]</span>
-<span id="cb7-52"><a href="#cb7-52" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f'  N=</span><span class="sc">{</span>n<span class="sc">:4d}</span><span class="ss">: </span><span class="sc">{</span>adv<span class="sc">:+.4f}</span><span class="ss">'</span>)</span>
-<span id="cb7-53"><a href="#cb7-53" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -557,47 +354,6 @@ p_stay=0.99:
 </div>
 </div>
 <div id="cell-fsm-plot" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-06-14T20:35:16.141958Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-06-14T20:35:16.141870Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-06-14T20:35:16.222417Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-06-14T20:35:16.222109Z&quot;}}" data-execution_count="5">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>envelope <span class="op">=</span> storage.load(storage.experiment_path(<span class="st">'exp7_fsm_benchmark'</span>))</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>sr <span class="op">=</span> envelope.results</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'Source: </span><span class="sc">{</span>sr<span class="sc">.</span>param_value<span class="sc">}</span><span class="ss">'</span>)</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'N values: </span><span class="sc">{</span>sr<span class="sc">.</span>n_values<span class="sc">}</span><span class="ss">'</span>)</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>C_TRANSFORMER <span class="op">=</span> <span class="st">'#002d4d'</span></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>C_CTW         <span class="op">=</span> <span class="st">'#9C4732'</span></span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>C_LAPLACE     <span class="op">=</span> <span class="st">'#177F6B'</span></span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">4</span>), dpi<span class="op">=</span><span class="dv">150</span>)</span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>ns <span class="op">=</span> sr.n_values</span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> name, color, marker, label <span class="kw">in</span> [</span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'transformer'</span>, C_TRANSFORMER, <span class="st">'s'</span>, <span class="st">'Transformer'</span>),</span>
-<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'ctw'</span>,         C_CTW,         <span class="st">'^'</span>, <span class="st">'CTW'</span>),</span>
-<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'laplace'</span>,     C_LAPLACE,     <span class="st">'o'</span>, <span class="st">'Laplace'</span>),</span>
-<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>]:</span>
-<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>    means <span class="op">=</span> [sr.results[name][n][<span class="st">'mean'</span>] <span class="cf">for</span> n <span class="kw">in</span> ns]</span>
-<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>    cis   <span class="op">=</span> [sr.results[name][n][<span class="st">'ci'</span>]   <span class="cf">for</span> n <span class="kw">in</span> ns]</span>
-<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>    ax.errorbar(ns, means, yerr<span class="op">=</span>cis, fmt<span class="op">=</span><span class="ss">f'</span><span class="sc">{</span>marker<span class="sc">}</span><span class="ss">-'</span>, capsize<span class="op">=</span><span class="dv">3</span>,</span>
-<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>                color<span class="op">=</span>color, lw<span class="op">=</span><span class="fl">1.2</span>, ms<span class="op">=</span><span class="dv">5</span>, label<span class="op">=</span>label)</span>
-<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>ax.set_xscale(<span class="st">'log'</span>)</span>
-<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>ax.set_xticks(ns)</span>
-<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>ax.get_xaxis().set_major_formatter(mticker.ScalarFormatter())</span>
-<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>ax.tick_params(axis<span class="op">=</span><span class="st">'x'</span>, rotation<span class="op">=</span><span class="dv">40</span>)</span>
-<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">'Sequence length N'</span>)</span>
-<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">'Bits per symbol'</span>)</span>
-<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">'Deterministic 4-State FSM'</span>, fontweight<span class="op">=</span><span class="st">'bold'</span>, pad<span class="op">=</span><span class="dv">5</span>)</span>
-<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>ax.legend()</span>
-<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>ax.grid(<span class="va">True</span>, axis<span class="op">=</span><span class="st">'y'</span>, alpha<span class="op">=</span><span class="fl">0.4</span>)</span>
-<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>ax.spines[<span class="st">'top'</span>].set_visible(<span class="va">False</span>)</span>
-<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>ax.spines[<span class="st">'right'</span>].set_visible(<span class="va">False</span>)</span>
-<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
-<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
-<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'</span><span class="ch">\n</span><span class="st">Transformer - CTW BPS (negative = transformer wins)</span><span class="ch">\n</span><span class="st">'</span>)</span>
-<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> n <span class="kw">in</span> sr.n_values:</span>
-<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a>    diff <span class="op">=</span> sr.results[<span class="st">'transformer'</span>][n][<span class="st">'mean'</span>] <span class="op">-</span> sr.results[<span class="st">'ctw'</span>][n][<span class="st">'mean'</span>]</span>
-<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a>    winner <span class="op">=</span> <span class="st">'transformer'</span> <span class="cf">if</span> diff <span class="op">&lt;</span> <span class="dv">0</span> <span class="cf">else</span> <span class="st">'ctw'</span></span>
-<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f'  N=</span><span class="sc">{</span>n<span class="sc">:4d}</span><span class="ss">: </span><span class="sc">{</span>diff<span class="sc">:+.4f}</span><span class="ss">  (</span><span class="sc">{</span>winner<span class="sc">}</span><span class="ss"> wins)'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Source: 4-state deterministic
 N values: [10, 25, 50, 100, 200, 300, 499]</code></pre>
@@ -625,65 +381,11 @@ Transformer - CTW BPS (negative = transformer wins)
 </section>
 <section id="where-the-counting-lives" class="level2">
 <h2 class="anchored" data-anchor-id="where-the-counting-lives">Where the counting lives</h2>
-<p>The cleanest result is from probing the attention heads. The Bayes-optimal estimate for IID data under a Beta(3b1, 3b2) prior is (k+3b1)/(t+3b1+3b2). This is a linear function of two counts: the number of 1s seen (k) and the total symbols seen (t). So you can fit a linear probe to the transformer’s attention outputs at each layer and check whether the model has computed this quantity.</p>
-<p>It has. For a transformer trained under Beta(5,2), the probe achieves R0b2=0.82 at Layer 0. For most models Layer 0 dominates, meaning the counting and prior correction happens in the first attention layer. The raw k/t probe, which just checks whether the model is counting without the prior correction, scores lower at every layer for every model.</p>
-<p>What this shows is that the prior correction is in the attention weights, not deferred to the MLP later. The model is doing something structurally Bayesian: count the observations in attention, apply the prior correction in the same operation, output the probability. The R0b2 scales with prior concentration too, Beta(0.5,0.5) peaks at 0.43 while Beta(5,2) reaches 0.82, which makes sense because a concentrated prior produces sharper predictions that are easier to read out linearly.</p>
+<p>The cleanest result is from probing the attention heads. The Bayes-optimal estimate for IID data under a Beta(α, β) prior is (k+α)/(t+α+β). This is a linear function of two counts: the number of 1s seen (k) and the total symbols seen (t). So you can fit a linear probe to the transformer’s attention outputs at each layer and check whether the model has computed this quantity.</p>
+<p>It has. For a transformer trained under Beta(5,2), the probe achieves R²=0.82 at Layer 0. For most models Layer 0 dominates, meaning the counting and prior correction happens in the first attention layer. The raw k/t probe, which just checks whether the model is counting without the prior correction, scores lower at every layer for every model.</p>
+<p>What this shows is that the prior correction is in the attention weights, not deferred to the MLP later. The model is doing something structurally Bayesian: count the observations in attention, apply the prior correction in the same operation, output the probability. The R² scales with prior concentration too, Beta(0.5,0.5) peaks at 0.43 while Beta(5,2) reaches 0.82, which makes sense because a concentrated prior produces sharper predictions that are easier to read out linearly.</p>
 <p>I did not expect the probe to work this cleanly. A 3-layer transformer with 90K parameters learning a closed-form Bayesian estimator from scratch, and you can literally read the estimate off the first layer’s attention outputs with a linear regression. That is satisfying in a way that most ML results are not.</p>
 <div id="cell-attention-plot" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-06-14T20:35:16.223612Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-06-14T20:35:16.223525Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-06-14T20:35:16.405852Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-06-14T20:35:16.405515Z&quot;}}" data-execution_count="6">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>envelope <span class="op">=</span> storage.load(storage.experiment_path(<span class="st">'exp8_attention_probe'</span>))</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>r <span class="op">=</span> envelope.results</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>priors <span class="op">=</span> r[<span class="st">'priors'</span>]</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Bayes probe R2 ((k+alpha)/(t+alpha+beta)) — layer means:'</span>)</span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> prior <span class="kw">in</span> priors:</span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    lm <span class="op">=</span> r[prior][<span class="st">'bay_r2_layer_means'</span>]</span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f'  </span><span class="sc">{</span>prior<span class="sc">}</span><span class="ss">: L0=</span><span class="sc">{</span>lm[<span class="dv">0</span>]<span class="sc">:.3f}</span><span class="ss">  L1=</span><span class="sc">{</span>lm[<span class="dv">1</span>]<span class="sc">:.3f}</span><span class="ss">  L2=</span><span class="sc">{</span>lm[<span class="dv">2</span>]<span class="sc">:.3f}</span><span class="ss">  max=</span><span class="sc">{</span>r[prior][<span class="st">"max_bay_r2"</span>]<span class="sc">:.3f}</span><span class="ss">'</span>)</span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>()</span>
-<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'KT probe R2 (k/t) — layer means:'</span>)</span>
-<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> prior <span class="kw">in</span> priors:</span>
-<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>    lm <span class="op">=</span> r[prior][<span class="st">'kt_r2_layer_means'</span>]</span>
-<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f'  </span><span class="sc">{</span>prior<span class="sc">}</span><span class="ss">: L0=</span><span class="sc">{</span>lm[<span class="dv">0</span>]<span class="sc">:.3f}</span><span class="ss">  L1=</span><span class="sc">{</span>lm[<span class="dv">1</span>]<span class="sc">:.3f}</span><span class="ss">  L2=</span><span class="sc">{</span>lm[<span class="dv">2</span>]<span class="sc">:.3f}</span><span class="ss">  max=</span><span class="sc">{</span>r[prior][<span class="st">"max_kt_r2"</span>]<span class="sc">:.3f}</span><span class="ss">'</span>)</span>
-<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>C_KT    <span class="op">=</span> <span class="st">'#177F6B'</span></span>
-<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>C_BAYES <span class="op">=</span> <span class="st">'#E07B39'</span></span>
-<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.arange(<span class="bu">len</span>(priors))</span>
-<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>width <span class="op">=</span> <span class="fl">0.35</span></span>
-<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>kt_max  <span class="op">=</span> [r[p][<span class="st">'max_kt_r2'</span>]  <span class="cf">for</span> p <span class="kw">in</span> priors]</span>
-<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>bay_max <span class="op">=</span> [r[p][<span class="st">'max_bay_r2'</span>] <span class="cf">for</span> p <span class="kw">in</span> priors]</span>
-<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">4</span>), dpi<span class="op">=</span><span class="dv">150</span>)</span>
-<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>ax.bar(x <span class="op">-</span> width<span class="op">/</span><span class="dv">2</span>, kt_max,  width, label<span class="op">=</span><span class="st">'k/t (KT/Laplace)'</span>, color<span class="op">=</span>C_KT,    alpha<span class="op">=</span><span class="fl">0.85</span>)</span>
-<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>ax.bar(x <span class="op">+</span> width<span class="op">/</span><span class="dv">2</span>, bay_max, width, label<span class="op">=</span><span class="st">'Bayes-optimal'</span>,    color<span class="op">=</span>C_BAYES, alpha<span class="op">=</span><span class="fl">0.85</span>)</span>
-<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>ax.set_xticks(x)</span>
-<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a>ax.set_xticklabels(priors, fontsize<span class="op">=</span><span class="dv">9</span>)</span>
-<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">'Max R</span><span class="ch">\u00b2</span><span class="st"> across all heads'</span>)</span>
-<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">'Attention Head Probe R</span><span class="ch">\u00b2</span><span class="st">'</span>, fontweight<span class="op">=</span><span class="st">'bold'</span>)</span>
-<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a>ax.legend()</span>
-<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a>ax.grid(<span class="va">True</span>, axis<span class="op">=</span><span class="st">'y'</span>, alpha<span class="op">=</span><span class="fl">0.4</span>)</span>
-<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a>ax.spines[<span class="st">'top'</span>].set_visible(<span class="va">False</span>)</span>
-<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a>ax.spines[<span class="st">'right'</span>].set_visible(<span class="va">False</span>)</span>
-<span id="cb12-36"><a href="#cb12-36" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
-<span id="cb12-37"><a href="#cb12-37" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
-<span id="cb12-38"><a href="#cb12-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-39"><a href="#cb12-39" aria-hidden="true" tabindex="-1"></a>fig2, axes2 <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="bu">len</span>(priors), figsize<span class="op">=</span>(<span class="dv">13</span>, <span class="dv">3</span>), dpi<span class="op">=</span><span class="dv">150</span>)</span>
-<span id="cb12-40"><a href="#cb12-40" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ax2, prior <span class="kw">in</span> <span class="bu">zip</span>(axes2, priors):</span>
-<span id="cb12-41"><a href="#cb12-41" aria-hidden="true" tabindex="-1"></a>    mat <span class="op">=</span> np.array(r[prior][<span class="st">'bay_r2'</span>])</span>
-<span id="cb12-42"><a href="#cb12-42" aria-hidden="true" tabindex="-1"></a>    im <span class="op">=</span> ax2.imshow(mat, vmin<span class="op">=</span><span class="dv">0</span>, vmax<span class="op">=</span><span class="dv">1</span>, cmap<span class="op">=</span><span class="st">'Blues'</span>, aspect<span class="op">=</span><span class="st">'auto'</span>)</span>
-<span id="cb12-43"><a href="#cb12-43" aria-hidden="true" tabindex="-1"></a>    ax2.set_title(prior, fontsize<span class="op">=</span><span class="dv">8</span>)</span>
-<span id="cb12-44"><a href="#cb12-44" aria-hidden="true" tabindex="-1"></a>    ax2.set_xlabel(<span class="st">'Head'</span>)</span>
-<span id="cb12-45"><a href="#cb12-45" aria-hidden="true" tabindex="-1"></a>    ax2.set_ylabel(<span class="st">'Layer'</span>)</span>
-<span id="cb12-46"><a href="#cb12-46" aria-hidden="true" tabindex="-1"></a>    ax2.set_xticks(<span class="bu">range</span>(mat.shape[<span class="dv">1</span>]))</span>
-<span id="cb12-47"><a href="#cb12-47" aria-hidden="true" tabindex="-1"></a>    ax2.set_yticks(<span class="bu">range</span>(mat.shape[<span class="dv">0</span>]))</span>
-<span id="cb12-48"><a href="#cb12-48" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(mat.shape[<span class="dv">0</span>]):</span>
-<span id="cb12-49"><a href="#cb12-49" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(mat.shape[<span class="dv">1</span>]):</span>
-<span id="cb12-50"><a href="#cb12-50" aria-hidden="true" tabindex="-1"></a>            ax2.text(j, i, <span class="ss">f'</span><span class="sc">{</span>mat[i,j]<span class="sc">:.2f}</span><span class="ss">'</span>, ha<span class="op">=</span><span class="st">'center'</span>, va<span class="op">=</span><span class="st">'center'</span>, fontsize<span class="op">=</span><span class="dv">7</span>)</span>
-<span id="cb12-51"><a href="#cb12-51" aria-hidden="true" tabindex="-1"></a>fig2.colorbar(im, ax<span class="op">=</span>axes2[<span class="op">-</span><span class="dv">1</span>], label<span class="op">=</span><span class="st">'R</span><span class="ch">\u00b2</span><span class="st">'</span>)</span>
-<span id="cb12-52"><a href="#cb12-52" aria-hidden="true" tabindex="-1"></a>fig2.suptitle(<span class="st">'Bayes-Optimal Probe R</span><span class="ch">\u00b2</span><span class="st"> per Layer/Head'</span>, fontweight<span class="op">=</span><span class="st">'bold'</span>)</span>
-<span id="cb12-53"><a href="#cb12-53" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
-<span id="cb12-54"><a href="#cb12-54" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Bayes probe R2 ((k+alpha)/(t+alpha+beta)) — layer means:
   Beta(1.0,1.0): L0=0.799  L1=0.563  L2=0.537  max=0.803

@@ -6,8 +6,11 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Dan Vu">
+<meta name="dcterms.date" content="2026-06-14">
+<meta name="description" content="A sensor characterization rig. Cam drives a capacitive sensor, LCR meter measures it, force gauge verifies it. Two layers: interactive bench mode and autonomous optimization loop.">
 
-<title>Dan Vu</title>
+<title>Experiment Platform – Dan Vu</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -23,25 +26,25 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<link href="./assets/favicon.ico" rel="icon">
-<script src="site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-58e7cb164a30d0964bc3a4cf0cb5a652.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-0bfe021cbad7778764f6380846393d4a.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../assets/favicon.ico" rel="icon">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-58e7cb164a30d0964bc3a4cf0cb5a652.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-0bfe021cbad7778764f6380846393d4a.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -74,14 +77,14 @@ ul.task-list li input[type="checkbox"] {
 
 </head>
 
-<body class="nav-fixed quarto-light">
+<body class="nav-fixed fullcontent quarto-light">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../index.html">
     <span class="navbar-title">Dan Vu</span>
     </a>
   </div>
@@ -91,21 +94,21 @@ ul.task-list li input[type="checkbox"] {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link active" href="./index.html" aria-current="page"> 
+    <a class="nav-link" href="../index.html"> 
 <span class="menu-text">~/</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./research/index.html"> 
+    <a class="nav-link" href="../research/index.html"> 
 <span class="menu-text">research</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./blog/index.html"> 
+    <a class="nav-link" href="../blog/index.html"> 
 <span class="menu-text">blog</span></a>
   </li>  
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./assets/resume.pdf"> 
+    <a class="nav-link" href="../assets/resume.pdf"> 
 <span class="menu-text">resume</span></a>
   </li>  
 </ul>
@@ -116,178 +119,102 @@ ul.task-list li input[type="checkbox"] {
     </nav>
 </header>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     
 <!-- main -->
-<main class="content column-page" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><h1 class="landing-name title display-7">Dan Vu</h1></header>
+<main class="content" id="quarto-document-content">
 
-
-
-
-<div class="landing">
-
-  <div class="landing-hero">
-    <div class="landing-hero-text">
-      
-      <p class="landing-tag">EE / Systems &amp; Data Science · UH Mānoa</p>
-      <p class="landing-bio">
-      My interests are in machine learning, signal processing, info theory, AI agents.
-      </p>
-      <p class="landing-bio">
-      <a href="./research/index.html">research</a>
-        · <a href="./blog/index.html">blog</a>
-        · <a href="https://github.com/danvu772">github</a>
-        · <a href="assets/resume.pdf">resume</a>
-      </p>
-    </div>
-    <div class="landing-hero-photo">
-      <img src="assets/dan-headshot.jpg" alt="Dan Vu">
-    </div>
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Experiment Platform</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">hardware</div>
+    <div class="quarto-category">electrochemistry</div>
+    <div class="quarto-category">automation</div>
+  </div>
   </div>
 
-  <hr>
-
-  <h2 class="anchored">research</h2>
-
-  <p>
-    <strong><a href="research/experiment-platform.html">experiment-platform</a></strong>
-    Sensor characterization rig. Cam drives a capacitive sensor, LCR meter measures it, force gauge verifies it.
-    <em>[in progress]</em>
-  </p>
-
-  <p>
-    <strong><a href="research/bluetooth-receiver.html">labsense ble receiver</a></strong>
-    Single-file async app. BLE capacitance sensor to SQLite to REST API.
-    <em>[in progress]</em>
-  </p>
-
-  <p>
-    <strong><a href="research/pump-automation.html">syringe pump automation</a></strong>
-    Multi-pump control for Harvard and New Era pumps. Rate limits, worker threads, tkinter UI.
-  </p>
-
-  <p>
-    <strong><a href="research/transformer-based-compression.html">transformer based compression</a></strong>
-    Benchmarking minGPT against Laplace estimation for universal source coding.
-  </p>
-
-  <p>
-    <strong><a href="research/dpv-monopeak.html">dpv-monopeak</a></strong>
-    Single-purpose DPV feature extraction library. One peak, eight features, no config files.
-  </p>
-
-  <hr>
-
-  <h2 class="anchored">blog</h2>
-
-  <p>
-    <strong><a href="blog/ride-quality-analysis.html">rail ride quality analysis</a></strong>
-    ISO 2631-1 1/3 octave band vibration analysis for passenger rail.
-  </p>
-
-  <p>
-    <strong><a href="blog/meme-bot.html">building a meme bot that learns your server</a></strong>
-    Discord bot that generates memes from your server's own message history.
-  </p>
-
+<div>
+  <div class="description">
+    A sensor characterization rig. Cam drives a capacitive sensor, LCR meter measures it, force gauge verifies it. Two layers: interactive bench mode and autonomous optimization loop.
+  </div>
 </div>
-<style>
-.page-full .page-columns,
-.page-full #quarto-content,
-.page-full .quarto-title-block {
-  max-width: 100% !important;
-  padding: 0 !important;
-}
-
-.landing {
-  max-width: 740px;
-  margin: 0 auto;
-  padding: 48px 32px 64px;
-}
-
-.landing-hero {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 48px;
-  margin-bottom: 32px;
-}
-
-.landing-hero-photo img {
-  width: 120px;
-  height: 120px;
-  object-fit: cover;
-  object-position: center top;
-  border-radius: 50%;
-  display: block;
-}
-
-.landing-hero-text {
-  flex: 1;
-  min-width: 0;
-}
-
-.landing-hero-photo {
-  flex-shrink: 0;
-  width: 120px;
-}
-
-@media (max-width: 560px) {
-  .landing-hero {
-    flex-direction: column-reverse;
-    gap: 24px;
-  }
-  .landing-hero-photo {
-    width: 96px;
-  }
-  .landing-hero-photo img {
-    width: 96px;
-    height: 96px;
-  }
-}
-
-.landing-name {
-  font-size: 2em !important;
-  font-weight: 700 !important;
-  color: #111 !important;
-  margin: 0 0 4px 0 !important;
-  border: none !important;
-  padding: 0 !important;
-}
-
-.landing-tag {
-  color: #666;
-  font-size: 0.85em;
-  margin-bottom: 16px;
-}
-
-.landing-bio {
-  color: #444;
-  font-size: 0.92em;
-  line-height: 1.7;
-  max-width: 480px;
-}
-
-.landing h2 {
-  font-size: 1em;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: #888;
-  margin-bottom: 0.8em;
-  border: none;
-  padding: 0;
-}
-
-.landing p {
-  margin-bottom: 0.6em;
-  line-height: 1.65;
-  font-size: 0.92em;
-}
-</style>
 
 
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Dan Vu </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">June 14, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>We needed to characterize capacitive sensors under mechanical load. The question is simple: how does capacitance track applied force across different drive frequencies and probe configurations? Running this by hand means one person at the bench for hours, adjusting brackets, watching an oscilloscope, writing numbers in a notebook, and inevitably missing something. The experiment platform replaces all of that with a script.</p>
+<p>Three instruments are involved. An LCR meter measures capacitance and parallel resistance over serial. A Vernier GoDirect force gauge measures force over USB at up to 1000 Hz. An Arduino Mega drives a cam against the sensor via PWM. The platform orchestrates all three, logs everything to CSV, and runs two experiment types: a static LCR frequency sweep and a dynamic actuator experiment where the cam oscillates at controlled frequencies while capacitance and force are recorded simultaneously.</p>
+<section id="two-layers-one-threading-core" class="level2">
+<h2 class="anchored" data-anchor-id="two-layers-one-threading-core">Two layers, one threading core</h2>
+<p>The platform has two entry points that share the same concurrency model. <code>cli.py</code> is the interactive bench runner. It prompts for a box label and sensor index, offers LCR static, actuator sweep, or both, and loops over sensors with human-in-the-loop bracket selection and retry prompts. This is what a researcher uses at the bench.</p>
+<p><code>run_headless.py</code> is the autonomous optimization layer. It reuses the same <code>ForceState</code>, threading functions, and CSV writing from <code>actuator.py</code>, but strips out every interactive prompt. The loop decides its own next move by reading metrics from <code>score_run.py</code>, a frozen ruler that computes SNR, drift-corrected contrasts, and noise floor from the CSVs a run produces. The knobs it tunes are LCR probe frequency and aperture. The goal is maximizing signal-to-noise without a human in the loop.</p>
+<p>Both layers share a single <code>config.py</code> file as the source of truth for all parameters: sweep frequencies, mechanical frequencies, bracket positions, servo gains, hardware ports, output directories. No hardcoded values anywhere else. A researcher edits one file. The loop edits the probe frequency and aperture fields. Everything else is read-only.</p>
+</section>
+<section id="the-threading-model" class="level2">
+<h2 class="anchored" data-anchor-id="the-threading-model">The threading model</h2>
+<p>The actuator experiment runs three concurrent flows and one shared mutable object. The shared object is <code>ForceState</code>, a lock-guarded cell holding the latest force reading and its timestamp. That is the only mutable state shared between threads.</p>
+<p>The force thread steps the frequency controller at the GoDirect sensor rate, publishing force to <code>ForceState</code> on every sample. The LCR thread measures capacitance as fast as the meter allows, which is about 40 Hz — the hardware bound, not a code limit. Each LCR measurement grabs the latest force from <code>ForceState</code> under lock and pushes a complete row to a queue. The main thread drains the queue to CSV.</p>
+<p>This design means force and capacitance are never perfectly synchronized. The LCR meter takes 25 to 40 milliseconds per measurement. By the time it returns, the force gauge has produced several new readings. The row written to CSV includes <code>force_age_ms</code>: the difference between the LCR timestamp and the force timestamp. This column is the whole sync diagnostic. If <code>force_age_ms</code> is large and variable within a run, the lock contention pattern is wrong or the LCR meter is unusually slow. If it is small and stable, the two sensors are effectively synchronized at the timescale that matters.</p>
+</section>
+<section id="stabilization-before-recording" class="level2">
+<h2 class="anchored" data-anchor-id="stabilization-before-recording">Stabilization before recording</h2>
+<p>Before recording begins at a target mechanical frequency, the force thread runs alone in a stabilization phase. The main thread polls <code>FrequencyController.last_hz</code> until it lands within the configured tolerance of the target, or times out. This is not a tight control loop. The controller updates <code>last_hz</code> every five seconds by counting force peaks. The stabilization loop accounts for this lag: it does not expect instantaneous convergence.</p>
+<p>If stabilization times out, the frequency is skipped with a log message. Nothing crashes. The experiment moves to the next bracket or frequency. This is designed for unattended runs that might hit a loose bracket or a sensor that shifted during an earlier frequency step. The data from that step is lost, but the run continues.</p>
+</section>
+<section id="interleaved-variant" class="level2">
+<h2 class="anchored" data-anchor-id="interleaved-variant">Interleaved variant</h2>
+<p>The optimization loop uses a variant called interleaved mode. Instead of recording one LCR probe config per run, it walks a schedule of config blocks within a single continuous strike train. Each block switches the LCR probe frequency and aperture, tags every row with <code>config_id</code> and <code>block_index</code>, and runs for a fixed number of mechanical cycles rather than a fixed number of seconds. The force thread runs continuously across all blocks, so every config sees the same sensor state scattered across the drift direction.</p>
+<p>The scorer then fits drift out as a nuisance covariate. Drift-corrected SNR lets the loop compare configs that were measured seconds apart on a sensor that might be warming up, settling, or degrading. Without this, the loop would mistake drift for a better probe setting and optimize toward whatever config happened to run last.</p>
+</section>
+<section id="the-quality-heuristic" class="level2">
+<h2 class="anchored" data-anchor-id="the-quality-heuristic">The quality heuristic</h2>
+<p>The LCR static sweep includes a sensor quality check called <code>_is_clean</code>. Six checks, empirically tuned for the specific capacitive sensor under test. Rejects negative capacitance, coefficient of variation above 0.20, monotonicity violations, outlier jumps, and end-point degradation below fifty percent of the initial value. If a sweep fails, the researcher is prompted to re-run or discard.</p>
+<p>This heuristic is the kind of thing that sounds subjective until you watch someone spend twenty minutes analyzing data from a sensor that was dead before the experiment started. The check catches the obvious failures before they reach analysis. The thresholds are editable in one place. If a sensor type needs different criteria, change the numbers.</p>
+</section>
+<section id="safety-and-what-it-does-not-cover" class="level2">
+<h2 class="anchored" data-anchor-id="safety-and-what-it-does-not-cover">Safety and what it does not cover</h2>
+<p>The killswitch subsystem watches a flag file at the repo root. If a file named <code>STOP</code> appears, the headless runner zeros PWM on the live Arduino handle and aborts. A standalone command, <code>killswitch.py stop</code>, writes the flag and tries to open the Arduino port to force PWM zero directly.</p>
+<p>Here is the gap. On Windows, COM ports are exclusive. If the runner holds <code>ARDUINO_PORT</code>, the standalone <code>stop</code> command cannot open it. The safety depends on the runner process being alive and scheduling threads to poll the flag file. A wedged process, a USB hang, or <code>kill -9</code> bypasses the watcher entirely. The code is explicit about this. There is no firmware dead-man switch. Do not run the loop fully unattended.</p>
+<p>A second runtime guard watches peak-to-trough force over a five-second sliding window. If the swing drops below a configurable threshold mid-run, the cam has stalled or the tape loosened, and the run aborts with a non-zero exit code. Running the optimization loop against a mechanically dead rig would produce garbage metrics, and the loop would tune toward whatever random noise the LCR meter picked up.</p>
+</section>
+<section id="the-import-shim" class="level2">
+<h2 class="anchored" data-anchor-id="the-import-shim">The import shim</h2>
+<p>All three roots — repo root, <code>system_code/</code>, <code>optimization_project/</code> — are on <code>sys.path</code> via a venv <code>.pth</code> file. Every module imports flat: <code>from config import ...</code>, <code>from killswitch import ...</code>, no package-qualified imports like <code>system_code.experiments.actuator</code>. The <code>.pth</code> file is not checked in because <code>.venv/</code> is gitignored. A fresh checkout must recreate it before anything runs.</p>
+<p>This is ugly. The alternative is proper package layout with namespace packages and <code>pip install -e .</code>, but that would add setup overhead and break the existing import chains that the actuator platform upstream already depends on. The shim is a deliberate tradeoff: ugly but zero-friction for the workflows that exist.</p>
+</section>
+<section id="what-i-would-change" class="level2">
+<h2 class="anchored" data-anchor-id="what-i-would-change">What I would change</h2>
+<p>The two-layer split between <code>system_code/</code> and <code>optimization_project/</code> happened incrementally. The interactive platform came first. When I needed a headless loop, I added a new directory and imported threading functions from the interactive code by flattening the import paths. This works but it means the threading core lives inside <code>actuator.py</code>, which is also the interactive experiment runner. If I were starting over, the threading model would be its own module that both entry points import from, and <code>actuator.py</code> would be thin orchestration plus the interactive prompt loop.</p>
+<p>The import shim would also go away. Proper package structure from the start would have saved the <code>.pth</code> hack and the mental overhead of explaining it in the architecture doc.</p>
+<p>But both of those are about cleanliness, not correctness. The rig runs. The data is good. The optimization loop converges. The sync diagnostic (<code>force_age_ms</code>) proved that the threading model works at the timescale that matters. Everything after that is refactoring.</p>
+
+
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -708,5 +635,5 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<script src="site_libs/quarto-html/zenscroll-min.js"></script>
+<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>

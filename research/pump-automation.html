@@ -6,8 +6,11 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Dan Vu">
+<meta name="dcterms.date" content="2026-06-14">
+<meta name="description" content="Multi-pump syringe control for Harvard and New Era pumps. Rate limits validated before serial, worker thread per pump, tkinter UI plus script-based orchestration.">
 
-<title>Dan Vu</title>
+<title>Syringe Pump Automation – Dan Vu</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,28 +23,63 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<link href="./assets/favicon.ico" rel="icon">
-<script src="site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-58e7cb164a30d0964bc3a4cf0cb5a652.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-0bfe021cbad7778764f6380846393d4a.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../assets/favicon.ico" rel="icon">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-58e7cb164a30d0964bc3a4cf0cb5a652.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-0bfe021cbad7778764f6380846393d4a.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -74,14 +112,14 @@ ul.task-list li input[type="checkbox"] {
 
 </head>
 
-<body class="nav-fixed quarto-light">
+<body class="nav-fixed fullcontent quarto-light">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../index.html">
     <span class="navbar-title">Dan Vu</span>
     </a>
   </div>
@@ -91,21 +129,21 @@ ul.task-list li input[type="checkbox"] {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link active" href="./index.html" aria-current="page"> 
+    <a class="nav-link" href="../index.html"> 
 <span class="menu-text">~/</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./research/index.html"> 
+    <a class="nav-link" href="../research/index.html"> 
 <span class="menu-text">research</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./blog/index.html"> 
+    <a class="nav-link" href="../blog/index.html"> 
 <span class="menu-text">blog</span></a>
   </li>  
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./assets/resume.pdf"> 
+    <a class="nav-link" href="../assets/resume.pdf"> 
 <span class="menu-text">resume</span></a>
   </li>  
 </ul>
@@ -116,178 +154,110 @@ ul.task-list li input[type="checkbox"] {
     </nav>
 </header>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     
 <!-- main -->
-<main class="content column-page" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><h1 class="landing-name title display-7">Dan Vu</h1></header>
+<main class="content" id="quarto-document-content">
 
-
-
-
-<div class="landing">
-
-  <div class="landing-hero">
-    <div class="landing-hero-text">
-      
-      <p class="landing-tag">EE / Systems &amp; Data Science · UH Mānoa</p>
-      <p class="landing-bio">
-      My interests are in machine learning, signal processing, info theory, AI agents.
-      </p>
-      <p class="landing-bio">
-      <a href="./research/index.html">research</a>
-        · <a href="./blog/index.html">blog</a>
-        · <a href="https://github.com/danvu772">github</a>
-        · <a href="assets/resume.pdf">resume</a>
-      </p>
-    </div>
-    <div class="landing-hero-photo">
-      <img src="assets/dan-headshot.jpg" alt="Dan Vu">
-    </div>
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Syringe Pump Automation</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">hardware</div>
+    <div class="quarto-category">automation</div>
+    <div class="quarto-category">python</div>
+  </div>
   </div>
 
-  <hr>
-
-  <h2 class="anchored">research</h2>
-
-  <p>
-    <strong><a href="research/experiment-platform.html">experiment-platform</a></strong>
-    Sensor characterization rig. Cam drives a capacitive sensor, LCR meter measures it, force gauge verifies it.
-    <em>[in progress]</em>
-  </p>
-
-  <p>
-    <strong><a href="research/bluetooth-receiver.html">labsense ble receiver</a></strong>
-    Single-file async app. BLE capacitance sensor to SQLite to REST API.
-    <em>[in progress]</em>
-  </p>
-
-  <p>
-    <strong><a href="research/pump-automation.html">syringe pump automation</a></strong>
-    Multi-pump control for Harvard and New Era pumps. Rate limits, worker threads, tkinter UI.
-  </p>
-
-  <p>
-    <strong><a href="research/transformer-based-compression.html">transformer based compression</a></strong>
-    Benchmarking minGPT against Laplace estimation for universal source coding.
-  </p>
-
-  <p>
-    <strong><a href="research/dpv-monopeak.html">dpv-monopeak</a></strong>
-    Single-purpose DPV feature extraction library. One peak, eight features, no config files.
-  </p>
-
-  <hr>
-
-  <h2 class="anchored">blog</h2>
-
-  <p>
-    <strong><a href="blog/ride-quality-analysis.html">rail ride quality analysis</a></strong>
-    ISO 2631-1 1/3 octave band vibration analysis for passenger rail.
-  </p>
-
-  <p>
-    <strong><a href="blog/meme-bot.html">building a meme bot that learns your server</a></strong>
-    Discord bot that generates memes from your server's own message history.
-  </p>
-
+<div>
+  <div class="description">
+    Multi-pump syringe control for Harvard and New Era pumps. Rate limits validated before serial, worker thread per pump, tkinter UI plus script-based orchestration.
+  </div>
 </div>
-<style>
-.page-full .page-columns,
-.page-full #quarto-content,
-.page-full .quarto-title-block {
-  max-width: 100% !important;
-  padding: 0 !important;
-}
-
-.landing {
-  max-width: 740px;
-  margin: 0 auto;
-  padding: 48px 32px 64px;
-}
-
-.landing-hero {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 48px;
-  margin-bottom: 32px;
-}
-
-.landing-hero-photo img {
-  width: 120px;
-  height: 120px;
-  object-fit: cover;
-  object-position: center top;
-  border-radius: 50%;
-  display: block;
-}
-
-.landing-hero-text {
-  flex: 1;
-  min-width: 0;
-}
-
-.landing-hero-photo {
-  flex-shrink: 0;
-  width: 120px;
-}
-
-@media (max-width: 560px) {
-  .landing-hero {
-    flex-direction: column-reverse;
-    gap: 24px;
-  }
-  .landing-hero-photo {
-    width: 96px;
-  }
-  .landing-hero-photo img {
-    width: 96px;
-    height: 96px;
-  }
-}
-
-.landing-name {
-  font-size: 2em !important;
-  font-weight: 700 !important;
-  color: #111 !important;
-  margin: 0 0 4px 0 !important;
-  border: none !important;
-  padding: 0 !important;
-}
-
-.landing-tag {
-  color: #666;
-  font-size: 0.85em;
-  margin-bottom: 16px;
-}
-
-.landing-bio {
-  color: #444;
-  font-size: 0.92em;
-  line-height: 1.7;
-  max-width: 480px;
-}
-
-.landing h2 {
-  font-size: 1em;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: #888;
-  margin-bottom: 0.8em;
-  border: none;
-  padding: 0;
-}
-
-.landing p {
-  margin-bottom: 0.6em;
-  line-height: 1.65;
-  font-size: 0.92em;
-}
-</style>
 
 
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Dan Vu </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">June 14, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>We run experiments that need three syringe pumps moving at once: one Harvard Apparatus Pump 11 Elite and two New Era NE-4002X pumps daisy-chained on a single RS-232 line. The Harvard speaks one serial protocol. The New Eras speak another, with address prefixes for the daisy chain. Neither has a Python driver that validates rates properly. Both will happily accept an out-of-range command and either reject it at the firmware level with a useless error code or, worse, run at some rate you did not ask for.</p>
+<p>This software wraps both pump types behind one <code>PumpController</code> API, with hardware-level rate and volume validation that runs before any serial command reaches the pump. It ships a tkinter UI with three tabs (setup, manual control, script orchestration) and a <code>run.bat</code> launcher that makes the whole thing double-clickable on Windows.</p>
+<section id="rate-limits-as-a-feature-not-a-guardrail" class="level2">
+<h2 class="anchored" data-anchor-id="rate-limits-as-a-feature-not-a-guardrail">Rate limits as a feature, not a guardrail</h2>
+<p>The key decision is that rate validation is not a safety net. It is the primary interface. Every <code>infuse</code> and <code>withdraw</code> call checks the requested rate against the pump’s mechanical limits at the given syringe diameter before it builds the serial command. Out of range, it raises <code>RateOutOfRange</code> with the exact allowed range in the message. The command never reaches the port.</p>
+<p>This matters because the two pump types have wildly different limits at the same diameter. Take a typical 12 mm syringe. The Harvard can push up to 18.3 mL per minute. The New Era NE-4002X, a microfluidic pump, tops out at 0.249 mL per minute at the same diameter, about seventy times slower. Write a protocol that assumes both pumps handle 1 mL per minute and the Harvard is fine while the New Era rejects it. Validation catches that before the experiment starts, not thirty seconds into a dispense when one pump has already moved.</p>
+<p>The limits are diameter-dependent because flow rate is pusher velocity times syringe cross-sectional area. The Harvard’s pusher travels from 0.000153 to 159.0 millimeters per minute. The New Era’s limits come from a per-diameter table in the spec sheet, interpolated between listed values and clamped to an absolute ceiling of 1226 microliters per minute. Every number in <code>pump_limits.py</code> is back-solved from the manufacturer documentation and checked against hardware. The docstrings cite the source document and appendix.</p>
+</section>
+<section id="volume-caps" class="level2">
+<h2 class="anchored" data-anchor-id="volume-caps">Volume caps</h2>
+<p>The Harvard has no hard ceiling on a single dispense. The New Era firmware uses a four-digit microliter field, which caps a single dispense at 9999 microliters, roughly 10 mL. Ask for more and it raises <code>VolumeOutOfRange</code>. The workaround is continuous mode (set volume to zero and time the run yourself) or a loop of smaller dispenses. The error message says which. It does not just refuse and leave you guessing.</p>
+</section>
+<section id="per-pump-worker-threads" class="level2">
+<h2 class="anchored" data-anchor-id="per-pump-worker-threads">Per-pump worker threads</h2>
+<p>Each registered pump gets its own <code>PumpWorker</code> thread with a task queue. Setup commands (diameter, rate, volume) are queued as callables and run sequentially in the worker. The main thread stays responsive, which matters in the UI, where a frozen window looks exactly like a crashed program.</p>
+<p>The workers are plain <code>threading.Thread</code> instances with daemon set to False. They run until a sentinel <code>None</code> task arrives or a stop event is set. Errors collect in a per-worker list rather than raising in the calling thread, so a setup failure on pump B does not stop pump C from initializing. The UI polls the error lists and surfaces failures per pump.</p>
+<p>The daisy-chained New Eras share one serial port. The <code>NewEraNetwork</code> class owns the port and each <code>NewEraPump</code> holds a reference to it plus an address. A lock on the network keeps two pumps from talking over each other on the shared bus. The Harvard gets its own COM port and never contends for anything.</p>
+</section>
+<section id="the-ui" class="level2">
+<h2 class="anchored" data-anchor-id="the-ui">The UI</h2>
+<p>Three tabs. Setup configures and connects each pump one at a time: type, port, address, and a Connect button that turns green when the pump answers. Manual runs one or more pumps right now with fixed settings: diameter, rate, volume, direction, Run. Orchestrate is a text editor with a Run Script button.</p>
+<p>Orchestrate is where it gets interesting. Paste a Python script straight into the editor, or hit Load to open one from <code>protocols/</code>, or Insert Template for a skeleton, or LLM Prompt to copy the full API context to your clipboard so you can drop it into any model and have it write the protocol for you. The generated script goes back in the editor. Run Script releases the UI’s COM port connections, spawns the script as a subprocess, streams its stdout into the log pane, and reconnects the pumps when it finishes.</p>
+<p>The STOP ALL button at the bottom kills any running subprocess, reconnects the pumps, and sends a stop to every registered pump. It is the emergency brake, so you never have to find the terminal window, dig up a PID, and kill it by hand.</p>
+</section>
+<section id="the-script-api" class="level2">
+<h2 class="anchored" data-anchor-id="the-script-api">The script API</h2>
+<p>Scripts use the same <code>PumpController</code> as the UI, so there is no second interface to learn. A script opens its own controller and COM ports, runs the experiment, and closes everything in a <code>finally</code> block. The template includes a Ctrl+C handler that calls <code>stop_all</code> and <code>close_all</code> before exiting, so an interrupted script leaves the pumps stopped instead of free-running.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pump_controller <span class="im">import</span> PumpController</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>ctrl <span class="op">=</span> PumpController(log_file<span class="op">=</span><span class="st">'logs/experiment.log'</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>ctrl.add_harvard(<span class="st">'pump_a'</span>, port<span class="op">=</span><span class="st">'COM6'</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>ctrl.add_new_era(<span class="st">'pump_b'</span>, port<span class="op">=</span><span class="st">'COM7'</span>, address<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>ctrl.run_parallel([</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    {<span class="st">'pump_id'</span>: <span class="st">'pump_a'</span>, <span class="st">'rate'</span>: <span class="fl">1.0</span>, <span class="st">'units'</span>: <span class="st">'ml/min'</span>,</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>     <span class="st">'volume'</span>: <span class="fl">2.0</span>, <span class="st">'diameter_mm'</span>: <span class="fl">14.43</span>, <span class="st">'direction'</span>: <span class="st">'infuse'</span>},</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    {<span class="st">'pump_id'</span>: <span class="st">'pump_b'</span>, <span class="st">'rate'</span>: <span class="fl">0.2</span>, <span class="st">'units'</span>: <span class="st">'ml/hr'</span>,</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>     <span class="st">'volume'</span>: <span class="fl">0.5</span>, <span class="st">'diameter_mm'</span>: <span class="fl">8.58</span>, <span class="st">'direction'</span>: <span class="st">'withdraw'</span>},</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>ctrl.close_all()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>run_parallel</code> blocks until every pump in the list finishes. <code>infuse</code> and <code>withdraw</code> on a single pump block too. That is intentional. The API is synchronous because async pump control adds complexity without buying anything for this use case. Need two pumps moving together? Use <code>run_parallel</code>. Need them in sequence? Call <code>infuse</code> then <code>withdraw</code> on separate lines. There is no event loop to reason about.</p>
+</section>
+<section id="llm-integration-as-a-deliberate-side-channel" class="level2">
+<h2 class="anchored" data-anchor-id="llm-integration-as-a-deliberate-side-channel">LLM integration as a deliberate side channel</h2>
+<p>The LLM Prompt button does not call an API. It opens a popup with a text block: the full hardware configuration, the syringe diameter reference table, the rate limit tables, the API reference, and the generation rules. You copy it, paste it into ChatGPT or Claude, and describe your experiment in plain English. The model writes a complete script with the right diameters, rate limits, and error handling. You paste the result back into the editor.</p>
+<p>This is deliberately low-tech. Embedding an LLM call would add an API key, a network round trip, and a failure mode I cannot reproduce. Copy-paste keeps the model as a tool the researcher uses, not a dependency the software carries. If the model is down, you still have the template and the API reference. If the model writes bad code, you read it before you run it. There is no black box between you and the motor.</p>
+<p>The prompt text lives in <code>llms.txt</code> at the project root, so it doubles as documentation for any human who wants the full API surface in one file.</p>
+</section>
+<section id="what-i-got-wrong" class="level2">
+<h2 class="anchored" data-anchor-id="what-i-got-wrong">What I got wrong</h2>
+<p>The original protocol assumed both pump types could handle milliliter-per-minute rates. Wrong by a factor of forty for the New Era at a typical diameter. I found out when the hardware rejected a rate and handed back a firmware error code with no explanation. The fix was <code>pump_limits.py</code>, which back-solves every limit from the manufacturer docs and checks the table entries against real hardware responses. That table is now the single source of truth for what any pump can do at any diameter.</p>
+<p>Then there was the volume convention. <code>PumpController</code> takes milliliters, the New Era firmware speaks microliters, and the driver converts internally. I did not document that clearly at first, so a script asked for 0.001 mL thinking it meant 1 microliter and got exactly that. Correct, and confusing, because the log showed a number that did not match the mental model. The convention is now stated in every code example and in <code>llms.txt</code>.</p>
+<p>I would also redo the worker thread model. As it stands, tasks queue per pump and there is no way to wait for all setup across all pumps to finish before starting. The UI papers over this with status polling, but a script that calls <code>add_harvard</code> and then <code>infuse</code> immediately can race the setup. A <code>wait_until_ready</code> that blocks until every worker has drained its queue would close the gap.</p>
+
+
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -708,5 +678,5 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<script src="site_libs/quarto-html/zenscroll-min.js"></script>
+<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>
