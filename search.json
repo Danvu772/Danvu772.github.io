@@ -42,60 +42,123 @@
     "text": "The Personal Thing\nThis part is harder to write. Apple’s culture explicitly filters for people who can disagree without being disagreeable. Collaborative debate is the phrase they use. I have a pattern of being abrasive when I know I am right, and I have lost credibility because of it. The confound story only works if I can sell it, and selling it requires convincing skeptics without making them defensive.\nTherapy is not separate from the career plan. It is part of it."
   },
   {
-    "objectID": "AGENTS.html",
-    "href": "AGENTS.html",
+    "objectID": "AGENTS.html#unlisted-blog-posts-not-in-navbarlisting-direct-url-only",
+    "href": "AGENTS.html#unlisted-blog-posts-not-in-navbarlisting-direct-url-only",
     "title": "AGENTS.md — dan-docs (Quarto static site, deployed to GitHub Pages)",
-    "section": "",
-    "text": "quarto preview → local dev at http://localhost:4848 (live-reload)\nquarto render → build to _site/\nquarto publish gh-pages → deploy\n\n\n\n\nDrop .ipynb into blog/ or research/. Auto-listed by */index.qmd (glob *.ipynb).\nFirst cell = Raw cell with YAML frontmatter:\n---\ntitle: \"Title\"\nauthor: \"Dan Vu\"\ndate: \"2026-07-12\"\ndescription: \"One sentence. Shows in listing cards.\"\ncategories: [tag1, tag2]\nformat:\n  html:\n    theme: [../custom.scss]\n    toc: true\n---\n\n\n\n\nCreate section/index.qmd with auto-listing (copy blog/index.qmd)\nAdd entry in _quarto.yml under website.navbar.left\nOptionally add manual links in index.qmd landing page\n\n\n\n\nimport sys; sys.path.insert(0, '..')\nfrom assets.matplotlib_theme import apply_void_theme, vc\napply_void_theme('dark')  # 'dark' for web, 'print' for PDF\n# Use: color=vc.cyan, color=vc.green, etc.\n\n\n\nquarto render file.ipynb --to pdf      # LaTeX (needs XeLaTeX)\nquarto render file.ipynb --to typst    # Typst (no TeX needed)\nNotebook frontmatter: add pdf or typst block pointing to pdf-latex.tex / pdf-typst.typ.\n\n\n\nprompts.txt has 3 templates: extract-project-facts → generate-ipynb-post → generate-linkedin-post. Feed them sequentially.\n\n\n\ncustom.scss = source of truth. Based on Bootswatch Litera. Change $link-color to retheme."
+    "section": "Unlisted Blog Posts (not in navbar/listing, direct URL only)",
+    "text": "Unlisted Blog Posts (not in navbar/listing, direct URL only)\n\nhttps://danvu772.github.io/apple-roadmap.html — short motivational post\nhttps://danvu772.github.io/apple-roadmap-comprehensive.html — full unaudited roadmap Publishing: cp Buffer/&lt;file&gt;.ipynb . && quarto render &lt;file&gt;.ipynb && quarto publish gh-pages && rm &lt;file&gt;.ipynb"
+  },
+  {
+    "objectID": "AGENTS.html#research-output-files",
+    "href": "AGENTS.html#research-output-files",
+    "title": "AGENTS.md — dan-docs (Quarto static site, deployed to GitHub Pages)",
+    "section": "Research Output Files",
+    "text": "Research Output Files\nLocation: apple-roadmap-research/ - outline.yaml — 12 items mapped to the plan - fields.yaml — evaluation dimensions - results/*.json — deep research per item with signal ratings, risks, Apple team targets"
+  },
+  {
+    "objectID": "AGENTS.html#core-framing",
+    "href": "AGENTS.html#core-framing",
+    "title": "AGENTS.md — dan-docs (Quarto static site, deployed to GitHub Pages)",
+    "section": "Core Framing",
+    "text": "Core Framing\nDan’s spine: signal-chain artifact identification & mitigation for non-invasive electrochemical/capacitive wearable sensors. Target team: Apple Health Sensing ML Interpretability & Analytics (MLIA) — they hire people who “analyze model behavior, identify weaknesses, lead investigations into failure modes.” The confound story matches verbatim. NOT targeting: Health HW (optics/PPG, wrong modality) or E5/XDG glucose team (silicon photonics, wrong modality — confirmed via Bloomberg/Gurman reporting)."
+  },
+  {
+    "objectID": "AGENTS.html#unresolved-question",
+    "href": "AGENTS.html#unresolved-question",
+    "title": "AGENTS.md — dan-docs (Quarto static site, deployed to GitHub Pages)",
+    "section": "Unresolved Question",
+    "text": "Unresolved Question\nDoes “legibility to a named team” (cousin’s implicit argument) matter more at research-scientist hiring than adjacent-domain depth? Verify by reading actual Apple Health Sensing LinkedIn profiles — don’t trust either framing unaudited."
+  },
+  {
+    "objectID": "AGENTS.html#apple-researchers-to-follow",
+    "href": "AGENTS.html#apple-researchers-to-follow",
+    "title": "AGENTS.md — dan-docs (Quarto static site, deployed to GitHub Pages)",
+    "section": "10 Apple Researchers to Follow",
+    "text": "10 Apple Researchers to Follow\n\nSalar Abbaspourazad — multi-modal foundation models for health, ICLR’24, ICML’25\nJoseph Futoma — wearable behavioral data FMs, ICML’25\nAndrew C. Miller — ML for health, EKG, PPG, 2.3K citations\nSinead Williamson — Bayesian health ML, ICML’25, ICLR\nNicholas J. Foti — health ML, wearable time series, NeurIPS/ICML\nFahad Kamran — causal inference for wearables, confounder analysis\nJens Behrmann — generative models for health, ICML/NeurIPS\nAntoine Wehenkel — simulation-based inference for cardiovascular models\nGuillermo Sapiro — Distinguished Engineer, 91K citations, digital health\nEray Erturk — USC PhD student collaborating with Apple, potential peer entry point"
+  },
+  {
+    "objectID": "AGENTS.html#interview-process-cross-sourced",
+    "href": "AGENTS.html#interview-process-cross-sourced",
+    "title": "AGENTS.md — dan-docs (Quarto static site, deployed to GitHub Pages)",
+    "section": "Interview Process (cross-sourced)",
+    "text": "Interview Process (cross-sourced)\n\nRecruiter screen (30 min) — expects Apple-specific product enthusiasm\n1-3 tech phone screens — LC mediums (Python), ML fundamentals, stats, on-device constraint framing\nOnsite 5-6 rounds — opens with 45-60 min research presentation (confound story), then coding, research theory, ML system design, behavioral\nTeam-specific hiring, avg ~63 days Behavioral: 8-10 STAR stories, &lt;3 min each, with quantified results."
+  },
+  {
+    "objectID": "AGENTS.html#story-bank-raw-material-not-yet-drafted",
+    "href": "AGENTS.html#story-bank-raw-material-not-yet-drafted",
+    "title": "AGENTS.md — dan-docs (Quarto static site, deployed to GitHub Pages)",
+    "section": "Story Bank (Raw Material, Not Yet Drafted)",
+    "text": "Story Bank (Raw Material, Not Yet Drafted)\n\nPostdoc pushback / confound validation (disagreement story)\nLab move chaos / $1M equipment undocumented (ambiguity story)\nSpaceX Round 2 / Pascal’s triangle failure (failure/growth story)\nHøst-Madsen ISIT paper (self-taught under deadline)\nSyringe pump automation from scratch (above and beyond)\nConvincing Ray with one-pager (influence without authority)\nCouncil review of optimization loop (collaborative debate)\nDPV signal-chain pipeline (end-to-end ownership)\nApple product enthusiasm (not yet drafted)\nSelf-taught DSP under deadline (resourcefulness)"
+  },
+  {
+    "objectID": "AGENTS.html#gaps-identified-not-yet-filled",
+    "href": "AGENTS.html#gaps-identified-not-yet-filled",
+    "title": "AGENTS.md — dan-docs (Quarto static site, deployed to GitHub Pages)",
+    "section": "Gaps Identified (Not Yet Filled)",
+    "text": "Gaps Identified (Not Yet Filled)\n\nRegulatory fluency: SaMD, 510(k), De Novo, IEC 62304 — read FDA guidance\nPatents: zero currently. Identify patentable claims in confound mitigation once fix paper has a prototype.\nOne-pager for Aug 2026 Ray meeting: not yet drafted. Must exist before walking in."
+  },
+  {
+    "objectID": "AGENTS.html#measurable-actions-current-priority-order",
+    "href": "AGENTS.html#measurable-actions-current-priority-order",
+    "title": "AGENTS.md — dan-docs (Quarto static site, deployed to GitHub Pages)",
+    "section": "Measurable Actions (Current Priority Order)",
+    "text": "Measurable Actions (Current Priority Order)\n\nDraft the one-pager for Ray (problem statement, why postdoc model was wrong, preliminary evidence, two-paper structure)\nShip unified portfolio repo: DPV pipeline (dpv-monopeak, dpv-calibration) + LSB205 rig tooling in one repo with confound narrative README\nSubmit Høst-Madsen ISIT paper by ~Jan 2027\nSubmit confound characterization paper by ~Aug 2027 (target: NeurIPS workshop &gt; EMBC)\nSubmit fix-it paper to IEEE Sensors Letters by early 2028\nFile internship apps (Apple + Dexcom/Abbott/iRhythm) fall 2027\nDraft 10 STAR stories\nFollow 10 Apple researchers, read their publications, cite their work\nBuild regulatory literacy (FDA SaMD, 510k, De Novo, wellness exemption)\nIdentify patentable claims in mitigation design"
+  },
+  {
+    "objectID": "AGENTS.html#key-facts",
+    "href": "AGENTS.html#key-facts",
+    "title": "AGENTS.md — dan-docs (Quarto static site, deployed to GitHub Pages)",
+    "section": "Key Facts",
+    "text": "Key Facts\n\nDan: first-year EE PhD at IU Luddy ISE, direct-entry (no separate Master’s), advised by Tyler Ray\nThesis arc: parasitic body-coupling confound in capacitive biosensors (identify → convince skeptics → characterize → mitigate)\nE5/XDG glucose program: silicon photonics, optical absorption spectroscopy, 15+ yrs running, still pre-product, NOT Dan’s modality\nGlucose MARD: 15-25% vs Dexcom/Abbott ~8%. Zero FDA-cleared non-invasive glucose wearables as of July 2026.\nCousin’s “Fable 5” doc: BA Economics, senior team lead at rocket company. His five-commonality framework (deep spine, HW×phys×algo, receipts=patents+pubs+studies, regulatory fluency, long compounding tenure) generalizes well. His modality advice does not (he assumed optical).\nReliability flag: Claude was inconsistent on strategic judgments in this thread. Factual extractions cross-verified; judgment calls should be re-derived."
   },
   {
     "objectID": "AGENTS.html#commands",
     "href": "AGENTS.html#commands",
     "title": "AGENTS.md — dan-docs (Quarto static site, deployed to GitHub Pages)",
-    "section": "",
-    "text": "quarto preview → local dev at http://localhost:4848 (live-reload)\nquarto render → build to _site/\nquarto publish gh-pages → deploy"
+    "section": "Commands",
+    "text": "Commands\n\nquarto preview → local dev at http://localhost:4848 (live-reload)\nquarto render → build to _site/\nquarto publish gh-pages → deploy"
   },
   {
     "objectID": "AGENTS.html#add-content",
     "href": "AGENTS.html#add-content",
     "title": "AGENTS.md — dan-docs (Quarto static site, deployed to GitHub Pages)",
-    "section": "",
-    "text": "Drop .ipynb into blog/ or research/. Auto-listed by */index.qmd (glob *.ipynb).\nFirst cell = Raw cell with YAML frontmatter:\n---\ntitle: \"Title\"\nauthor: \"Dan Vu\"\ndate: \"2026-07-12\"\ndescription: \"One sentence. Shows in listing cards.\"\ncategories: [tag1, tag2]\nformat:\n  html:\n    theme: [../custom.scss]\n    toc: true\n---"
+    "section": "Add content",
+    "text": "Add content\nDrop .ipynb into blog/ or research/. Auto-listed by */index.qmd (glob *.ipynb).\nFirst cell = Raw cell with YAML frontmatter:\n---\ntitle: \"Title\"\nauthor: \"Dan Vu\"\ndate: \"2026-07-12\"\ndescription: \"One sentence. Shows in listing cards.\"\ncategories: [tag1, tag2]\nformat:\n  html:\n    theme: [../custom.scss]\n    toc: true\n---"
   },
   {
     "objectID": "AGENTS.html#add-navbar-section",
     "href": "AGENTS.html#add-navbar-section",
     "title": "AGENTS.md — dan-docs (Quarto static site, deployed to GitHub Pages)",
-    "section": "",
-    "text": "Create section/index.qmd with auto-listing (copy blog/index.qmd)\nAdd entry in _quarto.yml under website.navbar.left\nOptionally add manual links in index.qmd landing page"
+    "section": "Add navbar section",
+    "text": "Add navbar section\n\nCreate section/index.qmd with auto-listing (copy blog/index.qmd)\nAdd entry in _quarto.yml under website.navbar.left\nOptionally add manual links in index.qmd landing page"
   },
   {
     "objectID": "AGENTS.html#plots",
     "href": "AGENTS.html#plots",
     "title": "AGENTS.md — dan-docs (Quarto static site, deployed to GitHub Pages)",
-    "section": "",
-    "text": "import sys; sys.path.insert(0, '..')\nfrom assets.matplotlib_theme import apply_void_theme, vc\napply_void_theme('dark')  # 'dark' for web, 'print' for PDF\n# Use: color=vc.cyan, color=vc.green, etc."
+    "section": "Plots",
+    "text": "Plots\nimport sys; sys.path.insert(0, '..')\nfrom assets.matplotlib_theme import apply_void_theme, vc\napply_void_theme('dark')  # 'dark' for web, 'print' for PDF\n# Use: color=vc.cyan, color=vc.green, etc."
   },
   {
     "objectID": "AGENTS.html#pdf-export",
     "href": "AGENTS.html#pdf-export",
     "title": "AGENTS.md — dan-docs (Quarto static site, deployed to GitHub Pages)",
-    "section": "",
-    "text": "quarto render file.ipynb --to pdf      # LaTeX (needs XeLaTeX)\nquarto render file.ipynb --to typst    # Typst (no TeX needed)\nNotebook frontmatter: add pdf or typst block pointing to pdf-latex.tex / pdf-typst.typ."
+    "section": "PDF export",
+    "text": "PDF export\nquarto render file.ipynb --to pdf      # LaTeX (needs XeLaTeX)\nquarto render file.ipynb --to typst    # Typst (no TeX needed)\nNotebook frontmatter: add pdf or typst block pointing to pdf-latex.tex / pdf-typst.typ."
   },
   {
     "objectID": "AGENTS.html#blog-post-generation",
     "href": "AGENTS.html#blog-post-generation",
     "title": "AGENTS.md — dan-docs (Quarto static site, deployed to GitHub Pages)",
-    "section": "",
-    "text": "prompts.txt has 3 templates: extract-project-facts → generate-ipynb-post → generate-linkedin-post. Feed them sequentially."
+    "section": "Blog post generation",
+    "text": "Blog post generation\nprompts.txt has 3 templates: extract-project-facts → generate-ipynb-post → generate-linkedin-post. Feed them sequentially."
   },
   {
     "objectID": "AGENTS.html#theme",
     "href": "AGENTS.html#theme",
     "title": "AGENTS.md — dan-docs (Quarto static site, deployed to GitHub Pages)",
-    "section": "",
-    "text": "custom.scss = source of truth. Based on Bootswatch Litera. Change $link-color to retheme."
+    "section": "Theme",
+    "text": "Theme\ncustom.scss = source of truth. Based on Bootswatch Litera. Change $link-color to retheme."
   },
   {
     "objectID": "blog/meme-bot.html",
@@ -663,173 +726,5 @@
     "title": "blog",
     "section": "",
     "text": "Building a Meme Bot That Learns Your Server\n\n\nA Discord bot that generates memes from your server’s own message history. The jokes already happened. The bot just finds them.\n\n\n\n\n\nApr 22, 2026\n\n\n\n\n\n\n\nRide Quality Analysis of a Passenger Rail System\n\n\nA 1/3 octave band vibration analysis pipeline built from scratch to assess passenger ride comfort against ISO 2631-1 limits.\n\n\n\n\n\nMar 13, 2026\n\n\n\n\n\nNo matching items"
-  },
-  {
-    "objectID": "apple-roadmap-comprehensive.html",
-    "href": "apple-roadmap-comprehensive.html",
-    "title": "Apple Thesis Arc: The Full Una­dited Roadmap",
-    "section": "",
-    "text": "Two philosophies collided in my inbox this month. Both want me at Apple Watch health sensing. They disagree on everything else.\nMy cousin sent an HTML document he called “Fable 5.” He optimizes for the role: target Apple’s named glucose program (E5, under XDG) specifically. He’s a senior team lead at a rocket company, brings real corporate-ladder and hiring-pattern experience. His doc found me on modalities (assumed I do optical sensing), mis-structured my degree path (assumed MS then PhD, I’m direct-entry), but the operating principles he extracted from analyzing successful Apple researchers are sharp.\nMy existing plan optimizes for the domain: keep running the parasitic body-coupling confound thesis arc I already have two months of postdoc pushback behind, Ray’s verbal green-light, and a lab full of capacitive sensors and electrochemical workbenches waiting.\nThe resolution I landed on, after pushing on both directions: don’t pivot modality. The confound work is a real asset already in motion. Glucose is the most oversubscribed lane in wearables, fifteen years unshipped, requires an optics PhD lane I don’t have and no advisor for. But steal the transferable operating principles from the cousin’s framework. They generalize.\nThe remaining unresolved question, and I genuinely don’t have ground truth here: does “legibility to a named team” matter more at the research-scientist hiring level than adjacent-domain depth does? The cousin’s implicit argument is yes, Apple hires for specific slots, not general capability. My plan assumes the opposite. I should check real Apple Health Sensing LinkedIn profiles and see which pattern dominates, not trust either framing unaudited."
-  },
-  {
-    "objectID": "apple-roadmap-comprehensive.html#the-core-disagreement-unsolved",
-    "href": "apple-roadmap-comprehensive.html#the-core-disagreement-unsolved",
-    "title": "Apple Thesis Arc: The Full Una­dited Roadmap",
-    "section": "",
-    "text": "Two philosophies collided in my inbox this month. Both want me at Apple Watch health sensing. They disagree on everything else.\nMy cousin sent an HTML document he called “Fable 5.” He optimizes for the role: target Apple’s named glucose program (E5, under XDG) specifically. He’s a senior team lead at a rocket company, brings real corporate-ladder and hiring-pattern experience. His doc found me on modalities (assumed I do optical sensing), mis-structured my degree path (assumed MS then PhD, I’m direct-entry), but the operating principles he extracted from analyzing successful Apple researchers are sharp.\nMy existing plan optimizes for the domain: keep running the parasitic body-coupling confound thesis arc I already have two months of postdoc pushback behind, Ray’s verbal green-light, and a lab full of capacitive sensors and electrochemical workbenches waiting.\nThe resolution I landed on, after pushing on both directions: don’t pivot modality. The confound work is a real asset already in motion. Glucose is the most oversubscribed lane in wearables, fifteen years unshipped, requires an optics PhD lane I don’t have and no advisor for. But steal the transferable operating principles from the cousin’s framework. They generalize.\nThe remaining unresolved question, and I genuinely don’t have ground truth here: does “legibility to a named team” matter more at the research-scientist hiring level than adjacent-domain depth does? The cousin’s implicit argument is yes, Apple hires for specific slots, not general capability. My plan assumes the opposite. I should check real Apple Health Sensing LinkedIn profiles and see which pattern dominates, not trust either framing unaudited."
-  },
-  {
-    "objectID": "apple-roadmap-comprehensive.html#the-e5-xdg-reality-check",
-    "href": "apple-roadmap-comprehensive.html#the-e5-xdg-reality-check",
-    "title": "Apple Thesis Arc: The Full Una­dited Roadmap",
-    "section": "The E5 / XDG Reality Check",
-    "text": "The E5 / XDG Reality Check\nMy cousin’s doc centered on Apple’s non-invasive glucose program. I verified the claims. Here is what I found.\nE5 is real. Bloomberg’s Mark Gurman has been tracking it since 2023. It dates to 2010 when Steve Jobs directed the acquisition of RareLight, a startup working on optical glucose sensing. It operated under a shell company called Avolonte Health until 2015, then moved into Apple’s Exploratory Design Group (XDG), the moonshot division that also housed the self-driving car work.\nThe technology approach is silicon photonics combined with optical absorption spectroscopy. Lasers shine specific wavelengths into interstitial fluid below the skin; glucose absorbs some of that light, the unabsorbed portion bounces back to a sensor and gets analyzed. This is not electrochemistry. It is not capacitive. It is not my skill set.\nProject leads mentioned in reporting include Bill Athas (founded the glucose team, died 2022), Tim Millet (VP platform architecture, led 2023), Zongjian Chen (took over May 2026, ATG lead). Dr. Sumbul Desai (VP Health & Fitness) oversees clinical validation and regulatory — she’s the connection point between the XDG moonshot and the health org. Other named engineers: Jeff Koller, Dave Simon, Bryan Raines. Hundreds of engineers reportedly work on it.\nThe state as of March 2025: a proof-of-concept prototype exists but is still way too large for the Watch form factor. MacRumors called it “many years away.” Multiple reports put non-invasive glucose at MARD 15-25% compared to Dexcom/Abbott’s ~8%. Zero FDA-cleared non-invasive glucose wearables exist from any brand as of mid-2026.\nThe cousin’s factual claims check out. His strategic claim — that I should pivot into this team — does not, because the technology stack is optical and my entire signal-chain story is capacitive/electrochemical. But the people he identified (Desai, Srouji, Zongjian Chen) and the org structure (XDG reporting to Srouji, separate from health HW) are real and worth knowing."
-  },
-  {
-    "objectID": "apple-roadmap-comprehensive.html#the-five-commonality-framework-keep-this",
-    "href": "apple-roadmap-comprehensive.html#the-five-commonality-framework-keep-this",
-    "title": "Apple Thesis Arc: The Full Una­dited Roadmap",
-    "section": "The Five-Commonality Framework (Keep This)",
-    "text": "The Five-Commonality Framework (Keep This)\nMy cousin extracted five patterns across every successful Apple researcher he analyzed. These generalize regardless of which team or modality I target.\n1. One deep technical spine. Zero generalists. Every person on his list had a narrow, specific expertise they’d accumulated over 10-20 years. They didn’t jump between subfields. They got deeper.\n2. Hardware x physiology x algorithms intersection. The people who thrive at Apple sit at the exact overlap of all three. Someone who only does signal processing without understanding the biological signal source, or only understands physiology without the implementation layer, doesn’t make it.\n3. Receipts = patents + peer-reviewed pubs + human validation studies. Papers alone are not enough. Patents alone are not enough. Apple wants evidence that you can produce all three forms of output.\n4. Regulatory fluency. FDA clearance is the moat in health sensing. The people who understand 510(k) vs. De Novo vs. wellness exemption pathways, who know what IEC 62304 means, who can design a validation study that satisfies both a journal reviewer and a regulatory reviewer, have a structural advantage.\n5. Long compounding tenure in one domain. Nobody in the cousin’s analysis had a zigzag career. Ten to twenty years in one lane, often building version one of something from scratch.\nMy spine needs to be: signal-chain artifact identification and mitigation for non-invasive electrochemical/capacitive wearable sensors. That’s specific enough to pass test 1, intersects all three domains in test 2, and I need to build receipts (test 3) and regulatory fluency (test 4) explicitly over the next two years."
-  },
-  {
-    "objectID": "apple-roadmap-comprehensive.html#the-interview-process-from-multiple-sources",
-    "href": "apple-roadmap-comprehensive.html#the-interview-process-from-multiple-sources",
-    "title": "Apple Thesis Arc: The Full Una­dited Roadmap",
-    "section": "The Interview Process (From Multiple Sources)",
-    "text": "The Interview Process (From Multiple Sources)\nCross-referenced from Interview Query, Dataford, IGotAnOffer, Glassdoor, and Reddit. Consistent across dozens of reports.\nStage 1: Recruiter screen (30 min). Expects Apple-specific motivation. “Why Apple?” is not a generic question here. They filter for product enthusiasm before expertise before experience, in that order. If you cannot name a specific Apple health feature and describe how you would improve it, you fail this round regardless of your publication record.\nStage 2: Technical phone screens (1-3 rounds). Coding (LeetCode mediums, Python), ML fundamentals (time-series models, evaluation, overfitting, from-scratch implementation), statistics (hypothesis testing, validation study design), applied problem-solving framed around on-device constraints. The Apple angle that differentiates from generic industry ML answers: every design decision must account for power, memory, and privacy-preserving local compute.\nStage 3: Onsite (5-6 rounds). Opens with a 45-60 minute research presentation of your best work. This is the single most important hour of the process. The confound story (identify, convince skeptics, characterize, mitigate) is the presentation. Then coding, research theory deep-dive, ML system design, behavioral rounds.\nStage 4: Team match. Hiring is team-specific. You interview for e.g. Health AI specifically, not a generic research scientist req.\nAverage time to hire: ~63 days."
-  },
-  {
-    "objectID": "apple-roadmap-comprehensive.html#behavioral-questions-the-story-bank-draft",
-    "href": "apple-roadmap-comprehensive.html#behavioral-questions-the-story-bank-draft",
-    "title": "Apple Thesis Arc: The Full Una­dited Roadmap",
-    "section": "Behavioral Questions: The Story Bank (Draft)",
-    "text": "Behavioral Questions: The Story Bank (Draft)\nApple behavioral interviews evaluate STAR stories (Situation, Task, Action, Result). Real events I have banked, not yet drafted into polished narratives:\n1. The confound pushback (disagreement-with-colleague, handling-rejection). Two months of the postdoc insisting the drift was in my measurement, not his model. I ran controlled experiments, isolated the parasitic body-coupling mechanism, showed the data in a group meeting. The postdoc’s model had been confounding drift with sensitivity for six months before anyone caught it.\n2. Lab move chaos (ambiguity, incomplete data, went above and beyond). Same-day unannounced relocation of approximately $1M in equipment with no certified technicians available. I documented every move, photographed cable configurations before disconnection, likely voided several service contracts but preserved the experimental timeline.\n3. SpaceX Round 2 (failure and growth). Made it to the final round. Blanked on Pascal’s triangle under pressure. The failure was specific and technical, not a “weakness framed as strength” narrative.\n4. Høst-Madsen ISIT paper (self-taught skill under deadline). A transformer vs. Laplace estimator comparison on binary sequences, outside my subfield, requiring me to pick up information theory and empirical ML methods in parallel with lab work. Proves I can ship rigorous work in a domain where I have no coursework.\n5. Syringe pump automation from scratch (went above and beyond). Built an entire automation pipeline because no commercial solution existed for the experiment. Crosses hardware, firmware, and software.\n6. Convincing Ray (ambiguity, influencing without authority). Walked in with a one-pager, not a proposal. The document did the convincing, not the conversation.\n7. Council review of the optimization loop (collaborative debate). Four simulated adversarial reviewers (science, systems, statistics, cost) tore apart my Stage A metric design. I incorporated their fixes rather than defending the original.\n8. The DPV signal-chain pipeline (end-to-end ownership). From raw PalmSens instrument output through peak detection, calibration, and drift correction, packaged as open-source Python packages.\n9. Why Apple / favorite product (enthusiasm screen). Not yet drafted. Needs to be specific, technical, and critical in a constructive way. Not “I love my Apple Watch” — that is not a story.\n10. Self-taught signal processing under a deadline (growth and resourcefulness). Multiple instances where I needed a DSP technique I had not been taught and learned it well enough to ship working code within a week.\nStatus: none of these are drafted into three-minute STAR format. That is its own work block."
-  },
-  {
-    "objectID": "apple-roadmap-comprehensive.html#the-corrected-framing-on-selling-research",
-    "href": "apple-roadmap-comprehensive.html#the-corrected-framing-on-selling-research",
-    "title": "Apple Thesis Arc: The Full Una­dited Roadmap",
-    "section": "The Corrected Framing on Selling Research",
-    "text": "The Corrected Framing on Selling Research\nI had a back-and-forth with Claude about this that swung through three positions before settling. The conversation is worth flagging because it shows how easy it is to land on wrong advice.\nFirst swing: “sell your specific invention, Apple should want your confound-fix technology.” Wrong — Apple will not license or want my specific patent. Standard industry invention-assignment means anything invented during employment becomes theirs anyway. The sell is not a product.\nSecond swing: “so frame yourself as a generalist problem-solver.” Also wrong — the five-commonality framework’s first rule is zero generalists. Vague self-framing does not survive 45 minutes of expert questioning.\nStable position: my specific, narrow expertise (parasitic capacitance characterization and mitigation in capacitive biosensors) is the credential. It transfers to Apple’s problems because signal-chain artifact identification is a real cross-modality skill that works on PPG noise, ECG motion artifacts, and optical drift just as well as it works on capacitive drift. Not because the specific finding transfers, but because rigorous specificity itself is what survives scrutiny. Generic self-framing does not."
-  },
-  {
-    "objectID": "apple-roadmap-comprehensive.html#the-three-phase-timeline",
-    "href": "apple-roadmap-comprehensive.html#the-three-phase-timeline",
-    "title": "Apple Thesis Arc: The Full Una­dited Roadmap",
-    "section": "The Three-Phase Timeline",
-    "text": "The Three-Phase Timeline\n\nPhase 0: Now to Aug 2026\nAugust meeting with Ray. The one-pager exists or I do not walk in. Problem statement, why the postdoc’s model was wrong, preliminary evidence, two-paper structure (characterize, mitigate).\nSyringe pump automation: finish it, recognize it as lab infrastructure cred with zero Apple signal. Don’t let it eat time.\nPortfolio repo: unify the DPV pipeline packages (dpv-monopeak, dpv-calibration) and the LSB205 voice-coil rig writeups into one clean artifact with a README that tells the confound story.\n\n\nPhase 1: Year 1 (Fall 2026 - Summer 2027)\nConfound characterization paper submitted. Target venues ranked by Apple recruiter presence: NeurIPS workshop (Learning from Time-Series for Health) is strongest, EMBC is fine but weaker Apple density. Deadline for NeurIPS workshop is approximately August 2027. If this slips past summer 2027, the paper is not citable before internship applications open.\nHøst-Madsen ISIT paper: ship it. It is my strongest credential and it is not even in my subfield, which is exactly why it matters. ISIT 2027 in Sorrento, Italy (Jun 27 - Jul 2). Submission deadline approximately January 2027.\nStart following Apple researchers. Ten specific names surfaced: Salar Abbaspourazad (multi-modal health foundation models, ICLR/ICML), Joseph Futoma (behavioral data foundation models, ICML), Andrew C. Miller (ML for health, EKG), Sinead Williamson and Nicholas J. Foti (Bayesian health ML), Fahad Kamran (causal inference for wearables), Jens Behrmann and Antoine Wehenkel (generative models for health), Guillermo Sapiro (distinguished engineer, 91K citations), Eray Erturk (USC PhD student collaborating with Apple, potential peer entry point). Read their papers, attend their talks, cite their work.\n\n\nPhase 2: Year 2 (Fall 2027 - Summer 2028)\nFix-it paper submitted early 2028. Target IEEE Sensors Letters (faster review, ~10-day target, moderate Apple presence). Must be citable by summer 2028 for internship applications.\nUnified portfolio repo needs to be clean by now. One artifact, one narrative, one README that an Apple engineer can evaluate in five minutes.\nInternship applications open fall 2027. This is non-negotiable regardless of how ready I feel. Apple’s research org very rarely hires PhDs cold off a defense. If I miss the 2028 cycle I am gambling on Year 4, which is late.\nBackup applications to Dexcom, Abbott, iRhythm go out in the same cycle, not after Apple says no. By the time you know Apple rejected you, the other cycles are also closed.\n\n\nPhase 3: Year 3 (Fall 2028)\nInterview prep. The confound story rehearsed as a narrative, not a results dump. Eight to ten STAR stories at three minutes each, quantified, framed around cross-functional collaboration and owning the full signal chain.\nDSP fundamentals refresh for coding rounds. LeetCode mediums in Python. On-device constraint framing for every system design answer."
-  },
-  {
-    "objectID": "apple-roadmap-comprehensive.html#the-gap-i-am-not-yet-filling",
-    "href": "apple-roadmap-comprehensive.html#the-gap-i-am-not-yet-filling",
-    "title": "Apple Thesis Arc: The Full Una­dited Roadmap",
-    "section": "The Gap I Am Not Yet Filling",
-    "text": "The Gap I Am Not Yet Filling\nThe cousin’s doc identified two things my plan does not address and they are real.\nRegulatory fluency. I do not know the difference between a 510(k) and a De Novo submission. I do not know what IEC 62304 requires. I do not know what a SaMD classification means or where the wellness exemption boundary is. The people who succeed in health sensing at Apple know these things. The FDA is the actual moat, not the sensor technology.\nPatents as a credential category. My plan treats papers as the only output that matters. Apple’s most successful researchers produce patents, peer-reviewed publications, and human validation studies as three parallel output streams. I have zero patents. I should start thinking about what is patentable in the confound mitigation design once the fix paper has a working prototype.\nBoth of these are Year 2 work, not Phase 0 work. But naming the gap now means I can start reading."
-  },
-  {
-    "objectID": "apple-roadmap-comprehensive.html#the-failure-points",
-    "href": "apple-roadmap-comprehensive.html#the-failure-points",
-    "title": "Apple Thesis Arc: The Full Una­dited Roadmap",
-    "section": "The Failure Points",
-    "text": "The Failure Points\nThesis arc drift. Ray’s lab has other priorities. If the confound work gets deprioritized for instrumentation buildouts, I lose the differentiator. Checkpoint: no first-author paper submitted by end of Year 1 is a red flag, not “still early.”\nWrong venues. A generic electrochemistry paper with no wearable framing does not read to Apple recruiters. Every title and abstract needs to be legible to a “wearable sensing” search.\nNo internship = no shot. If I miss the 2028 cycle, Year 4 is late.\nInfrastructure trap. I am already the software and signal-chain guy in the lab. The confound discovery is the thing that makes me a scientist instead of an engineer in recruiters’ eyes. Every paper, talk, and LinkedIn post needs to frame it that way.\nThe personability filter. Apple’s culture explicitly values collaborative debate. I have a pattern of being abrasive when I know I am right, and I have lost credibility because of it. The confound story only works if I can sell it without making skeptics defensive. Therapy is not separate from the career plan. It is part of it."
-  },
-  {
-    "objectID": "apple-roadmap-comprehensive.html#reliability-flag",
-    "href": "apple-roadmap-comprehensive.html#reliability-flag",
-    "title": "Apple Thesis Arc: The Full Una­dited Roadmap",
-    "section": "Reliability Flag",
-    "text": "Reliability Flag\nClaude generated the research synthesis for this document. Over the course of the conversation, it swung through inconsistent positions on the cousin’s plan (overcritical, then overcorrected-deferential, then reversed again on the “sell your ideas” question). This was partly traceable to stored memory instructions calibrated for critiquing my own work bleeding into evaluation of a third party’s input.\nThe factual extractions from the cousin’s HTML doc (names, dates, process mechanics, MARD numbers) are cross-verified against Bloomberg, MacRumors, and Apple job postings and are solid. The strategic judgment calls layered on top were unstable and should be re-derived or externally verified before being treated as settled.\nThe Apple researcher names and their publication venues were sourced from Apple Machine Learning Research pages, Google Scholar, and LinkedIn — these are ground-truth. The interview process details were sourced from multiple third-party aggregators (Interview Query, Glassdoor, Reddit) and are consistent across sources but inherently anecdotal."
-  },
-  {
-    "objectID": "apple-roadmap-comprehensive.html#open-action-items",
-    "href": "apple-roadmap-comprehensive.html#open-action-items",
-    "title": "Apple Thesis Arc: The Full Una­dited Roadmap",
-    "section": "Open Action Items",
-    "text": "Open Action Items\n\nDraft the story bank into eight to ten three-minute STAR stories with quantified results.\nVerify the narrow-specialist vs. generalist hiring pattern by reading actual Apple Health Sensing LinkedIn profiles (do not trust either framing).\nAsk my cousin directly: what is his fallback model if Apple’s glucose program stays unshipped through 2031? This pressures his plan where it is weakest.\nDraft the one-pager for the August Ray meeting.\nStart building regulatory literacy: read FDA SaMD guidance, understand 510(k) vs. De Novo, learn IEC 62304.\nIdentify patentable inventions in the confound mitigation design once the fix paper has a working prototype.\nFollow the ten Apple researchers identified above. Read their recent work. Attend their NeurIPS/ICML/EMBC sessions.\nResolve the core framing question by checking actual hire backgrounds, then know which direction to aim."
-  },
-  {
-    "objectID": "Buffer/apple-roadmap-comprehensive.html",
-    "href": "Buffer/apple-roadmap-comprehensive.html",
-    "title": "Apple Thesis Arc: The Full Una­dited Roadmap",
-    "section": "",
-    "text": "Two philosophies collided in my inbox this month. Both want me at Apple Watch health sensing. They disagree on everything else.\nMy cousin sent an HTML document he called “Fable 5.” He optimizes for the role: target Apple’s named glucose program (E5, under XDG) specifically. He’s a senior team lead at a rocket company, brings real corporate-ladder and hiring-pattern experience. His doc found me on modalities (assumed I do optical sensing), mis-structured my degree path (assumed MS then PhD, I’m direct-entry), but the operating principles he extracted from analyzing successful Apple researchers are sharp.\nMy existing plan optimizes for the domain: keep running the parasitic body-coupling confound thesis arc I already have two months of postdoc pushback behind, Ray’s verbal green-light, and a lab full of capacitive sensors and electrochemical workbenches waiting.\nThe resolution I landed on, after pushing on both directions: don’t pivot modality. The confound work is a real asset already in motion. Glucose is the most oversubscribed lane in wearables, fifteen years unshipped, requires an optics PhD lane I don’t have and no advisor for. But steal the transferable operating principles from the cousin’s framework. They generalize.\nThe remaining unresolved question, and I genuinely don’t have ground truth here: does “legibility to a named team” matter more at the research-scientist hiring level than adjacent-domain depth does? The cousin’s implicit argument is yes, Apple hires for specific slots, not general capability. My plan assumes the opposite. I should check real Apple Health Sensing LinkedIn profiles and see which pattern dominates, not trust either framing unaudited."
-  },
-  {
-    "objectID": "Buffer/apple-roadmap-comprehensive.html#the-core-disagreement-unsolved",
-    "href": "Buffer/apple-roadmap-comprehensive.html#the-core-disagreement-unsolved",
-    "title": "Apple Thesis Arc: The Full Una­dited Roadmap",
-    "section": "",
-    "text": "Two philosophies collided in my inbox this month. Both want me at Apple Watch health sensing. They disagree on everything else.\nMy cousin sent an HTML document he called “Fable 5.” He optimizes for the role: target Apple’s named glucose program (E5, under XDG) specifically. He’s a senior team lead at a rocket company, brings real corporate-ladder and hiring-pattern experience. His doc found me on modalities (assumed I do optical sensing), mis-structured my degree path (assumed MS then PhD, I’m direct-entry), but the operating principles he extracted from analyzing successful Apple researchers are sharp.\nMy existing plan optimizes for the domain: keep running the parasitic body-coupling confound thesis arc I already have two months of postdoc pushback behind, Ray’s verbal green-light, and a lab full of capacitive sensors and electrochemical workbenches waiting.\nThe resolution I landed on, after pushing on both directions: don’t pivot modality. The confound work is a real asset already in motion. Glucose is the most oversubscribed lane in wearables, fifteen years unshipped, requires an optics PhD lane I don’t have and no advisor for. But steal the transferable operating principles from the cousin’s framework. They generalize.\nThe remaining unresolved question, and I genuinely don’t have ground truth here: does “legibility to a named team” matter more at the research-scientist hiring level than adjacent-domain depth does? The cousin’s implicit argument is yes, Apple hires for specific slots, not general capability. My plan assumes the opposite. I should check real Apple Health Sensing LinkedIn profiles and see which pattern dominates, not trust either framing unaudited."
-  },
-  {
-    "objectID": "Buffer/apple-roadmap-comprehensive.html#the-e5-xdg-reality-check",
-    "href": "Buffer/apple-roadmap-comprehensive.html#the-e5-xdg-reality-check",
-    "title": "Apple Thesis Arc: The Full Una­dited Roadmap",
-    "section": "The E5 / XDG Reality Check",
-    "text": "The E5 / XDG Reality Check\nMy cousin’s doc centered on Apple’s non-invasive glucose program. I verified the claims. Here is what I found.\nE5 is real. Bloomberg’s Mark Gurman has been tracking it since 2023. It dates to 2010 when Steve Jobs directed the acquisition of RareLight, a startup working on optical glucose sensing. It operated under a shell company called Avolonte Health until 2015, then moved into Apple’s Exploratory Design Group (XDG), the moonshot division that also housed the self-driving car work.\nThe technology approach is silicon photonics combined with optical absorption spectroscopy. Lasers shine specific wavelengths into interstitial fluid below the skin; glucose absorbs some of that light, the unabsorbed portion bounces back to a sensor and gets analyzed. This is not electrochemistry. It is not capacitive. It is not my skill set.\nProject leads mentioned in reporting include Bill Athas (founded the glucose team, died 2022), Tim Millet (VP platform architecture, led 2023), Zongjian Chen (took over May 2026, ATG lead). Dr. Sumbul Desai (VP Health & Fitness) oversees clinical validation and regulatory — she’s the connection point between the XDG moonshot and the health org. Other named engineers: Jeff Koller, Dave Simon, Bryan Raines. Hundreds of engineers reportedly work on it.\nThe state as of March 2025: a proof-of-concept prototype exists but is still way too large for the Watch form factor. MacRumors called it “many years away.” Multiple reports put non-invasive glucose at MARD 15-25% compared to Dexcom/Abbott’s ~8%. Zero FDA-cleared non-invasive glucose wearables exist from any brand as of mid-2026.\nThe cousin’s factual claims check out. His strategic claim — that I should pivot into this team — does not, because the technology stack is optical and my entire signal-chain story is capacitive/electrochemical. But the people he identified (Desai, Srouji, Zongjian Chen) and the org structure (XDG reporting to Srouji, separate from health HW) are real and worth knowing."
-  },
-  {
-    "objectID": "Buffer/apple-roadmap-comprehensive.html#the-five-commonality-framework-keep-this",
-    "href": "Buffer/apple-roadmap-comprehensive.html#the-five-commonality-framework-keep-this",
-    "title": "Apple Thesis Arc: The Full Una­dited Roadmap",
-    "section": "The Five-Commonality Framework (Keep This)",
-    "text": "The Five-Commonality Framework (Keep This)\nMy cousin extracted five patterns across every successful Apple researcher he analyzed. These generalize regardless of which team or modality I target.\n1. One deep technical spine. Zero generalists. Every person on his list had a narrow, specific expertise they’d accumulated over 10-20 years. They didn’t jump between subfields. They got deeper.\n2. Hardware x physiology x algorithms intersection. The people who thrive at Apple sit at the exact overlap of all three. Someone who only does signal processing without understanding the biological signal source, or only understands physiology without the implementation layer, doesn’t make it.\n3. Receipts = patents + peer-reviewed pubs + human validation studies. Papers alone are not enough. Patents alone are not enough. Apple wants evidence that you can produce all three forms of output.\n4. Regulatory fluency. FDA clearance is the moat in health sensing. The people who understand 510(k) vs. De Novo vs. wellness exemption pathways, who know what IEC 62304 means, who can design a validation study that satisfies both a journal reviewer and a regulatory reviewer, have a structural advantage.\n5. Long compounding tenure in one domain. Nobody in the cousin’s analysis had a zigzag career. Ten to twenty years in one lane, often building version one of something from scratch.\nMy spine needs to be: signal-chain artifact identification and mitigation for non-invasive electrochemical/capacitive wearable sensors. That’s specific enough to pass test 1, intersects all three domains in test 2, and I need to build receipts (test 3) and regulatory fluency (test 4) explicitly over the next two years."
-  },
-  {
-    "objectID": "Buffer/apple-roadmap-comprehensive.html#the-interview-process-from-multiple-sources",
-    "href": "Buffer/apple-roadmap-comprehensive.html#the-interview-process-from-multiple-sources",
-    "title": "Apple Thesis Arc: The Full Una­dited Roadmap",
-    "section": "The Interview Process (From Multiple Sources)",
-    "text": "The Interview Process (From Multiple Sources)\nCross-referenced from Interview Query, Dataford, IGotAnOffer, Glassdoor, and Reddit. Consistent across dozens of reports.\nStage 1: Recruiter screen (30 min). Expects Apple-specific motivation. “Why Apple?” is not a generic question here. They filter for product enthusiasm before expertise before experience, in that order. If you cannot name a specific Apple health feature and describe how you would improve it, you fail this round regardless of your publication record.\nStage 2: Technical phone screens (1-3 rounds). Coding (LeetCode mediums, Python), ML fundamentals (time-series models, evaluation, overfitting, from-scratch implementation), statistics (hypothesis testing, validation study design), applied problem-solving framed around on-device constraints. The Apple angle that differentiates from generic industry ML answers: every design decision must account for power, memory, and privacy-preserving local compute.\nStage 3: Onsite (5-6 rounds). Opens with a 45-60 minute research presentation of your best work. This is the single most important hour of the process. The confound story (identify, convince skeptics, characterize, mitigate) is the presentation. Then coding, research theory deep-dive, ML system design, behavioral rounds.\nStage 4: Team match. Hiring is team-specific. You interview for e.g. Health AI specifically, not a generic research scientist req.\nAverage time to hire: ~63 days."
-  },
-  {
-    "objectID": "Buffer/apple-roadmap-comprehensive.html#behavioral-questions-the-story-bank-draft",
-    "href": "Buffer/apple-roadmap-comprehensive.html#behavioral-questions-the-story-bank-draft",
-    "title": "Apple Thesis Arc: The Full Una­dited Roadmap",
-    "section": "Behavioral Questions: The Story Bank (Draft)",
-    "text": "Behavioral Questions: The Story Bank (Draft)\nApple behavioral interviews evaluate STAR stories (Situation, Task, Action, Result). Real events I have banked, not yet drafted into polished narratives:\n1. The confound pushback (disagreement-with-colleague, handling-rejection). Two months of the postdoc insisting the drift was in my measurement, not his model. I ran controlled experiments, isolated the parasitic body-coupling mechanism, showed the data in a group meeting. The postdoc’s model had been confounding drift with sensitivity for six months before anyone caught it.\n2. Lab move chaos (ambiguity, incomplete data, went above and beyond). Same-day unannounced relocation of approximately $1M in equipment with no certified technicians available. I documented every move, photographed cable configurations before disconnection, likely voided several service contracts but preserved the experimental timeline.\n3. SpaceX Round 2 (failure and growth). Made it to the final round. Blanked on Pascal’s triangle under pressure. The failure was specific and technical, not a “weakness framed as strength” narrative.\n4. Høst-Madsen ISIT paper (self-taught skill under deadline). A transformer vs. Laplace estimator comparison on binary sequences, outside my subfield, requiring me to pick up information theory and empirical ML methods in parallel with lab work. Proves I can ship rigorous work in a domain where I have no coursework.\n5. Syringe pump automation from scratch (went above and beyond). Built an entire automation pipeline because no commercial solution existed for the experiment. Crosses hardware, firmware, and software.\n6. Convincing Ray (ambiguity, influencing without authority). Walked in with a one-pager, not a proposal. The document did the convincing, not the conversation.\n7. Council review of the optimization loop (collaborative debate). Four simulated adversarial reviewers (science, systems, statistics, cost) tore apart my Stage A metric design. I incorporated their fixes rather than defending the original.\n8. The DPV signal-chain pipeline (end-to-end ownership). From raw PalmSens instrument output through peak detection, calibration, and drift correction, packaged as open-source Python packages.\n9. Why Apple / favorite product (enthusiasm screen). Not yet drafted. Needs to be specific, technical, and critical in a constructive way. Not “I love my Apple Watch” — that is not a story.\n10. Self-taught signal processing under a deadline (growth and resourcefulness). Multiple instances where I needed a DSP technique I had not been taught and learned it well enough to ship working code within a week.\nStatus: none of these are drafted into three-minute STAR format. That is its own work block."
-  },
-  {
-    "objectID": "Buffer/apple-roadmap-comprehensive.html#the-corrected-framing-on-selling-research",
-    "href": "Buffer/apple-roadmap-comprehensive.html#the-corrected-framing-on-selling-research",
-    "title": "Apple Thesis Arc: The Full Una­dited Roadmap",
-    "section": "The Corrected Framing on Selling Research",
-    "text": "The Corrected Framing on Selling Research\nI had a back-and-forth with Claude about this that swung through three positions before settling. The conversation is worth flagging because it shows how easy it is to land on wrong advice.\nFirst swing: “sell your specific invention, Apple should want your confound-fix technology.” Wrong — Apple will not license or want my specific patent. Standard industry invention-assignment means anything invented during employment becomes theirs anyway. The sell is not a product.\nSecond swing: “so frame yourself as a generalist problem-solver.” Also wrong — the five-commonality framework’s first rule is zero generalists. Vague self-framing does not survive 45 minutes of expert questioning.\nStable position: my specific, narrow expertise (parasitic capacitance characterization and mitigation in capacitive biosensors) is the credential. It transfers to Apple’s problems because signal-chain artifact identification is a real cross-modality skill that works on PPG noise, ECG motion artifacts, and optical drift just as well as it works on capacitive drift. Not because the specific finding transfers, but because rigorous specificity itself is what survives scrutiny. Generic self-framing does not."
-  },
-  {
-    "objectID": "Buffer/apple-roadmap-comprehensive.html#the-three-phase-timeline",
-    "href": "Buffer/apple-roadmap-comprehensive.html#the-three-phase-timeline",
-    "title": "Apple Thesis Arc: The Full Una­dited Roadmap",
-    "section": "The Three-Phase Timeline",
-    "text": "The Three-Phase Timeline\n\nPhase 0: Now to Aug 2026\nAugust meeting with Ray. The one-pager exists or I do not walk in. Problem statement, why the postdoc’s model was wrong, preliminary evidence, two-paper structure (characterize, mitigate).\nSyringe pump automation: finish it, recognize it as lab infrastructure cred with zero Apple signal. Don’t let it eat time.\nPortfolio repo: unify the DPV pipeline packages (dpv-monopeak, dpv-calibration) and the LSB205 voice-coil rig writeups into one clean artifact with a README that tells the confound story.\n\n\nPhase 1: Year 1 (Fall 2026 - Summer 2027)\nConfound characterization paper submitted. Target venues ranked by Apple recruiter presence: NeurIPS workshop (Learning from Time-Series for Health) is strongest, EMBC is fine but weaker Apple density. Deadline for NeurIPS workshop is approximately August 2027. If this slips past summer 2027, the paper is not citable before internship applications open.\nHøst-Madsen ISIT paper: ship it. It is my strongest credential and it is not even in my subfield, which is exactly why it matters. ISIT 2027 in Sorrento, Italy (Jun 27 - Jul 2). Submission deadline approximately January 2027.\nStart following Apple researchers. Ten specific names surfaced: Salar Abbaspourazad (multi-modal health foundation models, ICLR/ICML), Joseph Futoma (behavioral data foundation models, ICML), Andrew C. Miller (ML for health, EKG), Sinead Williamson and Nicholas J. Foti (Bayesian health ML), Fahad Kamran (causal inference for wearables), Jens Behrmann and Antoine Wehenkel (generative models for health), Guillermo Sapiro (distinguished engineer, 91K citations), Eray Erturk (USC PhD student collaborating with Apple, potential peer entry point). Read their papers, attend their talks, cite their work.\n\n\nPhase 2: Year 2 (Fall 2027 - Summer 2028)\nFix-it paper submitted early 2028. Target IEEE Sensors Letters (faster review, ~10-day target, moderate Apple presence). Must be citable by summer 2028 for internship applications.\nUnified portfolio repo needs to be clean by now. One artifact, one narrative, one README that an Apple engineer can evaluate in five minutes.\nInternship applications open fall 2027. This is non-negotiable regardless of how ready I feel. Apple’s research org very rarely hires PhDs cold off a defense. If I miss the 2028 cycle I am gambling on Year 4, which is late.\nBackup applications to Dexcom, Abbott, iRhythm go out in the same cycle, not after Apple says no. By the time you know Apple rejected you, the other cycles are also closed.\n\n\nPhase 3: Year 3 (Fall 2028)\nInterview prep. The confound story rehearsed as a narrative, not a results dump. Eight to ten STAR stories at three minutes each, quantified, framed around cross-functional collaboration and owning the full signal chain.\nDSP fundamentals refresh for coding rounds. LeetCode mediums in Python. On-device constraint framing for every system design answer."
-  },
-  {
-    "objectID": "Buffer/apple-roadmap-comprehensive.html#the-gap-i-am-not-yet-filling",
-    "href": "Buffer/apple-roadmap-comprehensive.html#the-gap-i-am-not-yet-filling",
-    "title": "Apple Thesis Arc: The Full Una­dited Roadmap",
-    "section": "The Gap I Am Not Yet Filling",
-    "text": "The Gap I Am Not Yet Filling\nThe cousin’s doc identified two things my plan does not address and they are real.\nRegulatory fluency. I do not know the difference between a 510(k) and a De Novo submission. I do not know what IEC 62304 requires. I do not know what a SaMD classification means or where the wellness exemption boundary is. The people who succeed in health sensing at Apple know these things. The FDA is the actual moat, not the sensor technology.\nPatents as a credential category. My plan treats papers as the only output that matters. Apple’s most successful researchers produce patents, peer-reviewed publications, and human validation studies as three parallel output streams. I have zero patents. I should start thinking about what is patentable in the confound mitigation design once the fix paper has a working prototype.\nBoth of these are Year 2 work, not Phase 0 work. But naming the gap now means I can start reading."
-  },
-  {
-    "objectID": "Buffer/apple-roadmap-comprehensive.html#the-failure-points",
-    "href": "Buffer/apple-roadmap-comprehensive.html#the-failure-points",
-    "title": "Apple Thesis Arc: The Full Una­dited Roadmap",
-    "section": "The Failure Points",
-    "text": "The Failure Points\nThesis arc drift. Ray’s lab has other priorities. If the confound work gets deprioritized for instrumentation buildouts, I lose the differentiator. Checkpoint: no first-author paper submitted by end of Year 1 is a red flag, not “still early.”\nWrong venues. A generic electrochemistry paper with no wearable framing does not read to Apple recruiters. Every title and abstract needs to be legible to a “wearable sensing” search.\nNo internship = no shot. If I miss the 2028 cycle, Year 4 is late.\nInfrastructure trap. I am already the software and signal-chain guy in the lab. The confound discovery is the thing that makes me a scientist instead of an engineer in recruiters’ eyes. Every paper, talk, and LinkedIn post needs to frame it that way.\nThe personability filter. Apple’s culture explicitly values collaborative debate. I have a pattern of being abrasive when I know I am right, and I have lost credibility because of it. The confound story only works if I can sell it without making skeptics defensive. Therapy is not separate from the career plan. It is part of it."
-  },
-  {
-    "objectID": "Buffer/apple-roadmap-comprehensive.html#reliability-flag",
-    "href": "Buffer/apple-roadmap-comprehensive.html#reliability-flag",
-    "title": "Apple Thesis Arc: The Full Una­dited Roadmap",
-    "section": "Reliability Flag",
-    "text": "Reliability Flag\nClaude generated the research synthesis for this document. Over the course of the conversation, it swung through inconsistent positions on the cousin’s plan (overcritical, then overcorrected-deferential, then reversed again on the “sell your ideas” question). This was partly traceable to stored memory instructions calibrated for critiquing my own work bleeding into evaluation of a third party’s input.\nThe factual extractions from the cousin’s HTML doc (names, dates, process mechanics, MARD numbers) are cross-verified against Bloomberg, MacRumors, and Apple job postings and are solid. The strategic judgment calls layered on top were unstable and should be re-derived or externally verified before being treated as settled.\nThe Apple researcher names and their publication venues were sourced from Apple Machine Learning Research pages, Google Scholar, and LinkedIn — these are ground-truth. The interview process details were sourced from multiple third-party aggregators (Interview Query, Glassdoor, Reddit) and are consistent across sources but inherently anecdotal."
-  },
-  {
-    "objectID": "Buffer/apple-roadmap-comprehensive.html#open-action-items",
-    "href": "Buffer/apple-roadmap-comprehensive.html#open-action-items",
-    "title": "Apple Thesis Arc: The Full Una­dited Roadmap",
-    "section": "Open Action Items",
-    "text": "Open Action Items\n\nDraft the story bank into eight to ten three-minute STAR stories with quantified results.\nVerify the narrow-specialist vs. generalist hiring pattern by reading actual Apple Health Sensing LinkedIn profiles (do not trust either framing).\nAsk my cousin directly: what is his fallback model if Apple’s glucose program stays unshipped through 2031? This pressures his plan where it is weakest.\nDraft the one-pager for the August Ray meeting.\nStart building regulatory literacy: read FDA SaMD guidance, understand 510(k) vs. De Novo, learn IEC 62304.\nIdentify patentable inventions in the confound mitigation design once the fix paper has a working prototype.\nFollow the ten Apple researchers identified above. Read their recent work. Attend their NeurIPS/ICML/EMBC sessions.\nResolve the core framing question by checking actual hire backgrounds, then know which direction to aim."
   }
 ]
