@@ -328,6 +328,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="blog-post-generation">Blog post generation</h2>
 <p><code>prompts.txt</code> has 3 templates: extract-project-facts → generate-ipynb-post → generate-linkedin-post. Feed them sequentially.</p>
 </section>
+<section id="blogresearch-citation-rule-non-negotiable" class="level2">
+<h2 class="anchored" data-anchor-id="blogresearch-citation-rule-non-negotiable">Blog/Research Citation Rule (NON-NEGOTIABLE)</h2>
+<p>Every paper, dataset, or external source referenced in blog posts or research outputs MUST be backed by an IEEE-style citation: - Inline: <code>[n]</code> format, sequentially numbered in order of first appearance - References section at bottom: <code>[n] A. Author, B. Author, and C. Author, "Title," *Journal*, vol. X, no. Y, pp. Z-W, Month Year, doi: XXX.</code> - No bare author-year references (e.g.&nbsp;“Gabriel et al.&nbsp;1996” without the full citation). Every mention must map to a numbered reference. - If DOI/volume/pages are unknown, mark <code>[details needed]</code> rather than omit the reference entirely.</p>
+</section>
 <section id="theme" class="level2">
 <h2 class="anchored" data-anchor-id="theme">Theme</h2>
 <p><code>custom.scss</code> = source of truth. Based on Bootswatch Litera. Change <code>$link-color</code> to retheme.</p>
