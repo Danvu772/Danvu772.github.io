@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Dan Vu">
+<meta name="dcterms.date" content="2026-07-13">
+<meta name="description" content="Confound discovery, the E5 question, STAR stories, interview mechanics, FDA fluency, patents-as-currency, and the failure points that keep me honest. Everything I know as of July 2026.">
+
+<title>Apple Thesis Arc: The Full Una­dited Roadmap – Dan Vu</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../assets/favicon.ico" rel="icon">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-58e7cb164a30d0964bc3a4cf0cb5a652.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-0bfe021cbad7778764f6380846393d4a.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Dan Vu</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">~/</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../research/index.html"> 
+<span class="menu-text">research</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../blog/index.html"> 
+<span class="menu-text">blog</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../assets/resume.pdf"> 
+<span class="menu-text">resume</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#the-core-disagreement-unsolved" id="toc-the-core-disagreement-unsolved" class="nav-link active" data-scroll-target="#the-core-disagreement-unsolved">The Core Disagreement (Unsolved)</a></li>
+  <li><a href="#the-e5-xdg-reality-check" id="toc-the-e5-xdg-reality-check" class="nav-link" data-scroll-target="#the-e5-xdg-reality-check">The E5 / XDG Reality Check</a></li>
+  <li><a href="#the-five-commonality-framework-keep-this" id="toc-the-five-commonality-framework-keep-this" class="nav-link" data-scroll-target="#the-five-commonality-framework-keep-this">The Five-Commonality Framework (Keep This)</a></li>
+  <li><a href="#the-interview-process-from-multiple-sources" id="toc-the-interview-process-from-multiple-sources" class="nav-link" data-scroll-target="#the-interview-process-from-multiple-sources">The Interview Process (From Multiple Sources)</a></li>
+  <li><a href="#behavioral-questions-the-story-bank-draft" id="toc-behavioral-questions-the-story-bank-draft" class="nav-link" data-scroll-target="#behavioral-questions-the-story-bank-draft">Behavioral Questions: The Story Bank (Draft)</a></li>
+  <li><a href="#the-corrected-framing-on-selling-research" id="toc-the-corrected-framing-on-selling-research" class="nav-link" data-scroll-target="#the-corrected-framing-on-selling-research">The Corrected Framing on Selling Research</a></li>
+  <li><a href="#the-three-phase-timeline" id="toc-the-three-phase-timeline" class="nav-link" data-scroll-target="#the-three-phase-timeline">The Three-Phase Timeline</a>
+  <ul class="collapse">
+  <li><a href="#phase-0-now-to-aug-2026" id="toc-phase-0-now-to-aug-2026" class="nav-link" data-scroll-target="#phase-0-now-to-aug-2026">Phase 0: Now to Aug 2026</a></li>
+  <li><a href="#phase-1-year-1-fall-2026---summer-2027" id="toc-phase-1-year-1-fall-2026---summer-2027" class="nav-link" data-scroll-target="#phase-1-year-1-fall-2026---summer-2027">Phase 1: Year 1 (Fall 2026 - Summer 2027)</a></li>
+  <li><a href="#phase-2-year-2-fall-2027---summer-2028" id="toc-phase-2-year-2-fall-2027---summer-2028" class="nav-link" data-scroll-target="#phase-2-year-2-fall-2027---summer-2028">Phase 2: Year 2 (Fall 2027 - Summer 2028)</a></li>
+  <li><a href="#phase-3-year-3-fall-2028" id="toc-phase-3-year-3-fall-2028" class="nav-link" data-scroll-target="#phase-3-year-3-fall-2028">Phase 3: Year 3 (Fall 2028)</a></li>
+  </ul></li>
+  <li><a href="#the-gap-i-am-not-yet-filling" id="toc-the-gap-i-am-not-yet-filling" class="nav-link" data-scroll-target="#the-gap-i-am-not-yet-filling">The Gap I Am Not Yet Filling</a></li>
+  <li><a href="#the-failure-points" id="toc-the-failure-points" class="nav-link" data-scroll-target="#the-failure-points">The Failure Points</a></li>
+  <li><a href="#reliability-flag" id="toc-reliability-flag" class="nav-link" data-scroll-target="#reliability-flag">Reliability Flag</a></li>
+  <li><a href="#open-action-items" id="toc-open-action-items" class="nav-link" data-scroll-target="#open-action-items">Open Action Items</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Apple Thesis Arc: The Full Una­dited Roadmap</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">personal</div>
+    <div class="quarto-category">strategy</div>
+    <div class="quarto-category">phd</div>
+    <div class="quarto-category">wearable-sensing</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    Confound discovery, the E5 question, STAR stories, interview mechanics, FDA fluency, patents-as-currency, and the failure points that keep me honest. Everything I know as of July 2026.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Dan Vu </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">July 13, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="the-core-disagreement-unsolved" class="level2">
+<h2 class="anchored" data-anchor-id="the-core-disagreement-unsolved">The Core Disagreement (Unsolved)</h2>
+<p>Two philosophies collided in my inbox this month. Both want me at Apple Watch health sensing. They disagree on everything else.</p>
+<p><strong>My cousin</strong> sent an HTML document he called “Fable 5.” He optimizes for the <em>role</em>: target Apple’s named glucose program (E5, under XDG) specifically. He’s a senior team lead at a rocket company, brings real corporate-ladder and hiring-pattern experience. His doc found me on modalities (assumed I do optical sensing), mis-structured my degree path (assumed MS then PhD, I’m direct-entry), but the operating principles he extracted from analyzing successful Apple researchers are sharp.</p>
+<p><strong>My existing plan</strong> optimizes for the <em>domain</em>: keep running the parasitic body-coupling confound thesis arc I already have two months of postdoc pushback behind, Ray’s verbal green-light, and a lab full of capacitive sensors and electrochemical workbenches waiting.</p>
+<p>The resolution I landed on, after pushing on both directions: don’t pivot modality. The confound work is a real asset already in motion. Glucose is the most oversubscribed lane in wearables, fifteen years unshipped, requires an optics PhD lane I don’t have and no advisor for. But steal the transferable operating principles from the cousin’s framework. They generalize.</p>
+<p>The remaining unresolved question, and I genuinely don’t have ground truth here: does “legibility to a named team” matter more at the research-scientist hiring level than adjacent-domain depth does? The cousin’s implicit argument is yes, Apple hires for specific slots, not general capability. My plan assumes the opposite. I should check real Apple Health Sensing LinkedIn profiles and see which pattern dominates, not trust either framing unaudited.</p>
+</section>
+<section id="the-e5-xdg-reality-check" class="level2">
+<h2 class="anchored" data-anchor-id="the-e5-xdg-reality-check">The E5 / XDG Reality Check</h2>
+<p>My cousin’s doc centered on Apple’s non-invasive glucose program. I verified the claims. Here is what I found.</p>
+<p>E5 is real. Bloomberg’s Mark Gurman has been tracking it since 2023. It dates to 2010 when Steve Jobs directed the acquisition of RareLight, a startup working on optical glucose sensing. It operated under a shell company called Avolonte Health until 2015, then moved into Apple’s Exploratory Design Group (XDG), the moonshot division that also housed the self-driving car work.</p>
+<p>The technology approach is silicon photonics combined with optical absorption spectroscopy. Lasers shine specific wavelengths into interstitial fluid below the skin; glucose absorbs some of that light, the unabsorbed portion bounces back to a sensor and gets analyzed. This is not electrochemistry. It is not capacitive. It is not my skill set.</p>
+<p>Project leads mentioned in reporting include Bill Athas (founded the glucose team, died 2022), Tim Millet (VP platform architecture, led 2023), Zongjian Chen (took over May 2026, ATG lead). Dr.&nbsp;Sumbul Desai (VP Health &amp; Fitness) oversees clinical validation and regulatory — she’s the connection point between the XDG moonshot and the health org. Other named engineers: Jeff Koller, Dave Simon, Bryan Raines. Hundreds of engineers reportedly work on it.</p>
+<p>The state as of March 2025: a proof-of-concept prototype exists but is still way too large for the Watch form factor. MacRumors called it “many years away.” Multiple reports put non-invasive glucose at MARD 15-25% compared to Dexcom/Abbott’s ~8%. Zero FDA-cleared non-invasive glucose wearables exist from any brand as of mid-2026.</p>
+<p>The cousin’s factual claims check out. His strategic claim — that I should pivot into this team — does not, because the technology stack is optical and my entire signal-chain story is capacitive/electrochemical. But the people he identified (Desai, Srouji, Zongjian Chen) and the org structure (XDG reporting to Srouji, separate from health HW) are real and worth knowing.</p>
+</section>
+<section id="the-five-commonality-framework-keep-this" class="level2">
+<h2 class="anchored" data-anchor-id="the-five-commonality-framework-keep-this">The Five-Commonality Framework (Keep This)</h2>
+<p>My cousin extracted five patterns across every successful Apple researcher he analyzed. These generalize regardless of which team or modality I target.</p>
+<p><strong>1. One deep technical spine.</strong> Zero generalists. Every person on his list had a narrow, specific expertise they’d accumulated over 10-20 years. They didn’t jump between subfields. They got deeper.</p>
+<p><strong>2. Hardware x physiology x algorithms intersection.</strong> The people who thrive at Apple sit at the exact overlap of all three. Someone who only does signal processing without understanding the biological signal source, or only understands physiology without the implementation layer, doesn’t make it.</p>
+<p><strong>3. Receipts = patents + peer-reviewed pubs + human validation studies.</strong> Papers alone are not enough. Patents alone are not enough. Apple wants evidence that you can produce all three forms of output.</p>
+<p><strong>4. Regulatory fluency.</strong> FDA clearance is the moat in health sensing. The people who understand 510(k) vs.&nbsp;De Novo vs.&nbsp;wellness exemption pathways, who know what IEC 62304 means, who can design a validation study that satisfies both a journal reviewer and a regulatory reviewer, have a structural advantage.</p>
+<p><strong>5. Long compounding tenure in one domain.</strong> Nobody in the cousin’s analysis had a zigzag career. Ten to twenty years in one lane, often building version one of something from scratch.</p>
+<p>My spine needs to be: signal-chain artifact identification and mitigation for non-invasive electrochemical/capacitive wearable sensors. That’s specific enough to pass test 1, intersects all three domains in test 2, and I need to build receipts (test 3) and regulatory fluency (test 4) explicitly over the next two years.</p>
+</section>
+<section id="the-interview-process-from-multiple-sources" class="level2">
+<h2 class="anchored" data-anchor-id="the-interview-process-from-multiple-sources">The Interview Process (From Multiple Sources)</h2>
+<p>Cross-referenced from Interview Query, Dataford, IGotAnOffer, Glassdoor, and Reddit. Consistent across dozens of reports.</p>
+<p><strong>Stage 1: Recruiter screen (30 min).</strong> Expects Apple-specific motivation. “Why Apple?” is not a generic question here. They filter for product enthusiasm before expertise before experience, in that order. If you cannot name a specific Apple health feature and describe how you would improve it, you fail this round regardless of your publication record.</p>
+<p><strong>Stage 2: Technical phone screens (1-3 rounds).</strong> Coding (LeetCode mediums, Python), ML fundamentals (time-series models, evaluation, overfitting, from-scratch implementation), statistics (hypothesis testing, validation study design), applied problem-solving framed around on-device constraints. The Apple angle that differentiates from generic industry ML answers: every design decision must account for power, memory, and privacy-preserving local compute.</p>
+<p><strong>Stage 3: Onsite (5-6 rounds).</strong> Opens with a 45-60 minute research presentation of your best work. This is the single most important hour of the process. The confound story (identify, convince skeptics, characterize, mitigate) is the presentation. Then coding, research theory deep-dive, ML system design, behavioral rounds.</p>
+<p><strong>Stage 4: Team match.</strong> Hiring is team-specific. You interview for e.g.&nbsp;Health AI specifically, not a generic research scientist req.</p>
+<p>Average time to hire: ~63 days.</p>
+</section>
+<section id="behavioral-questions-the-story-bank-draft" class="level2">
+<h2 class="anchored" data-anchor-id="behavioral-questions-the-story-bank-draft">Behavioral Questions: The Story Bank (Draft)</h2>
+<p>Apple behavioral interviews evaluate STAR stories (Situation, Task, Action, Result). Real events I have banked, not yet drafted into polished narratives:</p>
+<p><strong>1. The confound pushback (disagreement-with-colleague, handling-rejection).</strong> Two months of the postdoc insisting the drift was in my measurement, not his model. I ran controlled experiments, isolated the parasitic body-coupling mechanism, showed the data in a group meeting. The postdoc’s model had been confounding drift with sensitivity for six months before anyone caught it.</p>
+<p><strong>2. Lab move chaos (ambiguity, incomplete data, went above and beyond).</strong> Same-day unannounced relocation of approximately $1M in equipment with no certified technicians available. I documented every move, photographed cable configurations before disconnection, likely voided several service contracts but preserved the experimental timeline.</p>
+<p><strong>3. SpaceX Round 2 (failure and growth).</strong> Made it to the final round. Blanked on Pascal’s triangle under pressure. The failure was specific and technical, not a “weakness framed as strength” narrative.</p>
+<p><strong>4. Høst-Madsen ISIT paper (self-taught skill under deadline).</strong> A transformer vs.&nbsp;Laplace estimator comparison on binary sequences, outside my subfield, requiring me to pick up information theory and empirical ML methods in parallel with lab work. Proves I can ship rigorous work in a domain where I have no coursework.</p>
+<p><strong>5. Syringe pump automation from scratch (went above and beyond).</strong> Built an entire automation pipeline because no commercial solution existed for the experiment. Crosses hardware, firmware, and software.</p>
+<p><strong>6. Convincing Ray (ambiguity, influencing without authority).</strong> Walked in with a one-pager, not a proposal. The document did the convincing, not the conversation.</p>
+<p><strong>7. Council review of the optimization loop (collaborative debate).</strong> Four simulated adversarial reviewers (science, systems, statistics, cost) tore apart my Stage A metric design. I incorporated their fixes rather than defending the original.</p>
+<p><strong>8. The DPV signal-chain pipeline (end-to-end ownership).</strong> From raw PalmSens instrument output through peak detection, calibration, and drift correction, packaged as open-source Python packages.</p>
+<p><strong>9. Why Apple / favorite product (enthusiasm screen).</strong> Not yet drafted. Needs to be specific, technical, and critical in a constructive way. Not “I love my Apple Watch” — that is not a story.</p>
+<p><strong>10. Self-taught signal processing under a deadline (growth and resourcefulness).</strong> Multiple instances where I needed a DSP technique I had not been taught and learned it well enough to ship working code within a week.</p>
+<p>Status: none of these are drafted into three-minute STAR format. That is its own work block.</p>
+</section>
+<section id="the-corrected-framing-on-selling-research" class="level2">
+<h2 class="anchored" data-anchor-id="the-corrected-framing-on-selling-research">The Corrected Framing on Selling Research</h2>
+<p>I had a back-and-forth with Claude about this that swung through three positions before settling. The conversation is worth flagging because it shows how easy it is to land on wrong advice.</p>
+<p>First swing: “sell your specific invention, Apple should want your confound-fix technology.” Wrong — Apple will not license or want my specific patent. Standard industry invention-assignment means anything invented during employment becomes theirs anyway. The sell is not a product.</p>
+<p>Second swing: “so frame yourself as a generalist problem-solver.” Also wrong — the five-commonality framework’s first rule is zero generalists. Vague self-framing does not survive 45 minutes of expert questioning.</p>
+<p>Stable position: my specific, narrow expertise (parasitic capacitance characterization and mitigation in capacitive biosensors) is the credential. It transfers to Apple’s problems because signal-chain artifact identification is a real cross-modality skill that works on PPG noise, ECG motion artifacts, and optical drift just as well as it works on capacitive drift. Not because the specific finding transfers, but because rigorous specificity itself is what survives scrutiny. Generic self-framing does not.</p>
+</section>
+<section id="the-three-phase-timeline" class="level2">
+<h2 class="anchored" data-anchor-id="the-three-phase-timeline">The Three-Phase Timeline</h2>
+<section id="phase-0-now-to-aug-2026" class="level3">
+<h3 class="anchored" data-anchor-id="phase-0-now-to-aug-2026">Phase 0: Now to Aug 2026</h3>
+<p>August meeting with Ray. The one-pager exists or I do not walk in. Problem statement, why the postdoc’s model was wrong, preliminary evidence, two-paper structure (characterize, mitigate).</p>
+<p>Syringe pump automation: finish it, recognize it as lab infrastructure cred with zero Apple signal. Don’t let it eat time.</p>
+<p>Portfolio repo: unify the DPV pipeline packages (dpv-monopeak, dpv-calibration) and the LSB205 voice-coil rig writeups into one clean artifact with a README that tells the confound story.</p>
+</section>
+<section id="phase-1-year-1-fall-2026---summer-2027" class="level3">
+<h3 class="anchored" data-anchor-id="phase-1-year-1-fall-2026---summer-2027">Phase 1: Year 1 (Fall 2026 - Summer 2027)</h3>
+<p>Confound characterization paper submitted. Target venues ranked by Apple recruiter presence: NeurIPS workshop (Learning from Time-Series for Health) is strongest, EMBC is fine but weaker Apple density. Deadline for NeurIPS workshop is approximately August 2027. If this slips past summer 2027, the paper is not citable before internship applications open.</p>
+<p>Høst-Madsen ISIT paper: ship it. It is my strongest credential and it is not even in my subfield, which is exactly why it matters. ISIT 2027 in Sorrento, Italy (Jun 27 - Jul 2). Submission deadline approximately January 2027.</p>
+<p>Start following Apple researchers. Ten specific names surfaced: Salar Abbaspourazad (multi-modal health foundation models, ICLR/ICML), Joseph Futoma (behavioral data foundation models, ICML), Andrew C. Miller (ML for health, EKG), Sinead Williamson and Nicholas J. Foti (Bayesian health ML), Fahad Kamran (causal inference for wearables), Jens Behrmann and Antoine Wehenkel (generative models for health), Guillermo Sapiro (distinguished engineer, 91K citations), Eray Erturk (USC PhD student collaborating with Apple, potential peer entry point). Read their papers, attend their talks, cite their work.</p>
+</section>
+<section id="phase-2-year-2-fall-2027---summer-2028" class="level3">
+<h3 class="anchored" data-anchor-id="phase-2-year-2-fall-2027---summer-2028">Phase 2: Year 2 (Fall 2027 - Summer 2028)</h3>
+<p>Fix-it paper submitted early 2028. Target IEEE Sensors Letters (faster review, ~10-day target, moderate Apple presence). Must be citable by summer 2028 for internship applications.</p>
+<p>Unified portfolio repo needs to be clean by now. One artifact, one narrative, one README that an Apple engineer can evaluate in five minutes.</p>
+<p>Internship applications open fall 2027. This is non-negotiable regardless of how ready I feel. Apple’s research org very rarely hires PhDs cold off a defense. If I miss the 2028 cycle I am gambling on Year 4, which is late.</p>
+<p>Backup applications to Dexcom, Abbott, iRhythm go out in the same cycle, not after Apple says no. By the time you know Apple rejected you, the other cycles are also closed.</p>
+</section>
+<section id="phase-3-year-3-fall-2028" class="level3">
+<h3 class="anchored" data-anchor-id="phase-3-year-3-fall-2028">Phase 3: Year 3 (Fall 2028)</h3>
+<p>Interview prep. The confound story rehearsed as a narrative, not a results dump. Eight to ten STAR stories at three minutes each, quantified, framed around cross-functional collaboration and owning the full signal chain.</p>
+<p>DSP fundamentals refresh for coding rounds. LeetCode mediums in Python. On-device constraint framing for every system design answer.</p>
+</section>
+</section>
+<section id="the-gap-i-am-not-yet-filling" class="level2">
+<h2 class="anchored" data-anchor-id="the-gap-i-am-not-yet-filling">The Gap I Am Not Yet Filling</h2>
+<p>The cousin’s doc identified two things my plan does not address and they are real.</p>
+<p><strong>Regulatory fluency.</strong> I do not know the difference between a 510(k) and a De Novo submission. I do not know what IEC 62304 requires. I do not know what a SaMD classification means or where the wellness exemption boundary is. The people who succeed in health sensing at Apple know these things. The FDA is the actual moat, not the sensor technology.</p>
+<p><strong>Patents as a credential category.</strong> My plan treats papers as the only output that matters. Apple’s most successful researchers produce patents, peer-reviewed publications, and human validation studies as three parallel output streams. I have zero patents. I should start thinking about what is patentable in the confound mitigation design once the fix paper has a working prototype.</p>
+<p>Both of these are Year 2 work, not Phase 0 work. But naming the gap now means I can start reading.</p>
+</section>
+<section id="the-failure-points" class="level2">
+<h2 class="anchored" data-anchor-id="the-failure-points">The Failure Points</h2>
+<p><strong>Thesis arc drift.</strong> Ray’s lab has other priorities. If the confound work gets deprioritized for instrumentation buildouts, I lose the differentiator. Checkpoint: no first-author paper submitted by end of Year 1 is a red flag, not “still early.”</p>
+<p><strong>Wrong venues.</strong> A generic electrochemistry paper with no wearable framing does not read to Apple recruiters. Every title and abstract needs to be legible to a “wearable sensing” search.</p>
+<p><strong>No internship = no shot.</strong> If I miss the 2028 cycle, Year 4 is late.</p>
+<p><strong>Infrastructure trap.</strong> I am already the software and signal-chain guy in the lab. The confound discovery is the thing that makes me a scientist instead of an engineer in recruiters’ eyes. Every paper, talk, and LinkedIn post needs to frame it that way.</p>
+<p><strong>The personability filter.</strong> Apple’s culture explicitly values collaborative debate. I have a pattern of being abrasive when I know I am right, and I have lost credibility because of it. The confound story only works if I can sell it without making skeptics defensive. Therapy is not separate from the career plan. It is part of it.</p>
+</section>
+<section id="reliability-flag" class="level2">
+<h2 class="anchored" data-anchor-id="reliability-flag">Reliability Flag</h2>
+<p>Claude generated the research synthesis for this document. Over the course of the conversation, it swung through inconsistent positions on the cousin’s plan (overcritical, then overcorrected-deferential, then reversed again on the “sell your ideas” question). This was partly traceable to stored memory instructions calibrated for critiquing my own work bleeding into evaluation of a third party’s input.</p>
+<p>The factual extractions from the cousin’s HTML doc (names, dates, process mechanics, MARD numbers) are cross-verified against Bloomberg, MacRumors, and Apple job postings and are solid. The strategic judgment calls layered on top were unstable and should be re-derived or externally verified before being treated as settled.</p>
+<p>The Apple researcher names and their publication venues were sourced from Apple Machine Learning Research pages, Google Scholar, and LinkedIn — these are ground-truth. The interview process details were sourced from multiple third-party aggregators (Interview Query, Glassdoor, Reddit) and are consistent across sources but inherently anecdotal.</p>
+</section>
+<section id="open-action-items" class="level2">
+<h2 class="anchored" data-anchor-id="open-action-items">Open Action Items</h2>
+<ol type="1">
+<li>Draft the story bank into eight to ten three-minute STAR stories with quantified results.</li>
+<li>Verify the narrow-specialist vs.&nbsp;generalist hiring pattern by reading actual Apple Health Sensing LinkedIn profiles (do not trust either framing).</li>
+<li>Ask my cousin directly: what is his fallback model if Apple’s glucose program stays unshipped through 2031? This pressures his plan where it is weakest.</li>
+<li>Draft the one-pager for the August Ray meeting.</li>
+<li>Start building regulatory literacy: read FDA SaMD guidance, understand 510(k) vs.&nbsp;De Novo, learn IEC 62304.</li>
+<li>Identify patentable inventions in the confound mitigation design once the fix paper has a working prototype.</li>
+<li>Follow the ten Apple researchers identified above. Read their recent work. Attend their NeurIPS/ICML/EMBC sessions.</li>
+<li>Resolve the core framing question by checking actual hire backgrounds, then know which direction to aim.</li>
+</ol>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/danvu772\.github\.io");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© Dan Vu</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>
