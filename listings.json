@@ -1,5 +1,16 @@
 [
   {
+    "listing": "/blog/index.html",
+    "items": [
+      "/blog/meme-bot.html",
+      "/blog/ride-quality-analysis.html"
+    ]
+  },
+  {
+    "listing": "/coursework/index.html",
+    "items": []
+  },
+  {
     "listing": "/research/index.html",
     "items": [
       "/research/bluetooth-receiver.html",
@@ -8,17 +19,6 @@
       "/research/pump-automation.html",
       "/research/transformer-based-compression.html",
       "/research/credit-risk-svm.html"
-    ]
-  },
-  {
-    "listing": "/coursework/index.html",
-    "items": []
-  },
-  {
-    "listing": "/blog/index.html",
-    "items": [
-      "/blog/meme-bot.html",
-      "/blog/ride-quality-analysis.html"
     ]
   }
 ]
