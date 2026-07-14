@@ -161,53 +161,116 @@
     "text": "Theme\ncustom.scss = source of truth. Based on Bootswatch Litera. Change $link-color to retheme."
   },
   {
-    "objectID": "blog/meme-bot.html",
-    "href": "blog/meme-bot.html",
-    "title": "Building a Meme Bot That Learns Your Server",
+    "objectID": "blog/hydration-capacitance-research.html",
+    "href": "blog/hydration-capacitance-research.html",
+    "title": "I Spent 15 Agents Investigating Whether My Lab Finding Is Actually a Hydration Sensor",
     "section": "",
-    "text": "The jokes already happened. I just needed something to find them.\nThe idea is simple: when someone drops a Tenor GIF in your Discord server, there’s almost always a message right next to it. A reaction, a punchline, a non-sequitur that somehow works. Pair that text with the GIF, stamp it on every frame in Impact font, and you have a meme that’s actually funny because it came from a real moment in your server’s history.\nThat’s the whole bot. Code here."
+    "text": "the gap is real. nobody has claimed it yet. the rest is work.\nTwo months ago I found a parasitic body-coupling capacitance term in the DPV sensor. The postdoc said it was drift in my measurement. It wasn’t. The body coupling was real, and getting rid of it became the thesis.\nThen I had a stray thought: what if the parasitic term isn’t just a confound to kill. what if the residual signal, after mitigation, correlates with skin hydration state and is actually usable as a side-channel sensor.\nThree claims chained together. characterize the parasitic term (in motion). apply mitigation (shielding, guarding, known technique). show the residual correlates with hydration (genuinely novel, if it holds). Each claim needs to survive independently. The third one is the bet.\nThis is the full audit. 15 research domains, ~120 papers, parallel agents running overnight. Everything I found about capacitive hydration sensing, skin dielectric physics, body capacitance biometrics, fringing-field design, the EDA differentiation problem, ground-truth reference methods, and the one gap that nobody has claimed."
   },
   {
-    "objectID": "blog/meme-bot.html#how-it-works",
-    "href": "blog/meme-bot.html#how-it-works",
-    "title": "Building a Meme Bot That Learns Your Server",
-    "section": "How it works",
-    "text": "How it works\nOn first boot, the bot crawls every readable channel and pulls up to 10,000 messages per channel. For every Tenor link it finds, it randomly picks either the message immediately before or after it. If that neighbor is clean text, no URLs, not empty, it gets stored as a pair. Everything goes into a JSON file and gets loaded into memory at startup. Every $generatememe call samples from that in-memory list.\nThe weekly refresh is an incremental crawl. It stores a Unix timestamp per channel in crawl_state.json and only fetches new messages since the last run. No full re-crawl, no database.\nI went with JSON on disk instead of a real database on purpose. The data is written rarely and read often, and all we ever need is random sampling. A database would’ve added operational complexity for no actual query benefit. Flat file is fine."
+    "objectID": "blog/hydration-capacitance-research.html#the-physics-is-solid-actually",
+    "href": "blog/hydration-capacitance-research.html#the-physics-is-solid-actually",
+    "title": "I Spent 15 Agents Investigating Whether My Lab Finding Is Actually a Hydration Sensor",
+    "section": "The physics is solid, actually",
+    "text": "The physics is solid, actually\nSkin is a layered dielectric. Water dominates the permittivity. Gabriel et al. (1996, 3,000+ citations) established the canonical four-pole Cole-Cole model. Dry stratum corneum has ε_r ≈ 10 at 10 kHz. Hydrated SC hits ε_r ≈ 49. That’s a 5× swing in capacitance at wearable-relevant frequencies. The mechanism is lipid fluidization upon water uptake (Björklund et al., 2013 — parallel NMR/XRD confirmation). This is not speculative. It’s the physical foundation and it is settled.\nThe Yamamoto-Yamamoto finding (1976) that the SC has an exponential resistivity gradient (not a Cole-Cole arc) is the detail nobody in the wearable space cites but everyone should. The outermost layers dominate the measurement. This means a Corneometer reading at 1 MHz is a surface measurement, 10-20 µm deep into a SC layer that averages 15-20 µm. It reads the gradient’s surface, not the full water profile.\nThe SC swelling effect (Malnati et al., 2021 COMSOL model) is the gotcha. At high hydration, the SC thickens, pushing the fringing field away from the high-ε viable epidermis. Measured capacitance can paradoxically decrease. This is a genuine nonlinearity. Sensitivity is lower at high hydration. You can either curse it or model it. I’d recommend modeling it."
   },
   {
-    "objectID": "blog/meme-bot.html#the-image-processing",
-    "href": "blog/meme-bot.html#the-image-processing",
-    "title": "Building a Meme Bot That Learns Your Server",
-    "section": "The image processing",
-    "text": "The image processing\nPillow’s ImageSequence.Iterator lets you step through an animated GIF frame by frame. For each frame, the text gets drawn twice: once in black at every pixel offset in a small grid around the target position (the outline), then white on top. Brute-force, but it produces exactly the right look.\nfor frame in ImageSequence.Iterator(gif):\n    frame = frame.convert(\"RGBA\")\n    draw = ImageDraw.Draw(frame)\n    for dx in range(-outline_size, outline_size + 1):\n        for dy in range(-outline_size, outline_size + 1):\n            draw.text((x + dx, y + dy), text, font=font, fill=\"black\")\n    draw.text((x, y), text, font=font, fill=\"white\")\n    frames.append(frame)\nFont size scales with image width at 12% of width, clamped between 30 and 50px. Word wrap is manual: split on spaces, measure each candidate line with draw.textbbox(), wrap when it exceeds the image width minus margin. Nothing fancy."
+    "objectID": "blog/hydration-capacitance-research.html#the-fringing-field-geometry-is-a-design-constraint-not-an-open-problem",
+    "href": "blog/hydration-capacitance-research.html#the-fringing-field-geometry-is-a-design-constraint-not-an-open-problem",
+    "title": "I Spent 15 Agents Investigating Whether My Lab Finding Is Actually a Hydration Sensor",
+    "section": "The fringing-field geometry is a design constraint, not an open problem",
+    "text": "The fringing-field geometry is a design constraint, not an open problem\nPenetration depth of interdigitated electrode fringing fields is proportional to spatial period λ = 2(W + G). Mamishev et al. (2004, Proc IEEE, 600+ citations) settled this. To target the SC (20-50 µm), you need W and G in the 30-100 µm range. That means reverse-offset printing (Dai et al., 2025, 50 µm gap) or microfabrication. Not standard screen printing, which bottoms out around 200 µm.\nThe Igreja & Dias conformal mapping model (2004, 260+ citations) gives you analytical closed-form capacitance for multilayer IDE structures. Pair that with COMSOL simulations parameterized with the Björklund skin dielectric values and you have a working sensor model with no experimental iteration needed. The sensor design is a solved problem. The interesting part is what you measure with it and how you separate the signal components."
   },
   {
-    "objectID": "blog/meme-bot.html#the-pairing-logic",
-    "href": "blog/meme-bot.html#the-pairing-logic",
-    "title": "Building a Meme Bot That Learns Your Server",
-    "section": "The pairing logic",
-    "text": "The pairing logic\nThe bot randomly picks one direction, before or after the GIF, and commits to it. If the chosen neighbor fails the clean text check, the pair is skipped entirely. No fallback, no retry, no trying the other direction. Every pair in the index is a real adjacency that happened naturally in chat.\nAn earlier version retried recursively with no depth limit on failure. That was not a great idea."
+    "objectID": "blog/hydration-capacitance-research.html#the-eda-differentiation-is-faster-to-resolve-than-i-expected",
+    "href": "blog/hydration-capacitance-research.html#the-eda-differentiation-is-faster-to-resolve-than-i-expected",
+    "title": "I Spent 15 Agents Investigating Whether My Lab Finding Is Actually a Hydration Sensor",
+    "section": "The EDA differentiation is faster to resolve than I expected",
+    "text": "The EDA differentiation is faster to resolve than I expected\nI flagged this as homework in the roadmap: read the EDA/GSR literature to nail the mechanistic differentiation before drafting anything. Turns out the EDA community already did it for me.\nBoucsein et al. (2012, “Publication Recommendations” — the EDA community’s own standardization paper) explicitly notes that lock-in amplifiers separate fast conductance (sweat duct ionic) from slow capacitance (SC hydration dielectric). The differentiation is baked into their own instrumentation recommendations. Martinsen & Grimnes (2001, “Facts and Myths”) is the canonical mechanistic paper: sweat ducts are conductive, SC moisture affects capacitive admittance. Bari et al. (2018) demonstrated empirically that SC (conductance), SP (potential), and SS (susceptance) have different morphologies when measured simultaneously.\nThe frequency argument is clean. EDA sensitivity peaks at ~100 Hz (Sridhar & Akl, 2017) because sweat duct ionic conduction dominates below 100 Hz. Above 1 kHz, dielectric polarization of bound water in the SC dominates. Operating a capacitive hydration sensor at 10 kHz-10 MHz is measuring a fundamentally different physical process. This is a one-paragraph differentiation in a paper, not a thesis chapter.\nThe reviewer question — “how is this not EDA with extra steps?” — has a short answer: conductance-based ionic vs. dielectric-based polarization, different frequency regimes, different physical pathways. The literature already supports it."
   },
   {
-    "objectID": "blog/meme-bot.html#what-actually-broke",
-    "href": "blog/meme-bot.html#what-actually-broke",
-    "title": "Building a Meme Bot That Learns Your Server",
-    "section": "What actually broke",
-    "text": "What actually broke\ntasks.loop(weeks=1) throws a TypeError at import time. Not a runtime error, the decorator itself rejects the argument. The valid units are seconds, minutes, and hours. Weekly refresh is hours=168.\nThe Dockerfile had COPY . . running as root even after USER appuser was set. Files were root-owned and the app user couldn’t write to them. Fixed with COPY --chown=appuser:appuser . . and creating the output directory before the user switch.\nAt one point I had two containers running simultaneously, bot_dev and bot_prod, both writing to the same index file. Every log line appeared twice. The crawl ran twice. It was fine.\nThe original version loaded a 48MB pandas DataFrame from disk on every single $generatememe call. No caching. That was the first thing I fixed."
+    "objectID": "blog/hydration-capacitance-research.html#the-smoking-gun-body-capacitance-is-a-biometric-and-it-drifts",
+    "href": "blog/hydration-capacitance-research.html#the-smoking-gun-body-capacitance-is-a-biometric-and-it-drifts",
+    "title": "I Spent 15 Agents Investigating Whether My Lab Finding Is Actually a Hydration Sensor",
+    "section": "The smoking gun: body capacitance is a biometric and it drifts",
+    "text": "The smoking gun: body capacitance is a biometric and it drifts\nThis is the finding that makes the hydration hypothesis more than a stray thought.\nThe human body acts as a floating conductor with body-to-ground capacitance C_B ranging from ~100 pF to several nF. It varies with posture, footwear, clothing, environment, proximity to objects. Aliau-Bonet & Pallàs-Areny (2012-2015) developed measurement methods for C_B across 10 kHz-1 MHz. Bian & Lukowicz (2019-2025) built systematic multi-factor studies of body capacitance for activity recognition.\nThe HCI community has been treating body capacitance as a deliberate signal for decades. Zimmerman’s three-mode body communication taxonomy (1995, CHI/IBM Systems Journal) is the foundation. DiamondTouch (Dietz & Leigh, UIST 2001) routed multi-user touch through individual body capacitance. PreTouch (Hinckley et al., CHI 2016) demonstrated that smartphone touch controllers can sense body proximity before contact — from a wrist form factor, same frequency regime, same hardware architecture as a hydration sensor.\nAnd then there’s Platypus (Mujibiya et al., UIST 2011): person identification via body electric potential at 98.3% accuracy. A capacitive chair that can tell people apart just by the way their body capacitance loads the system. Twenty-two subjects, one second per measurement.\nIf body capacitance encodes enough person-specific information to serve as a 98.3% biometric, it plausibly encodes enough within-subject variation to track hydration changes. The day-to-day drift they observed could be hydration-related. Could also be clothing, sweat on the chair, environmental humidity. It is not demonstrated.\nBut the proof of concept — that body capacitance measured from a single contact point encodes fine-grained physiological state — is already published. EarFieldSensing (Matthies et al., CHI 2017) detected facial expressions from in-ear capacitive electrodes. CapSeat (Braun et al., CHI 2011) extracted posture from 16 car-seat capacitive electrodes. The hardware is the same. The signal extraction target is different."
   },
   {
-    "objectID": "blog/meme-bot.html#the-tenor-scraping-problem",
-    "href": "blog/meme-bot.html#the-tenor-scraping-problem",
-    "title": "Building a Meme Bot That Learns Your Server",
-    "section": "The Tenor scraping problem",
-    "text": "The Tenor scraping problem\nThere’s no API call here. The bot parses Tenor’s HTML to pull the CDN GIF URL out of #single-gif-container. It works, and it requires zero API key setup, but it will break the moment Tenor changes their markup. A proper API integration would be more stable. I haven’t done it yet.\nThe original data source, before the live crawl existed, was a manually exported 48MB JSON dump of the server’s full message history. The entire pandas pipeline I built around it, time-window filtering, Timedelta expansion loops, all of it, got thrown out when I replaced it with the Discord crawl. requirements.txt still ships with pandas, numpy, selenium, and matplotlib. None of them are used at runtime. Leftover from the exploration phase, never cleaned up."
+    "objectID": "blog/hydration-capacitance-research.html#the-touchscreen-to-hydration-translation-is-already-published",
+    "href": "blog/hydration-capacitance-research.html#the-touchscreen-to-hydration-translation-is-already-published",
+    "title": "I Spent 15 Agents Investigating Whether My Lab Finding Is Actually a Hydration Sensor",
+    "section": "The touchscreen-to-hydration translation is already published",
+    "text": "The touchscreen-to-hydration translation is already published\nSiyoucef et al. (2025, IEEE Sensors Journal) used an off-the-shelf TI FDC2114 module (28-bit LC-resonant capacitance-to-digital converter, 0.3 fF resolution) with a metallic plate as a finger-touch hydration sensor. 92% accuracy for athletes, 87% for fasting subjects, 4,000+ readings covering a 73-93% hydration range. KAUST lab, got picked up by New Atlas and EurekAlert.\nAn Apple Watch display is a capacitive touchscreen. If the touch controller can be repurposed for spot-check hydration — user touches the display for one second — no additional hardware. The FDC2214 is the exact IC family that shipped in smartphones for touch sensing. The Kim et al. (2020, Sensors) paper already demonstrated unmodified touchscreen panels detecting cardiac-synchronous finger capacitance changes.\nApple filed a patent in February 2024 describing dual-mode ECG/capacitive measurement circuitry reusing the Watch’s back-crystal electrodes. The patent describes: moistening an electrode surface, switching between ECG and capacitive measurement modes, using the same electrodes for both. Technically coherent. No shipping timeline. But the hardware architecture for capacitive hydration sensing from the wrist already exists in the Watch — it just needs the algorithm to extract hydration from the body capacitance signal component.\nThis is not a coincidence. It’s a verification that the question is well-posed."
   },
   {
-    "objectID": "blog/meme-bot.html#what-id-change",
-    "href": "blog/meme-bot.html#what-id-change",
-    "title": "Building a Meme Bot That Learns Your Server",
-    "section": "What I’d change",
-    "text": "What I’d change\nVolume-mount resources/json from the start so the index survives image rebuilds. Right now the directory is baked into the image, so deleting it on the host does nothing while the container is running. It’s counterintuitive until you understand why, and then it’s still annoying.\nThe index is also global across every server the bot joins, which is fine for a personal project and would be a real problem the second anyone else added it to their server. Per-guild indexing should’ve been the default.\nNeither of those are hard to fix. I just haven’t needed to yet."
+    "objectID": "blog/hydration-capacitance-research.html#the-ground-truth-problem-is-circular-and-nobody-talks-about-it",
+    "href": "blog/hydration-capacitance-research.html#the-ground-truth-problem-is-circular-and-nobody-talks-about-it",
+    "title": "I Spent 15 Agents Investigating Whether My Lab Finding Is Actually a Hydration Sensor",
+    "section": "The ground-truth problem is circular and nobody talks about it",
+    "text": "The ground-truth problem is circular and nobody talks about it\nEvery wearable capacitive hydration sensor validates against the Corneometer CM825. This is a problem. The Corneometer operates at 0.9-1.2 MHz and measures dielectric permittivity — the same physical quantity as a capacitive hydration sensor. Correlation between two capacitance-based devices is expected by physics, not evidence of accuracy.\nThe actual gold standards: confocal Raman (direct water-to-protein ratio, 5 µm depth resolution) and NMR (direct proton density). Nobody in the capacitive hydration literature uses either. Fluhr et al.’s comparative study found a negative correlation (r = −0.45) between Corneometer and Raman total SC water AUC — capacitive sensors may be missing deeper SC hydration changes.\nI have two options. Use Corneometer for initial validation to stay comparable with the literature, acknowledge the circularity, and call it correlation with the clinical standard rather than ground truth. Or seek Raman validation at IU dermatology as differentiating evidence for the NeurIPS workshop paper.\nLeaning Corneometer first. If the data looks strong, Raman is the upgrade path. Don’t let the perfect reference block the initial measurement."
+  },
+  {
+    "objectID": "blog/hydration-capacitance-research.html#lig-is-the-right-research-platform-and-nobody-has-used-it-for-this",
+    "href": "blog/hydration-capacitance-research.html#lig-is-the-right-research-platform-and-nobody-has-used-it-for-this",
+    "title": "I Spent 15 Agents Investigating Whether My Lab Finding Is Actually a Hydration Sensor",
+    "section": "LIG is the right research platform and nobody has used it for this",
+    "text": "LIG is the right research platform and nobody has used it for this\nCO2 laser on polyimide at 10.6 µm. No cleanroom, no masks, no photoresist. Sub-$500 laser cutter. Sheet resistance as low as 9.5 Ω/sq. The Tour group at Rice established the fabrication baseline in 2014.\nLIG interdigitated capacitive sensors exist for humidity (Paterakis et al., 2022 — 13,460 pF/%RH sensitivity, NFC wireless), aptasensing (Yagati et al., 2020 — 1.3 pM LOD in serum), and strain (Han et al., 2019 — GF ~0.47). Zero papers on on-skin hydration. Zero. The platform is established for three adjacent applications but the hydration angle is unexplored. Standard PI substrate, standard CO2 laser, standard IDC geometry — the sensor fabrication is a solved problem. The measurement and confound story is the novel part.\nThis also means LIG’s confound behavior is entirely uncharacterized: motion artifact, pressure variability, sweat interference, body capacitive coupling. All four of those confounds need to be studied systematically, and the cheap rapid-prototyping cycle of LIG (fabricate a new geometry in minutes, test on skin, iterate) makes it the ideal platform for that study. Even if the final product electrode technology ends up being something else, LIG lets you run the experimental design space before committing."
+  },
+  {
+    "objectID": "blog/hydration-capacitance-research.html#the-confound-is-studied-in-three-communities-and-ignored-in-the-one-that-matters",
+    "href": "blog/hydration-capacitance-research.html#the-confound-is-studied-in-three-communities-and-ignored-in-the-one-that-matters",
+    "title": "I Spent 15 Agents Investigating Whether My Lab Finding Is Actually a Hydration Sensor",
+    "section": "The confound is studied in three communities and ignored in the one that matters",
+    "text": "The confound is studied in three communities and ignored in the one that matters\nBody coupling capacitance C_B is:\n\nThe signal source in HCI/HBC research (Bian & Lukowicz, Grosse-Puppendahl, Zimmerman — treated as the carrier of useful information)\nA quantified source of error in bioimpedance (Aliau-Bonet, IEEE TBME — causes “hook” artifacts and &gt;137% measurement errors in tetrapolar BIA)\nA target for active mitigation in touch sensing (TI CapTIvate, Cypress CapSense — active shielding, driven guard)\nCompletely absent from the capacitive hydration literature. Not a single published wearable capacitive hydration paper even mentions it.\n\nThe reason is straightforward. Every capacitive hydration paper validates in a controlled benchtop setup where the subject is seated, the sensor is taped in place with controlled pressure, and the measurement spot is on the volar forearm. C_B is held constant by experimental design. The confound is eliminated by protocol, not by measurement. It disappears from the data and therefore from the discussion.\nOn a moving wrist, under a watch strap with variable tension, with changing posture and proximity to grounded objects — C_B is large and time-varying and it swamps the sub-pF SC hydration signal. The fact that nobody has characterized this in a hydration context is not because it isn’t a problem. It’s because nobody has tried to make a wearable capacitive hydration sensor that actually works outside a benchtop."
+  },
+  {
+    "objectID": "blog/hydration-capacitance-research.html#the-mitigation-toolbox-exists-but-its-not-a-silver-bullet",
+    "href": "blog/hydration-capacitance-research.html#the-mitigation-toolbox-exists-but-its-not-a-silver-bullet",
+    "title": "I Spent 15 Agents Investigating Whether My Lab Finding Is Actually a Hydration Sensor",
+    "section": "The mitigation toolbox exists, but it’s not a silver bullet",
+    "text": "The mitigation toolbox exists, but it’s not a silver bullet\nSix technique families, ranging from standard (DRL, 70-123 dB CMRR, 50+ year legacy) to experimental (negative capacitance cancellation, 19.6 dB SNR improvement demonstrated, benchtop-only, stability issues).\nThe architecture that makes sense: active shielding (TI FDC1004 CapTIvate, protects the sub-pF signal path) + differential CDC (rejects near-field common-mode) + algorithmic compensation for the time-varying residual. Hardware alone won’t solve this because the confound itself is time-varying — posture, environment, strap tension all change C_B. Marcôndes et al. (2022) found that “no method seemed capable of mitigating the effects of electrodes’ capacitance that changes in the frequency spectrum.” The gap is algorithmic.\nThis is where the Apple Health Sensing MLIA team’s mandate — “analyze model behavior, identify weaknesses, lead investigations into failure modes” — maps directly onto the measurement problem. The confound is dynamic. Hardware can reduce it. ML can model what’s left."
+  },
+  {
+    "objectID": "blog/hydration-capacitance-research.html#whats-actually-novel-vs.-whats-established",
+    "href": "blog/hydration-capacitance-research.html#whats-actually-novel-vs.-whats-established",
+    "title": "I Spent 15 Agents Investigating Whether My Lab Finding Is Actually a Hydration Sensor",
+    "section": "What’s actually novel vs. what’s established",
+    "text": "What’s actually novel vs. what’s established\nAlready settled, not my contribution:\n\nSkin dielectric response to hydration (Gabriel 1996, Björklund 2013)\nFringing field penetration depth ∝ λ (Mamishev 2004)\nLIG fabrication and humidity sensitivity (Tour 2014, Paterakis 2022)\nEDA ≠ capacitive hydration (Martinsen/Grimnes 2001, Bari 2018, Boucsein 2012)\nBody capacitance is a measurable physiological signal (Platypus 2011, Bian 2025)\nBody coupling is a confound in bioimpedance (Aliau-Bonet, IEEE TBME)\n\nGenuinely novel (nobody has published this):\n\nBody capacitance as a hydration signal — nobody has proposed C_B as an indicator of skin hydration state\nLIG capacitive sensor for on-skin hydration — zero papers\nBody coupling confound characterization in the capacitive hydration context — the confound is well-studied in other fields but no capacitive hydration paper addresses it\nThe full three-claim chain (characterize confound → apply mitigation → residual signal correlates with hydration)\nTouchscreen-to-wrist hydration translation for continuous wearable — Siyoucef 2025 did finger-touch, nobody has done continuous wrist\n\nThree genuine gaps, not one. The characterization claim is novel within capacitive hydration (even though the confound physics is known elsewhere). The LIG-hydration pairing is novel. The residual-signal-as-hydration claim is novel. The chain is novel."
+  },
+  {
+    "objectID": "blog/hydration-capacitance-research.html#the-sweat-based-commercial-landscape-is-not-competition",
+    "href": "blog/hydration-capacitance-research.html#the-sweat-based-commercial-landscape-is-not-competition",
+    "title": "I Spent 15 Agents Investigating Whether My Lab Finding Is Actually a Hydration Sensor",
+    "section": "The sweat-based commercial landscape is not competition",
+    "text": "The sweat-based commercial landscape is not competition\nThree shipped hydration products as of mid-2026. All sweat-based. Gatorade Gx (microfluidic colorimetric, single-use, 16% failure rate). Epicore (electrochemical, FDA Class I, $32M Series B). Nix (electrochemical impedance, $129 DTC, no independent validation). BSX LVL Band raised $1.2M on Kickstarter, never validated the NIRS technology, refunded everyone, got acquired. Kenzen pivoted from consumer to industrial before shipping.\nZero capacitive hydration products exist. Zero. This means no commercial competition, but also zero commercial validation precedent.\nThe advantage of capacitive over sweat: no need for active sweating. Sweat patches require the subject to be sweating — they’re exercise-correlated, not continuous. Capacitive measures SC dielectric properties passively, continuously, regardless of sweat state. This is the pitch: hydration monitoring that works when you’re sitting still."
+  },
+  {
+    "objectID": "blog/hydration-capacitance-research.html#inter-subject-variability-means-within-subject-design-is-mandatory",
+    "href": "blog/hydration-capacitance-research.html#inter-subject-variability-means-within-subject-design-is-mandatory",
+    "title": "I Spent 15 Agents Investigating Whether My Lab Finding Is Actually a Hydration Sensor",
+    "section": "Inter-subject variability means within-subject design is mandatory",
+    "text": "Inter-subject variability means within-subject design is mandatory\nPires et al. (2016, n=1,339) — only 18.23% of inter-subject SC moisture variance is explained by measurable demographics and environment. The remaining ~82% is unknown. Body site is the single largest variance source: SC thickness ranges from ~8 µm (abdomen) to 19 µm (forearm) to 100+ cell layers (palm). Men are ~6-7 AU drier than women. Age is non-monotonic (peaks ~40, then declines).\nWithin-person measurement CV is ~7.2%. Dry skin has higher variance. Probe pressure alone causes 40% variance in dry skin Corneometer readings — on a wearable with uncontrolled strap tension, this is squared.\nThe study design conclusion: within-subject crossover (each person is their own control), N = 20-50, 3-5 repeated measures per condition, baseline after 20-30 min acclimation, primary endpoint is percentage change from baseline not absolute capacitance. Universal calibration across subjects is not supported by any evidence. Don’t try it."
+  },
+  {
+    "objectID": "blog/hydration-capacitance-research.html#what-this-means-for-the-august-meeting",
+    "href": "blog/hydration-capacitance-research.html#what-this-means-for-the-august-meeting",
+    "title": "I Spent 15 Agents Investigating Whether My Lab Finding Is Actually a Hydration Sensor",
+    "section": "What this means for the August meeting",
+    "text": "What this means for the August meeting\nThree ways to reconcile the hydration angle with the existing two-paper pitch.\nOption A — fold into the fix-it paper as a discussion section. Keep the two-paper structure (characterize, mitigate). Test the hydration correlation as a pilot alongside the main study. If it holds, it’s a finding. If not, it was a pilot and nothing is lost. This is the move I’m recommending to myself because it preserves the existing pitch and the internship timeline.\nOption B — third paper after the two-paper arc. Cleanest separation. Two papers published by summer 2027 &gt; one ambitious paper in progress. Hydration stays as a long-term differentiator.\nOption C — replace characterize as paper 1’s framing. Highest reward if the correlation holds. Also highest risk because it requires the ground-truth method decided, sample size scoped, and EDA differentiation airtight before data collection even starts. Walking into the August meeting without having decided which option this is would be the thesis-arc-drift failure mode I already flagged.\nGoing with A. The characterization paper gets a hydration pilot in the discussion. Results determine whether it becomes a finding or a footnote."
+  },
+  {
+    "objectID": "blog/hydration-capacitance-research.html#open-questions-i-dont-have-answers-for-yet",
+    "href": "blog/hydration-capacitance-research.html#open-questions-i-dont-have-answers-for-yet",
+    "title": "I Spent 15 Agents Investigating Whether My Lab Finding Is Actually a Hydration Sensor",
+    "section": "Open questions I don’t have answers for yet",
+    "text": "Open questions I don’t have answers for yet\n\nFrequency optimization: The EDA community separates at ~100 Hz (conductive) vs. 10 kHz-10 MHz (capacitive). The body capacitance community operates at 100 kHz-10 MHz. Where does the SC hydration signal peak? At what frequency are C_B and SC ε_r maximally separable? This needs a frequency sweep on real skin.\nElectrode geometry for confound rejection: What IDE geometry (W, G, area) maximizes SC hydration sensitivity while minimizing body coupling influence? COMSOL simulation with layered skin dielectric model and ground plane representing C_B. Not an experiment. A simulation first.\nMotion artifact separation: No capacitive hydration paper addresses it. The body capacitance literature treats posture changes as the signal. How do you algorithmically separate hydration from posture in the same time series? This is the ML problem.\nReference method selection: Corneometer for comparability or Raman for actual water content. This is the methodology decision that determines whether reviewers trust the results.\nPressure normalization: 40% variance from probe pressure alone. A watch with variable strap tension has the same problem squared. This is probably a strain gauge co-located with the capacitive sensor.\nThe Platypus drift: 98.3% person identification accuracy with day-to-day drift. Is the drift hydration? Or sweat on the chair, clothing changes, environmental humidity? Run the experiment."
+  },
+  {
+    "objectID": "blog/hydration-capacitance-research.html#bottom-line",
+    "href": "blog/hydration-capacitance-research.html#bottom-line",
+    "title": "I Spent 15 Agents Investigating Whether My Lab Finding Is Actually a Hydration Sensor",
+    "section": "Bottom line",
+    "text": "Bottom line\nThe physics supports the claim. The mechanism is known. The confound is real and unstudied in this context. Three adjacent communities have pieces of the puzzle but nobody has connected body capacitance to hydration sensing. The LIG platform is cheap, fast, and unexplored for this application. The EDA differentiation is settled in the literature and takes one paragraph. The touchscreen-to-wrist translation has a published proof of concept.\nThe remaining work: pick the reference method, run the pilot, decide option A/B/C before the August meeting, and do not let BOOM energy outrun the design work.\nThere is a real gap here. Nobody has claimed it yet. That’s both the opportunity and the test."
   },
   {
     "objectID": "blog/ride-quality-analysis.html",
@@ -725,6 +788,55 @@
     "href": "blog/index.html",
     "title": "blog",
     "section": "",
-    "text": "Building a Meme Bot That Learns Your Server\n\n\nA Discord bot that generates memes from your server’s own message history. The jokes already happened. The bot just finds them.\n\n\n\n\n\nApr 22, 2026\n\n\n\n\n\n\n\nRide Quality Analysis of a Passenger Rail System\n\n\nA 1/3 octave band vibration analysis pipeline built from scratch to assess passenger ride comfort against ISO 2631-1 limits.\n\n\n\n\n\nMar 13, 2026\n\n\n\n\n\nNo matching items"
+    "text": "I Spent 15 Agents Investigating Whether My Lab Finding Is Actually a Hydration Sensor\n\n\nA 120-paper sweep across skin dielectric physics, body capacitance biometrics, fringing-field sensor design, and the one gap nobody has claimed.\n\n\n\n\n\nJul 14, 2026\n\n\n\n\n\n\n\nBuilding a Meme Bot That Learns Your Server\n\n\nA Discord bot that generates memes from your server’s own message history. The jokes already happened. The bot just finds them.\n\n\n\n\n\nApr 22, 2026\n\n\n\n\n\n\n\nRide Quality Analysis of a Passenger Rail System\n\n\nA 1/3 octave band vibration analysis pipeline built from scratch to assess passenger ride comfort against ISO 2631-1 limits.\n\n\n\n\n\nMar 13, 2026\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "blog/meme-bot.html",
+    "href": "blog/meme-bot.html",
+    "title": "Building a Meme Bot That Learns Your Server",
+    "section": "",
+    "text": "The jokes already happened. I just needed something to find them.\nThe idea is simple: when someone drops a Tenor GIF in your Discord server, there’s almost always a message right next to it. A reaction, a punchline, a non-sequitur that somehow works. Pair that text with the GIF, stamp it on every frame in Impact font, and you have a meme that’s actually funny because it came from a real moment in your server’s history.\nThat’s the whole bot. Code here."
+  },
+  {
+    "objectID": "blog/meme-bot.html#how-it-works",
+    "href": "blog/meme-bot.html#how-it-works",
+    "title": "Building a Meme Bot That Learns Your Server",
+    "section": "How it works",
+    "text": "How it works\nOn first boot, the bot crawls every readable channel and pulls up to 10,000 messages per channel. For every Tenor link it finds, it randomly picks either the message immediately before or after it. If that neighbor is clean text, no URLs, not empty, it gets stored as a pair. Everything goes into a JSON file and gets loaded into memory at startup. Every $generatememe call samples from that in-memory list.\nThe weekly refresh is an incremental crawl. It stores a Unix timestamp per channel in crawl_state.json and only fetches new messages since the last run. No full re-crawl, no database.\nI went with JSON on disk instead of a real database on purpose. The data is written rarely and read often, and all we ever need is random sampling. A database would’ve added operational complexity for no actual query benefit. Flat file is fine."
+  },
+  {
+    "objectID": "blog/meme-bot.html#the-image-processing",
+    "href": "blog/meme-bot.html#the-image-processing",
+    "title": "Building a Meme Bot That Learns Your Server",
+    "section": "The image processing",
+    "text": "The image processing\nPillow’s ImageSequence.Iterator lets you step through an animated GIF frame by frame. For each frame, the text gets drawn twice: once in black at every pixel offset in a small grid around the target position (the outline), then white on top. Brute-force, but it produces exactly the right look.\nfor frame in ImageSequence.Iterator(gif):\n    frame = frame.convert(\"RGBA\")\n    draw = ImageDraw.Draw(frame)\n    for dx in range(-outline_size, outline_size + 1):\n        for dy in range(-outline_size, outline_size + 1):\n            draw.text((x + dx, y + dy), text, font=font, fill=\"black\")\n    draw.text((x, y), text, font=font, fill=\"white\")\n    frames.append(frame)\nFont size scales with image width at 12% of width, clamped between 30 and 50px. Word wrap is manual: split on spaces, measure each candidate line with draw.textbbox(), wrap when it exceeds the image width minus margin. Nothing fancy."
+  },
+  {
+    "objectID": "blog/meme-bot.html#the-pairing-logic",
+    "href": "blog/meme-bot.html#the-pairing-logic",
+    "title": "Building a Meme Bot That Learns Your Server",
+    "section": "The pairing logic",
+    "text": "The pairing logic\nThe bot randomly picks one direction, before or after the GIF, and commits to it. If the chosen neighbor fails the clean text check, the pair is skipped entirely. No fallback, no retry, no trying the other direction. Every pair in the index is a real adjacency that happened naturally in chat.\nAn earlier version retried recursively with no depth limit on failure. That was not a great idea."
+  },
+  {
+    "objectID": "blog/meme-bot.html#what-actually-broke",
+    "href": "blog/meme-bot.html#what-actually-broke",
+    "title": "Building a Meme Bot That Learns Your Server",
+    "section": "What actually broke",
+    "text": "What actually broke\ntasks.loop(weeks=1) throws a TypeError at import time. Not a runtime error, the decorator itself rejects the argument. The valid units are seconds, minutes, and hours. Weekly refresh is hours=168.\nThe Dockerfile had COPY . . running as root even after USER appuser was set. Files were root-owned and the app user couldn’t write to them. Fixed with COPY --chown=appuser:appuser . . and creating the output directory before the user switch.\nAt one point I had two containers running simultaneously, bot_dev and bot_prod, both writing to the same index file. Every log line appeared twice. The crawl ran twice. It was fine.\nThe original version loaded a 48MB pandas DataFrame from disk on every single $generatememe call. No caching. That was the first thing I fixed."
+  },
+  {
+    "objectID": "blog/meme-bot.html#the-tenor-scraping-problem",
+    "href": "blog/meme-bot.html#the-tenor-scraping-problem",
+    "title": "Building a Meme Bot That Learns Your Server",
+    "section": "The Tenor scraping problem",
+    "text": "The Tenor scraping problem\nThere’s no API call here. The bot parses Tenor’s HTML to pull the CDN GIF URL out of #single-gif-container. It works, and it requires zero API key setup, but it will break the moment Tenor changes their markup. A proper API integration would be more stable. I haven’t done it yet.\nThe original data source, before the live crawl existed, was a manually exported 48MB JSON dump of the server’s full message history. The entire pandas pipeline I built around it, time-window filtering, Timedelta expansion loops, all of it, got thrown out when I replaced it with the Discord crawl. requirements.txt still ships with pandas, numpy, selenium, and matplotlib. None of them are used at runtime. Leftover from the exploration phase, never cleaned up."
+  },
+  {
+    "objectID": "blog/meme-bot.html#what-id-change",
+    "href": "blog/meme-bot.html#what-id-change",
+    "title": "Building a Meme Bot That Learns Your Server",
+    "section": "What I’d change",
+    "text": "What I’d change\nVolume-mount resources/json from the start so the index survives image rebuilds. Right now the directory is baked into the image, so deleting it on the host does nothing while the container is running. It’s counterintuitive until you understand why, and then it’s still annoying.\nThe index is also global across every server the bot joins, which is fine for a personal project and would be a real problem the second anyone else added it to their server. Per-guild indexing should’ve been the default.\nNeither of those are hard to fix. I just haven’t needed to yet."
   }
 ]

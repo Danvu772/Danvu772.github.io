@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Dan Vu">
+<meta name="dcterms.date" content="2026-07-14">
+<meta name="description" content="A 120-paper sweep across skin dielectric physics, body capacitance biometrics, fringing-field sensor design, and the one gap nobody has claimed.">
+
+<title>I Spent 15 Agents Investigating Whether My Lab Finding Is Actually a Hydration Sensor – Dan Vu</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../assets/favicon.ico" rel="icon">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-58e7cb164a30d0964bc3a4cf0cb5a652.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-0bfe021cbad7778764f6380846393d4a.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Dan Vu</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">~/</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../research/index.html"> 
+<span class="menu-text">research</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../blog/index.html"> 
+<span class="menu-text">blog</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../assets/resume.pdf"> 
+<span class="menu-text">resume</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#the-physics-is-solid-actually" id="toc-the-physics-is-solid-actually" class="nav-link active" data-scroll-target="#the-physics-is-solid-actually">The physics is solid, actually</a></li>
+  <li><a href="#the-fringing-field-geometry-is-a-design-constraint-not-an-open-problem" id="toc-the-fringing-field-geometry-is-a-design-constraint-not-an-open-problem" class="nav-link" data-scroll-target="#the-fringing-field-geometry-is-a-design-constraint-not-an-open-problem">The fringing-field geometry is a design constraint, not an open problem</a></li>
+  <li><a href="#the-eda-differentiation-is-faster-to-resolve-than-i-expected" id="toc-the-eda-differentiation-is-faster-to-resolve-than-i-expected" class="nav-link" data-scroll-target="#the-eda-differentiation-is-faster-to-resolve-than-i-expected">The EDA differentiation is faster to resolve than I expected</a></li>
+  <li><a href="#the-smoking-gun-body-capacitance-is-a-biometric-and-it-drifts" id="toc-the-smoking-gun-body-capacitance-is-a-biometric-and-it-drifts" class="nav-link" data-scroll-target="#the-smoking-gun-body-capacitance-is-a-biometric-and-it-drifts">The smoking gun: body capacitance is a biometric and it drifts</a></li>
+  <li><a href="#the-touchscreen-to-hydration-translation-is-already-published" id="toc-the-touchscreen-to-hydration-translation-is-already-published" class="nav-link" data-scroll-target="#the-touchscreen-to-hydration-translation-is-already-published">The touchscreen-to-hydration translation is already published</a></li>
+  <li><a href="#the-ground-truth-problem-is-circular-and-nobody-talks-about-it" id="toc-the-ground-truth-problem-is-circular-and-nobody-talks-about-it" class="nav-link" data-scroll-target="#the-ground-truth-problem-is-circular-and-nobody-talks-about-it">The ground-truth problem is circular and nobody talks about it</a></li>
+  <li><a href="#lig-is-the-right-research-platform-and-nobody-has-used-it-for-this" id="toc-lig-is-the-right-research-platform-and-nobody-has-used-it-for-this" class="nav-link" data-scroll-target="#lig-is-the-right-research-platform-and-nobody-has-used-it-for-this">LIG is the right research platform and nobody has used it for this</a></li>
+  <li><a href="#the-confound-is-studied-in-three-communities-and-ignored-in-the-one-that-matters" id="toc-the-confound-is-studied-in-three-communities-and-ignored-in-the-one-that-matters" class="nav-link" data-scroll-target="#the-confound-is-studied-in-three-communities-and-ignored-in-the-one-that-matters">The confound is studied in three communities and ignored in the one that matters</a></li>
+  <li><a href="#the-mitigation-toolbox-exists-but-its-not-a-silver-bullet" id="toc-the-mitigation-toolbox-exists-but-its-not-a-silver-bullet" class="nav-link" data-scroll-target="#the-mitigation-toolbox-exists-but-its-not-a-silver-bullet">The mitigation toolbox exists, but it’s not a silver bullet</a></li>
+  <li><a href="#whats-actually-novel-vs.-whats-established" id="toc-whats-actually-novel-vs.-whats-established" class="nav-link" data-scroll-target="#whats-actually-novel-vs.-whats-established">What’s actually novel vs.&nbsp;what’s established</a></li>
+  <li><a href="#the-sweat-based-commercial-landscape-is-not-competition" id="toc-the-sweat-based-commercial-landscape-is-not-competition" class="nav-link" data-scroll-target="#the-sweat-based-commercial-landscape-is-not-competition">The sweat-based commercial landscape is not competition</a></li>
+  <li><a href="#inter-subject-variability-means-within-subject-design-is-mandatory" id="toc-inter-subject-variability-means-within-subject-design-is-mandatory" class="nav-link" data-scroll-target="#inter-subject-variability-means-within-subject-design-is-mandatory">Inter-subject variability means within-subject design is mandatory</a></li>
+  <li><a href="#what-this-means-for-the-august-meeting" id="toc-what-this-means-for-the-august-meeting" class="nav-link" data-scroll-target="#what-this-means-for-the-august-meeting">What this means for the August meeting</a></li>
+  <li><a href="#open-questions-i-dont-have-answers-for-yet" id="toc-open-questions-i-dont-have-answers-for-yet" class="nav-link" data-scroll-target="#open-questions-i-dont-have-answers-for-yet">Open questions I don’t have answers for yet</a></li>
+  <li><a href="#bottom-line" id="toc-bottom-line" class="nav-link" data-scroll-target="#bottom-line">Bottom line</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">I Spent 15 Agents Investigating Whether My Lab Finding Is Actually a Hydration Sensor</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">research</div>
+    <div class="quarto-category">phd</div>
+    <div class="quarto-category">wearable-sensing</div>
+    <div class="quarto-category">capacitive</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    A 120-paper sweep across skin dielectric physics, body capacitance biometrics, fringing-field sensor design, and the one gap nobody has claimed.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Dan Vu </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">July 14, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>the gap is real. nobody has claimed it yet. the rest is work.</p>
+<p>Two months ago I found a parasitic body-coupling capacitance term in the DPV sensor. The postdoc said it was drift in my measurement. It wasn’t. The body coupling was real, and getting rid of it became the thesis.</p>
+<p>Then I had a stray thought: what if the parasitic term isn’t just a confound to kill. what if the residual signal, after mitigation, correlates with skin hydration state and is actually usable as a side-channel sensor.</p>
+<p>Three claims chained together. characterize the parasitic term (in motion). apply mitigation (shielding, guarding, known technique). show the residual correlates with hydration (genuinely novel, if it holds). Each claim needs to survive independently. The third one is the bet.</p>
+<p>This is the full audit. 15 research domains, ~120 papers, parallel agents running overnight. Everything I found about capacitive hydration sensing, skin dielectric physics, body capacitance biometrics, fringing-field design, the EDA differentiation problem, ground-truth reference methods, and the one gap that nobody has claimed.</p>
+<section id="the-physics-is-solid-actually" class="level2">
+<h2 class="anchored" data-anchor-id="the-physics-is-solid-actually">The physics is solid, actually</h2>
+<p>Skin is a layered dielectric. Water dominates the permittivity. Gabriel et al.&nbsp;(1996, 3,000+ citations) established the canonical four-pole Cole-Cole model. Dry stratum corneum has ε_r ≈ 10 at 10 kHz. Hydrated SC hits ε_r ≈ 49. That’s a 5× swing in capacitance at wearable-relevant frequencies. The mechanism is lipid fluidization upon water uptake (Björklund et al., 2013 — parallel NMR/XRD confirmation). This is not speculative. It’s the physical foundation and it is settled.</p>
+<p>The Yamamoto-Yamamoto finding (1976) that the SC has an exponential resistivity gradient (not a Cole-Cole arc) is the detail nobody in the wearable space cites but everyone should. The outermost layers dominate the measurement. This means a Corneometer reading at 1 MHz is a surface measurement, 10-20 µm deep into a SC layer that averages 15-20 µm. It reads the gradient’s surface, not the full water profile.</p>
+<p>The SC swelling effect (Malnati et al., 2021 COMSOL model) is the gotcha. At high hydration, the SC thickens, pushing the fringing field away from the high-ε viable epidermis. Measured capacitance can paradoxically decrease. This is a genuine nonlinearity. Sensitivity is lower at high hydration. You can either curse it or model it. I’d recommend modeling it.</p>
+</section>
+<section id="the-fringing-field-geometry-is-a-design-constraint-not-an-open-problem" class="level2">
+<h2 class="anchored" data-anchor-id="the-fringing-field-geometry-is-a-design-constraint-not-an-open-problem">The fringing-field geometry is a design constraint, not an open problem</h2>
+<p>Penetration depth of interdigitated electrode fringing fields is proportional to spatial period λ = 2(W + G). Mamishev et al.&nbsp;(2004, Proc IEEE, 600+ citations) settled this. To target the SC (20-50 µm), you need W and G in the 30-100 µm range. That means reverse-offset printing (Dai et al., 2025, 50 µm gap) or microfabrication. Not standard screen printing, which bottoms out around 200 µm.</p>
+<p>The Igreja &amp; Dias conformal mapping model (2004, 260+ citations) gives you analytical closed-form capacitance for multilayer IDE structures. Pair that with COMSOL simulations parameterized with the Björklund skin dielectric values and you have a working sensor model with no experimental iteration needed. The sensor design is a solved problem. The interesting part is what you measure with it and how you separate the signal components.</p>
+</section>
+<section id="the-eda-differentiation-is-faster-to-resolve-than-i-expected" class="level2">
+<h2 class="anchored" data-anchor-id="the-eda-differentiation-is-faster-to-resolve-than-i-expected">The EDA differentiation is faster to resolve than I expected</h2>
+<p>I flagged this as homework in the roadmap: read the EDA/GSR literature to nail the mechanistic differentiation before drafting anything. Turns out the EDA community already did it for me.</p>
+<p>Boucsein et al.&nbsp;(2012, “Publication Recommendations” — the EDA community’s own standardization paper) explicitly notes that lock-in amplifiers separate fast conductance (sweat duct ionic) from slow capacitance (SC hydration dielectric). The differentiation is baked into their own instrumentation recommendations. Martinsen &amp; Grimnes (2001, “Facts and Myths”) is the canonical mechanistic paper: sweat ducts are conductive, SC moisture affects capacitive admittance. Bari et al.&nbsp;(2018) demonstrated empirically that SC (conductance), SP (potential), and SS (susceptance) have different morphologies when measured simultaneously.</p>
+<p>The frequency argument is clean. EDA sensitivity peaks at ~100 Hz (Sridhar &amp; Akl, 2017) because sweat duct ionic conduction dominates below 100 Hz. Above 1 kHz, dielectric polarization of bound water in the SC dominates. Operating a capacitive hydration sensor at 10 kHz-10 MHz is measuring a fundamentally different physical process. This is a one-paragraph differentiation in a paper, not a thesis chapter.</p>
+<p>The reviewer question — “how is this not EDA with extra steps?” — has a short answer: conductance-based ionic vs.&nbsp;dielectric-based polarization, different frequency regimes, different physical pathways. The literature already supports it.</p>
+</section>
+<section id="the-smoking-gun-body-capacitance-is-a-biometric-and-it-drifts" class="level2">
+<h2 class="anchored" data-anchor-id="the-smoking-gun-body-capacitance-is-a-biometric-and-it-drifts">The smoking gun: body capacitance is a biometric and it drifts</h2>
+<p>This is the finding that makes the hydration hypothesis more than a stray thought.</p>
+<p>The human body acts as a floating conductor with body-to-ground capacitance C_B ranging from ~100 pF to several nF. It varies with posture, footwear, clothing, environment, proximity to objects. Aliau-Bonet &amp; Pallàs-Areny (2012-2015) developed measurement methods for C_B across 10 kHz-1 MHz. Bian &amp; Lukowicz (2019-2025) built systematic multi-factor studies of body capacitance for activity recognition.</p>
+<p>The HCI community has been treating body capacitance as a deliberate signal for decades. Zimmerman’s three-mode body communication taxonomy (1995, CHI/IBM Systems Journal) is the foundation. DiamondTouch (Dietz &amp; Leigh, UIST 2001) routed multi-user touch through individual body capacitance. PreTouch (Hinckley et al., CHI 2016) demonstrated that smartphone touch controllers can sense body proximity before contact — from a wrist form factor, same frequency regime, same hardware architecture as a hydration sensor.</p>
+<p>And then there’s Platypus (Mujibiya et al., UIST 2011): person identification via body electric potential at <strong>98.3% accuracy</strong>. A capacitive chair that can tell people apart just by the way their body capacitance loads the system. Twenty-two subjects, one second per measurement.</p>
+<p>If body capacitance encodes enough person-specific information to serve as a 98.3% biometric, it plausibly encodes enough within-subject variation to track hydration changes. The day-to-day drift they observed could be hydration-related. Could also be clothing, sweat on the chair, environmental humidity. It is not demonstrated.</p>
+<p>But the proof of concept — that body capacitance measured from a single contact point encodes fine-grained physiological state — is already published. EarFieldSensing (Matthies et al., CHI 2017) detected facial expressions from in-ear capacitive electrodes. CapSeat (Braun et al., CHI 2011) extracted posture from 16 car-seat capacitive electrodes. The hardware is the same. The signal extraction target is different.</p>
+</section>
+<section id="the-touchscreen-to-hydration-translation-is-already-published" class="level2">
+<h2 class="anchored" data-anchor-id="the-touchscreen-to-hydration-translation-is-already-published">The touchscreen-to-hydration translation is already published</h2>
+<p>Siyoucef et al.&nbsp;(2025, IEEE Sensors Journal) used an off-the-shelf TI FDC2114 module (28-bit LC-resonant capacitance-to-digital converter, 0.3 fF resolution) with a metallic plate as a finger-touch hydration sensor. 92% accuracy for athletes, 87% for fasting subjects, 4,000+ readings covering a 73-93% hydration range. KAUST lab, got picked up by New Atlas and EurekAlert.</p>
+<p>An Apple Watch display is a capacitive touchscreen. If the touch controller can be repurposed for spot-check hydration — user touches the display for one second — no additional hardware. The FDC2214 is the exact IC family that shipped in smartphones for touch sensing. The Kim et al.&nbsp;(2020, Sensors) paper already demonstrated unmodified touchscreen panels detecting cardiac-synchronous finger capacitance changes.</p>
+<p>Apple filed a patent in February 2024 describing dual-mode ECG/capacitive measurement circuitry reusing the Watch’s back-crystal electrodes. The patent describes: moistening an electrode surface, switching between ECG and capacitive measurement modes, using the same electrodes for both. Technically coherent. No shipping timeline. But the hardware architecture for capacitive hydration sensing from the wrist already exists in the Watch — it just needs the algorithm to extract hydration from the body capacitance signal component.</p>
+<p>This is not a coincidence. It’s a verification that the question is well-posed.</p>
+</section>
+<section id="the-ground-truth-problem-is-circular-and-nobody-talks-about-it" class="level2">
+<h2 class="anchored" data-anchor-id="the-ground-truth-problem-is-circular-and-nobody-talks-about-it">The ground-truth problem is circular and nobody talks about it</h2>
+<p>Every wearable capacitive hydration sensor validates against the Corneometer CM825. This is a problem. The Corneometer operates at 0.9-1.2 MHz and measures dielectric permittivity — the same physical quantity as a capacitive hydration sensor. Correlation between two capacitance-based devices is expected by physics, not evidence of accuracy.</p>
+<p>The actual gold standards: confocal Raman (direct water-to-protein ratio, 5 µm depth resolution) and NMR (direct proton density). Nobody in the capacitive hydration literature uses either. Fluhr et al.’s comparative study found a negative correlation (r = −0.45) between Corneometer and Raman total SC water AUC — capacitive sensors may be missing deeper SC hydration changes.</p>
+<p>I have two options. Use Corneometer for initial validation to stay comparable with the literature, acknowledge the circularity, and call it correlation with the clinical standard rather than ground truth. Or seek Raman validation at IU dermatology as differentiating evidence for the NeurIPS workshop paper.</p>
+<p>Leaning Corneometer first. If the data looks strong, Raman is the upgrade path. Don’t let the perfect reference block the initial measurement.</p>
+</section>
+<section id="lig-is-the-right-research-platform-and-nobody-has-used-it-for-this" class="level2">
+<h2 class="anchored" data-anchor-id="lig-is-the-right-research-platform-and-nobody-has-used-it-for-this">LIG is the right research platform and nobody has used it for this</h2>
+<p>CO2 laser on polyimide at 10.6 µm. No cleanroom, no masks, no photoresist. Sub-$500 laser cutter. Sheet resistance as low as 9.5 Ω/sq. The Tour group at Rice established the fabrication baseline in 2014.</p>
+<p>LIG interdigitated capacitive sensors exist for humidity (Paterakis et al., 2022 — 13,460 pF/%RH sensitivity, NFC wireless), aptasensing (Yagati et al., 2020 — 1.3 pM LOD in serum), and strain (Han et al., 2019 — GF ~0.47). Zero papers on on-skin hydration. Zero. The platform is established for three adjacent applications but the hydration angle is unexplored. Standard PI substrate, standard CO2 laser, standard IDC geometry — the sensor fabrication is a solved problem. The measurement and confound story is the novel part.</p>
+<p>This also means LIG’s confound behavior is entirely uncharacterized: motion artifact, pressure variability, sweat interference, body capacitive coupling. All four of those confounds need to be studied systematically, and the cheap rapid-prototyping cycle of LIG (fabricate a new geometry in minutes, test on skin, iterate) makes it the ideal platform for that study. Even if the final product electrode technology ends up being something else, LIG lets you run the experimental design space before committing.</p>
+</section>
+<section id="the-confound-is-studied-in-three-communities-and-ignored-in-the-one-that-matters" class="level2">
+<h2 class="anchored" data-anchor-id="the-confound-is-studied-in-three-communities-and-ignored-in-the-one-that-matters">The confound is studied in three communities and ignored in the one that matters</h2>
+<p>Body coupling capacitance C_B is:</p>
+<ul>
+<li>The signal source in HCI/HBC research (Bian &amp; Lukowicz, Grosse-Puppendahl, Zimmerman — treated as the carrier of useful information)</li>
+<li>A quantified source of error in bioimpedance (Aliau-Bonet, IEEE TBME — causes “hook” artifacts and &gt;137% measurement errors in tetrapolar BIA)</li>
+<li>A target for active mitigation in touch sensing (TI CapTIvate, Cypress CapSense — active shielding, driven guard)</li>
+<li><strong>Completely absent from the capacitive hydration literature. Not a single published wearable capacitive hydration paper even mentions it.</strong></li>
+</ul>
+<p>The reason is straightforward. Every capacitive hydration paper validates in a controlled benchtop setup where the subject is seated, the sensor is taped in place with controlled pressure, and the measurement spot is on the volar forearm. C_B is held constant by experimental design. The confound is eliminated by protocol, not by measurement. It disappears from the data and therefore from the discussion.</p>
+<p>On a moving wrist, under a watch strap with variable tension, with changing posture and proximity to grounded objects — C_B is large and time-varying and it swamps the sub-pF SC hydration signal. The fact that nobody has characterized this in a hydration context is not because it isn’t a problem. It’s because nobody has tried to make a wearable capacitive hydration sensor that actually works outside a benchtop.</p>
+</section>
+<section id="the-mitigation-toolbox-exists-but-its-not-a-silver-bullet" class="level2">
+<h2 class="anchored" data-anchor-id="the-mitigation-toolbox-exists-but-its-not-a-silver-bullet">The mitigation toolbox exists, but it’s not a silver bullet</h2>
+<p>Six technique families, ranging from standard (DRL, 70-123 dB CMRR, 50+ year legacy) to experimental (negative capacitance cancellation, 19.6 dB SNR improvement demonstrated, benchtop-only, stability issues).</p>
+<p>The architecture that makes sense: active shielding (TI FDC1004 CapTIvate, protects the sub-pF signal path) + differential CDC (rejects near-field common-mode) + algorithmic compensation for the time-varying residual. Hardware alone won’t solve this because the confound itself is time-varying — posture, environment, strap tension all change C_B. Marcôndes et al.&nbsp;(2022) found that “no method seemed capable of mitigating the effects of electrodes’ capacitance that changes in the frequency spectrum.” The gap is algorithmic.</p>
+<p>This is where the Apple Health Sensing MLIA team’s mandate — “analyze model behavior, identify weaknesses, lead investigations into failure modes” — maps directly onto the measurement problem. The confound is dynamic. Hardware can reduce it. ML can model what’s left.</p>
+</section>
+<section id="whats-actually-novel-vs.-whats-established" class="level2">
+<h2 class="anchored" data-anchor-id="whats-actually-novel-vs.-whats-established">What’s actually novel vs.&nbsp;what’s established</h2>
+<p><strong>Already settled, not my contribution:</strong></p>
+<ul>
+<li>Skin dielectric response to hydration (Gabriel 1996, Björklund 2013)</li>
+<li>Fringing field penetration depth ∝ λ (Mamishev 2004)</li>
+<li>LIG fabrication and humidity sensitivity (Tour 2014, Paterakis 2022)</li>
+<li>EDA ≠ capacitive hydration (Martinsen/Grimnes 2001, Bari 2018, Boucsein 2012)</li>
+<li>Body capacitance is a measurable physiological signal (Platypus 2011, Bian 2025)</li>
+<li>Body coupling is a confound in bioimpedance (Aliau-Bonet, IEEE TBME)</li>
+</ul>
+<p><strong>Genuinely novel (nobody has published this):</strong></p>
+<ul>
+<li>Body capacitance as a hydration signal — nobody has proposed C_B as an indicator of skin hydration state</li>
+<li>LIG capacitive sensor for on-skin hydration — zero papers</li>
+<li>Body coupling confound characterization in the capacitive hydration context — the confound is well-studied in other fields but no capacitive hydration paper addresses it</li>
+<li>The full three-claim chain (characterize confound → apply mitigation → residual signal correlates with hydration)</li>
+<li>Touchscreen-to-wrist hydration translation for continuous wearable — Siyoucef 2025 did finger-touch, nobody has done continuous wrist</li>
+</ul>
+<p>Three genuine gaps, not one. The characterization claim is novel within capacitive hydration (even though the confound physics is known elsewhere). The LIG-hydration pairing is novel. The residual-signal-as-hydration claim is novel. The chain is novel.</p>
+</section>
+<section id="the-sweat-based-commercial-landscape-is-not-competition" class="level2">
+<h2 class="anchored" data-anchor-id="the-sweat-based-commercial-landscape-is-not-competition">The sweat-based commercial landscape is not competition</h2>
+<p>Three shipped hydration products as of mid-2026. All sweat-based. Gatorade Gx (microfluidic colorimetric, single-use, 16% failure rate). Epicore (electrochemical, FDA Class I, $32M Series B). Nix (electrochemical impedance, $129 DTC, no independent validation). BSX LVL Band raised $1.2M on Kickstarter, never validated the NIRS technology, refunded everyone, got acquired. Kenzen pivoted from consumer to industrial before shipping.</p>
+<p>Zero capacitive hydration products exist. Zero. This means no commercial competition, but also zero commercial validation precedent.</p>
+<p>The advantage of capacitive over sweat: no need for active sweating. Sweat patches require the subject to be sweating — they’re exercise-correlated, not continuous. Capacitive measures SC dielectric properties passively, continuously, regardless of sweat state. This is the pitch: hydration monitoring that works when you’re sitting still.</p>
+</section>
+<section id="inter-subject-variability-means-within-subject-design-is-mandatory" class="level2">
+<h2 class="anchored" data-anchor-id="inter-subject-variability-means-within-subject-design-is-mandatory">Inter-subject variability means within-subject design is mandatory</h2>
+<p>Pires et al.&nbsp;(2016, n=1,339) — only 18.23% of inter-subject SC moisture variance is explained by measurable demographics and environment. The remaining ~82% is unknown. Body site is the single largest variance source: SC thickness ranges from ~8 µm (abdomen) to 19 µm (forearm) to 100+ cell layers (palm). Men are ~6-7 AU drier than women. Age is non-monotonic (peaks ~40, then declines).</p>
+<p>Within-person measurement CV is ~7.2%. Dry skin has higher variance. Probe pressure alone causes 40% variance in dry skin Corneometer readings — on a wearable with uncontrolled strap tension, this is squared.</p>
+<p>The study design conclusion: within-subject crossover (each person is their own control), N = 20-50, 3-5 repeated measures per condition, baseline after 20-30 min acclimation, primary endpoint is percentage change from baseline not absolute capacitance. Universal calibration across subjects is not supported by any evidence. Don’t try it.</p>
+</section>
+<section id="what-this-means-for-the-august-meeting" class="level2">
+<h2 class="anchored" data-anchor-id="what-this-means-for-the-august-meeting">What this means for the August meeting</h2>
+<p>Three ways to reconcile the hydration angle with the existing two-paper pitch.</p>
+<p><strong>Option A — fold into the fix-it paper as a discussion section.</strong> Keep the two-paper structure (characterize, mitigate). Test the hydration correlation as a pilot alongside the main study. If it holds, it’s a finding. If not, it was a pilot and nothing is lost. This is the move I’m recommending to myself because it preserves the existing pitch and the internship timeline.</p>
+<p><strong>Option B — third paper after the two-paper arc.</strong> Cleanest separation. Two papers published by summer 2027 &gt; one ambitious paper in progress. Hydration stays as a long-term differentiator.</p>
+<p><strong>Option C — replace characterize as paper 1’s framing.</strong> Highest reward if the correlation holds. Also highest risk because it requires the ground-truth method decided, sample size scoped, and EDA differentiation airtight before data collection even starts. Walking into the August meeting without having decided which option this is would be the thesis-arc-drift failure mode I already flagged.</p>
+<p>Going with A. The characterization paper gets a hydration pilot in the discussion. Results determine whether it becomes a finding or a footnote.</p>
+</section>
+<section id="open-questions-i-dont-have-answers-for-yet" class="level2">
+<h2 class="anchored" data-anchor-id="open-questions-i-dont-have-answers-for-yet">Open questions I don’t have answers for yet</h2>
+<ol type="1">
+<li><p><strong>Frequency optimization</strong>: The EDA community separates at ~100 Hz (conductive) vs.&nbsp;10 kHz-10 MHz (capacitive). The body capacitance community operates at 100 kHz-10 MHz. Where does the SC hydration signal peak? At what frequency are C_B and SC ε_r maximally separable? This needs a frequency sweep on real skin.</p></li>
+<li><p><strong>Electrode geometry for confound rejection</strong>: What IDE geometry (W, G, area) maximizes SC hydration sensitivity while minimizing body coupling influence? COMSOL simulation with layered skin dielectric model and ground plane representing C_B. Not an experiment. A simulation first.</p></li>
+<li><p><strong>Motion artifact separation</strong>: No capacitive hydration paper addresses it. The body capacitance literature treats posture changes as the signal. How do you algorithmically separate hydration from posture in the same time series? This is the ML problem.</p></li>
+<li><p><strong>Reference method selection</strong>: Corneometer for comparability or Raman for actual water content. This is the methodology decision that determines whether reviewers trust the results.</p></li>
+<li><p><strong>Pressure normalization</strong>: 40% variance from probe pressure alone. A watch with variable strap tension has the same problem squared. This is probably a strain gauge co-located with the capacitive sensor.</p></li>
+<li><p><strong>The Platypus drift</strong>: 98.3% person identification accuracy with day-to-day drift. Is the drift hydration? Or sweat on the chair, clothing changes, environmental humidity? Run the experiment.</p></li>
+</ol>
+</section>
+<section id="bottom-line" class="level2">
+<h2 class="anchored" data-anchor-id="bottom-line">Bottom line</h2>
+<p>The physics supports the claim. The mechanism is known. The confound is real and unstudied in this context. Three adjacent communities have pieces of the puzzle but nobody has connected body capacitance to hydration sensing. The LIG platform is cheap, fast, and unexplored for this application. The EDA differentiation is settled in the literature and takes one paragraph. The touchscreen-to-wrist translation has a published proof of concept.</p>
+<p>The remaining work: pick the reference method, run the pilot, decide option A/B/C before the August meeting, and do not let BOOM energy outrun the design work.</p>
+<p>There is a real gap here. Nobody has claimed it yet. That’s both the opportunity and the test.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/danvu772\.github\.io");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© Dan Vu</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>
